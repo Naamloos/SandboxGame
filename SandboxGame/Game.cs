@@ -56,6 +56,10 @@ namespace SandboxGame
         {
             _sceneManager.Update(gameTime);
             _camera.Update(gameTime);
+
+            var mouse = Mouse.GetState(Window);
+            DebugHelper.SetDebugValues("MOUSE", $"LMB: {mouse.LeftButton} RMB: {mouse.RightButton} MMB: {mouse.MiddleButton} SW: {mouse.ScrollWheelValue} " +
+                $"X: {mouse.X.ToString().PadRight(5)} Y: {mouse.Y.ToString().PadRight(5)}");
         }
 
         protected override void Draw(GameTime gameTime)
