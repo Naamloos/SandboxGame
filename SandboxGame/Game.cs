@@ -16,6 +16,7 @@ namespace SandboxGame
         private Camera _camera;
 
         private GameContext _gameContext;
+        private SpriteFont _debugTextFont;
 
         public Game()
         {
@@ -31,14 +32,16 @@ namespace SandboxGame
         protected override void Initialize()
         {
             base.Initialize();
+            Window.Title = "🥺";
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _camera = new Camera(_spriteBatch, Window);
-            _assetManager = new AssetManager("Fonts/HopeGold", Content);
+            _assetManager = new AssetManager(Content);
             _assetManager.Initialize();
+            _debugTextFont = _assetManager.GetFont();
 
             _gameContext.SpriteBatch = _spriteBatch;
             _gameContext.Camera = _camera;
@@ -46,7 +49,7 @@ namespace SandboxGame
 
             _sceneManager = new SceneManager(_gameContext);
             _gameContext.SceneManager = _sceneManager;
-            _sceneManager.Switch<LoadingScene>();
+            _sceneManager.Switch<WelcomeScene>();
         }
 
         protected override void Update(GameTime gameTime)
@@ -57,11 +60,20 @@ namespace SandboxGame
 
         protected override void Draw(GameTime gameTime)
         {
+            DebugHelper.SetDebugValues("FRAMERATE", Math.Round((1.0f / gameTime.ElapsedGameTime.TotalSeconds)).ToString());
             GraphicsDevice.Clear(Color.Black);
+
+            // Camera layer
             _camera.DrawOnCamera(() =>
             {
                 _sceneManager.Draw(gameTime);
             });
+
+            // UI layer
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _sceneManager.DrawUI(gameTime);
+            _spriteBatch.DrawString(_debugTextFont, DebugHelper.GetDebugString(), new Vector2(10, 10), Color.DarkRed);
+            _spriteBatch.End();
         }
     }
 }

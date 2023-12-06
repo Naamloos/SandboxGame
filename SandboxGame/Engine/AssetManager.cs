@@ -13,38 +13,64 @@ namespace SandboxGame.Engine
     {
         private ContentManager _contentManager;
 
-        private string _fallbackFontName;
+        private SpriteFont _fallbackFont;
+
+        private Dictionary<string, Sprite> _sprites = new();
         private Dictionary<string, SpriteFont> _fonts = new();
 
-        public AssetManager(string fallbackFontName, ContentManager contentManager)
+        public AssetManager(ContentManager contentManager)
         {
             _contentManager = contentManager;
-            _fallbackFontName = fallbackFontName;
         }
 
         public void Initialize()
         {
-            _fonts.Add(_fallbackFontName, _contentManager.Load<SpriteFont>(_fallbackFontName));
-        }
+            // Pre-load initialization font
+            _fallbackFont = _contentManager.Load<SpriteFont>("Fonts/Debug");
 
-        public void LoadFont(string name)
-        {
-            if(_fonts.ContainsKey(name))
-            {
-                throw new Exception($"Font with name {name} was already loaded!");
-            }
+            _fonts.Add("main", _contentManager.Load<SpriteFont>("Fonts/HopeGold"));
 
-            _fonts.Add(name, _contentManager.Load<SpriteFont>(name));
+            _sprites.Add("tile", loadSprite("tile", 64, 64, TimeSpan.FromSeconds(10)));
         }
 
         public SpriteFont GetFont(string name = "")
         {
-            if(_fonts.ContainsKey(name))
+            if(string.IsNullOrEmpty(name))
+                return _fallbackFont;
+
+            try
             {
                 return _fonts[name];
             }
+            catch(Exception ex)
+            {
+                return _fallbackFont;
+            }
+        }
 
-            return _fonts[_fallbackFontName];
+        public Sprite GetSprite(string name)
+        {
+            return _sprites[name];
+        }
+
+        private Sprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)
+        {
+            int i = 0;
+            List<Texture2D> textures = new List<Texture2D>();
+
+            while(true)
+            {
+                try
+                {
+                    textures.Add(_contentManager.Load<Texture2D>($"Sprites/{name}_{i}"));
+                    i++;
+                }catch(Exception ex)
+                {
+                    break;
+                }
+            }
+
+            return new Sprite(baseWidth, baseHeight, baseDuration, textures.ToArray());
         }
     }
 }

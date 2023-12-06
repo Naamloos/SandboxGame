@@ -69,5 +69,17 @@ namespace SandboxGame.Engine
             currentScene.Draw(gameTime);
             _drawLock.Release();
         }
+
+        public void DrawUI(GameTime gameTime)
+        {
+            if (currentScene == null)
+            {
+                return;
+            }
+
+            _drawLock.Wait();
+            currentScene.DrawUI(gameTime);
+            _drawLock.Release();
+        }
     }
 }

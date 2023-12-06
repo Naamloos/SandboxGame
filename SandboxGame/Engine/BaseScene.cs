@@ -16,6 +16,8 @@ namespace SandboxGame.Engine
 
         public abstract void Draw(GameTime gameTime);
 
+        public abstract void DrawUI(GameTime gameTime);
+
         public abstract void Dispose();
     }
 }
