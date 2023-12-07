@@ -18,6 +18,12 @@ namespace SandboxGame.Engine
         private TimeSpan _duration;
         private int _currentFrame;
 
+        public Rectangle Bounds { get; private set; }
+
+        private Vector2 _lastPosition = Vector2.Zero;
+
+        private RenderTarget2D _renderTarget;
+
         public Sprite(int width, int height, TimeSpan duration, params Texture2D[] frames)
         {
             Width = width;
@@ -34,12 +40,14 @@ namespace SandboxGame.Engine
             _currentFrame = (int)Math.Abs((_frames.Count * progress) / 100);
         }
 
-        public void Draw(SpriteBatch spriteBatch, int x, int y, Color? lightColor = null, int widthOverride = -1, int heightOverride = -1)
+        public void Draw(SpriteBatch spriteBatch, int x, int y, bool bloom = false,
+            Color? lightColor = null, int widthOverride = -1, int heightOverride = -1)
         {
-            int width = widthOverride > 0? widthOverride : Width;
-            int height = heightOverride > 0? heightOverride : Height;
+            int width = widthOverride > 0 ? widthOverride : Width;
+            int height = heightOverride > 0 ? heightOverride : Height;
 
-            spriteBatch.Draw(_frames[_currentFrame], new Rectangle(x, y, width, height), lightColor ??  Color.White);
+            Bounds = new Rectangle(x, y, width, height);
+            spriteBatch.Draw(_frames[_currentFrame], Bounds, lightColor ?? Color.White);
         }
 
         public void SetDuration(TimeSpan duration)

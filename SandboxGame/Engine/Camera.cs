@@ -82,6 +82,16 @@ namespace SandboxGame.Engine
             DebugHelper.SetDebugValues("CAMERA", $"x: {_position.X.ToString().PadRight(15)} y: {_position.Y.ToString().PadRight(15)}");
         }
 
+        public Vector2 WorldToScreen(Vector2 worldCoords)
+        {
+            return Vector2.Transform(worldCoords, _translationMatrix);
+        }
+
+        public Vector2 ScreenToWorld(Vector2 screenCoords)
+        {
+            return Vector2.Transform(screenCoords, Matrix.Invert(_translationMatrix));
+        }
+
         public void DrawOnCamera(Action draw)
         {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
