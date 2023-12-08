@@ -20,10 +20,6 @@ namespace SandboxGame.Engine
 
         public Rectangle Bounds { get; private set; }
 
-        private Vector2 _lastPosition = Vector2.Zero;
-
-        private RenderTarget2D _renderTarget;
-
         public Sprite(int width, int height, TimeSpan duration, params Texture2D[] frames)
         {
             Width = width;
