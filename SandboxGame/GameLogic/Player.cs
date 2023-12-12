@@ -27,33 +27,36 @@ namespace SandboxGame.GameLogic
             inputHelper = input;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, bool active = true)
         {
             var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             var distanceTraveled = (speed / 1000) * frameTime;
 
             DebugHelper.SetDebugValues("SPEED", distanceTraveled.ToString());
 
-            if(inputHelper.Left && !inputHelper.Right)
+            if (active)
             {
-                x = (int)(x - distanceTraveled);
-                movesRight = true;
-            }
+                if (inputHelper.Left && !inputHelper.Right)
+                {
+                    x = (int)(x - distanceTraveled);
+                    movesRight = true;
+                }
 
-            if(inputHelper.Right && !inputHelper.Left)
-            {
-                x = (int)(x + distanceTraveled);
-                movesRight = false;
-            }
+                if (inputHelper.Right && !inputHelper.Left)
+                {
+                    x = (int)(x + distanceTraveled);
+                    movesRight = false;
+                }
 
-            if(inputHelper.Up && !inputHelper.Down)
-            {
-                y = (int)(y - distanceTraveled);
-            }
+                if (inputHelper.Up && !inputHelper.Down)
+                {
+                    y = (int)(y - distanceTraveled);
+                }
 
-            if (inputHelper.Down && !inputHelper.Up)
-            {
-                y = (int)(y + distanceTraveled);
+                if (inputHelper.Down && !inputHelper.Up)
+                {
+                    y = (int)(y + distanceTraveled);
+                }
             }
         }
 

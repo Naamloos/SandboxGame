@@ -21,7 +21,7 @@ namespace SandboxGame.Engine
         private Vector2 _startingPosition;
         private float distancePerSecond = 1f;
 
-        private Sprite? following = null;
+        private Sprite following = null;
         private bool smoothFollow = false;
 
         public Vector2 ScreenCenter
@@ -32,6 +32,11 @@ namespace SandboxGame.Engine
         public bool IsFollowing
         {
             get => following != null;
+        }
+
+        public Sprite Target
+        {
+            get => following;
         }
 
         private Matrix _translationMatrix
