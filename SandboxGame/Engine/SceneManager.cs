@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Engine
 {
-    internal class SceneManager
+    public class SceneManager
     {
         private GameContext _gameContext;
 

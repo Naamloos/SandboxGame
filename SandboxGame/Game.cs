@@ -43,26 +43,23 @@ namespace SandboxGame
             _assetManager.Initialize();
             _debugTextFont = _assetManager.GetFont();
 
+            _gameContext.MouseHelper = new MouseHelper(Window, _camera);
+            _gameContext.InputHelper = new InputHelper();
             _gameContext.SpriteBatch = _spriteBatch;
             _gameContext.Camera = _camera;
             _gameContext.AssetManager = _assetManager;
 
             _sceneManager = new SceneManager(_gameContext);
             _gameContext.SceneManager = _sceneManager;
-            _sceneManager.Switch<WelcomeScene>();
+            _sceneManager.Switch<DevScene>();
         }
 
         protected override void Update(GameTime gameTime)
         {
             _sceneManager.Update(gameTime);
             _camera.Update(gameTime);
-
-            var mouse = Mouse.GetState(Window);
-            DebugHelper.SetDebugValues("MOUSE", $"LMB: {mouse.LeftButton} RMB: {mouse.RightButton} MMB: {mouse.MiddleButton} SW: {mouse.ScrollWheelValue} " +
-                $"X: {mouse.X.ToString().PadRight(5)} Y: {mouse.Y.ToString().PadRight(5)}");
-
-            var mouse_world = _camera.ScreenToWorld(mouse.Position.ToVector2());
-            DebugHelper.SetDebugValues("MOUSE_WORLD", $"X: {mouse_world.X.ToString().PadRight(5)} Y: {mouse_world.Y.ToString().PadRight(5)}");
+            _gameContext.MouseHelper.Update();
+            _gameContext.InputHelper.Update();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -79,7 +76,8 @@ namespace SandboxGame
             // UI layer
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             _sceneManager.DrawUI(gameTime);
-            _spriteBatch.DrawString(_debugTextFont, DebugHelper.GetDebugString(), new Vector2(10, 10), Color.DarkRed);
+            var dbg = DebugHelper.GetDebugString();
+            _spriteBatch.DrawString(_debugTextFont, dbg, new Vector2(10, 10), Color.DarkRed);
             _spriteBatch.End();
         }
     }

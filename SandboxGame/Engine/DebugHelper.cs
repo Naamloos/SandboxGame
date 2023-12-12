@@ -32,7 +32,7 @@ namespace SandboxGame.Engine
                 sb.AppendLine($"{value.Key}: {value.Value}");
             }
 
-            return sb.ToString();
+            return sb.ToString().Replace('∞', '~');
         }
     }
 }

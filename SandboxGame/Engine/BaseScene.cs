@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Engine
 {
-    internal abstract class BaseScene : IDisposable
+    public abstract class BaseScene : IDisposable
     {
         public abstract void Initialize(GameContext gameContext);
 

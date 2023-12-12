@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Engine
 {
-    internal class Camera
+    public class Camera
     {
         private SpriteBatch _spriteBatch;
         private GameWindow _gameWindow;
@@ -18,12 +18,20 @@ namespace SandboxGame.Engine
         private float _rotation = 0f;
 
         private Vector2 _moveTowards = Vector2.Zero;
-
+        private Vector2 _startingPosition;
         private float distancePerSecond = 1f;
+
+        private Sprite? following = null;
+        private bool smoothFollow = false;
 
         public Vector2 ScreenCenter
         {
             get => new Vector2(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
+        }
+
+        public bool IsFollowing
+        {
+            get => following != null;
         }
 
         private Matrix _translationMatrix
@@ -52,6 +60,11 @@ namespace SandboxGame.Engine
             distancePerSecond = traveledPerSecond;
         }
 
+        public void SetZoom(float zoom)
+        {
+            _zoom = zoom;
+        }
+
         public void SetTarget(Vector2 moveTowards)
         {
             _moveTowards = moveTowards;
@@ -67,7 +80,21 @@ namespace SandboxGame.Engine
             var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             var distanceTraveled = (distancePerSecond / 1000) * frameTime;
 
-            if (Vector2.Distance(_position, _moveTowards) > distanceTraveled)
+            if (following is not null)
+            {
+                if (smoothFollow)
+                {
+                    _moveTowards = following.Bounds.Center.ToVector2();
+                }
+                else
+                {
+                    _position = following.Bounds.Center.ToVector2();
+                    return;
+                }
+            }
+
+            var distance = Vector2.Distance(_position, _moveTowards);
+            if (distance > distanceTraveled)
             {
                 var direction = _moveTowards - _position;
                 direction.Normalize();
@@ -76,6 +103,7 @@ namespace SandboxGame.Engine
             }
             else
             {
+                _startingPosition = _moveTowards;
                 _position = _moveTowards;
             }
 
@@ -99,6 +127,33 @@ namespace SandboxGame.Engine
             draw();
 
             _spriteBatch.End();
+        }
+
+        public void EnableEffect(Effect effect)
+        {
+            _spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, effect: effect, transformMatrix: _translationMatrix);
+        }
+
+        public void DisableEffect()
+        {
+            _spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
+        }
+
+        public void Follow(Sprite sprite, bool smooth = true)
+        {
+            following = sprite;
+            smoothFollow = smooth;
+        }
+
+        public void StopFollowing(bool resetToLastPosition = true)
+        {
+            following = null;
+            if(!resetToLastPosition)
+            {
+                _moveTowards = _position;
+            }
         }
     }
 }

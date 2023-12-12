@@ -21,31 +21,51 @@ namespace SandboxGame.Scenes
             _gameContext = gameContext;
             _grassTest = gameContext.AssetManager.GetSprite("tile");
             _font = gameContext.AssetManager.GetFont("main");
+            _gameContext.Camera.SetSpeed(200f);
         }
 
         private bool mouseTouchesSprite = false;
+
+        private int posX = 500;
+        private bool goesLeft = false;
 
         public override void Update(GameTime gameTime)
         {
             _grassTest.Update(gameTime);
 
-            if(!_gameContext.Camera.IsMoving())
-            {
-                _gameContext.Camera.SetTarget(_gameContext.Camera.ScreenCenter + new Vector2(Random.Shared.Next(-100, 100), 
-                    Random.Shared.Next(-100, 100)));
-                _gameContext.Camera.SetSpeed(200f);
-            }
-
             mouseTouchesSprite = _grassTest.Bounds.Intersects(new Rectangle(_gameContext.Camera.ScreenToWorld(Mouse.GetState(_gameContext.GameWindow).Position.ToVector2()).ToPoint(),
                 new Point(1, 1)));
+
+            if (_gameContext.MouseHelper.LeftClick && mouseTouchesSprite)
+            {
+                if(_gameContext.Camera.IsFollowing)
+                {
+                    _gameContext.Camera.StopFollowing(false);
+                }
+                else
+                {
+                    _gameContext.Camera.Follow(_grassTest, smooth: false);
+                }
+            }
+
+            if(posX > 700)
+            {
+                goesLeft = true;
+            }
+            else if( posX < 300)
+            {
+                goesLeft = false;
+            }
+
+            posX += goesLeft ? -5 : 5;
         }
 
         public override void Draw(GameTime gameTime)
         {
             _gameContext.SpriteBatch.GraphicsDevice.SetRenderTarget(null);
             _gameContext.SpriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
-            _grassTest.Draw(_gameContext.SpriteBatch, (int)_gameContext.Camera.ScreenCenter.X - 64, (int)_gameContext.Camera.ScreenCenter.Y - 64,
-                lightColor: mouseTouchesSprite? Color.Green : null);
+            _grassTest.Draw(_gameContext.SpriteBatch, posX, 200,
+                camera: _gameContext.Camera, bloom: mouseTouchesSprite);
             _gameContext.SpriteBatch.DrawString(_font, "Drawn on Game layer", _gameContext.Camera.ScreenCenter, Color.Yellow);
         }
 

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SandboxGame.Engine
 {
-    internal class AssetManager
+    public class AssetManager
     {
         private ContentManager _contentManager;
 
@@ -17,6 +17,8 @@ namespace SandboxGame.Engine
 
         private Dictionary<string, Sprite> _sprites = new();
         private Dictionary<string, SpriteFont> _fonts = new();
+
+        public Effect _colorOverlay { get; private set; }
 
         public AssetManager(ContentManager contentManager)
         {
@@ -27,10 +29,13 @@ namespace SandboxGame.Engine
         {
             // Pre-load initialization font
             _fallbackFont = _contentManager.Load<SpriteFont>("Fonts/Debug");
+            _colorOverlay = _contentManager.Load<Effect>("Shaders/ColorOverlay");
 
             _fonts.Add("main", _contentManager.Load<SpriteFont>("Fonts/HopeGold"));
 
-            _sprites.Add("tile", loadSprite("tile", 64, 64, TimeSpan.FromSeconds(10)));
+            _sprites.Add("tile", loadSprite("tile", 64, 64, TimeSpan.FromSeconds(.5f)));
+            _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("grass", loadSprite("grass", 32, 32, TimeSpan.FromSeconds(1)));
         }
 
         public SpriteFont GetFont(string name = "")
@@ -62,7 +67,7 @@ namespace SandboxGame.Engine
             {
                 try
                 {
-                    textures.Add(_contentManager.Load<Texture2D>($"Sprites/{name}_{i}"));
+                    textures.Add(_contentManager.Load<Texture2D>($"Sprites/{name}" + (i > 0? $"_{i}" : "")));
                     i++;
                 }catch(Exception ex)
                 {
@@ -70,7 +75,7 @@ namespace SandboxGame.Engine
                 }
             }
 
-            return new Sprite(baseWidth, baseHeight, baseDuration, textures.ToArray());
+            return new Sprite(baseWidth, baseHeight, baseDuration, _colorOverlay, textures.ToArray());
         }
     }
 }

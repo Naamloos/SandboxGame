@@ -17,16 +17,18 @@ namespace SandboxGame.Engine
         private List<Texture2D> _frames;
         private TimeSpan _duration;
         private int _currentFrame;
+        private Effect _colorOverlay;
 
         public Rectangle Bounds { get; private set; }
 
-        public Sprite(int width, int height, TimeSpan duration, params Texture2D[] frames)
+        public Sprite(int width, int height, TimeSpan duration, Effect colorOverlay, params Texture2D[] frames)
         {
             Width = width;
             Height = height;
             _duration = duration;
             _currentFrame = 0;
             _frames = frames.ToList();
+            _colorOverlay = colorOverlay;
         }
 
         public void Update(GameTime gameTime)
@@ -36,14 +38,24 @@ namespace SandboxGame.Engine
             _currentFrame = (int)Math.Abs((_frames.Count * progress) / 100);
         }
 
-        public void Draw(SpriteBatch spriteBatch, int x, int y, bool bloom = false,
-            Color? lightColor = null, int widthOverride = -1, int heightOverride = -1)
+        public void Draw(SpriteBatch spriteBatch, int x, int y, bool bloom = false, bool flip = false,
+            Camera camera = null, Color? lightColor = null, int widthOverride = -1, int heightOverride = -1)
         {
             int width = widthOverride > 0 ? widthOverride : Width;
             int height = heightOverride > 0 ? heightOverride : Height;
 
             Bounds = new Rectangle(x, y, width, height);
-            spriteBatch.Draw(_frames[_currentFrame], Bounds, lightColor ?? Color.White);
+
+            if(bloom && camera is not null)
+            {
+                _colorOverlay.Parameters["overlayColor"].SetValue(Color.White.ToVector4());
+                camera.EnableEffect(_colorOverlay);
+                var glowBounds = new Rectangle(x - 2, y - 2, width + 4, height + 4);
+                spriteBatch.Draw(_frames[_currentFrame], glowBounds, null, Color.White, 0f, Vector2.Zero, flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                camera.DisableEffect();
+            }
+
+            spriteBatch.Draw(_frames[_currentFrame], Bounds, null, lightColor ?? Color.White, 0f, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
         }
 
         public void SetDuration(TimeSpan duration)
@@ -59,7 +71,7 @@ namespace SandboxGame.Engine
 
         public Sprite Copy()
         {
-            return new Sprite(Width, Height, _duration, _frames.ToArray());
+            return new Sprite(Width, Height, _duration, _colorOverlay ,_frames.ToArray());
         }
     }
 }
