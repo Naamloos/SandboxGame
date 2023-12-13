@@ -15,7 +15,7 @@ namespace SandboxGame.Engine
         private MouseHelper _mouseHelper;
 
         private Vector2 _position = new Vector2(0, 0);
-        private float _zoom = 1f;
+        private float _zoom = 2.4f;
         private float _rotation = 0f;
 
         private Vector2 _moveTowards = Vector2.Zero;
