@@ -21,8 +21,9 @@ namespace SandboxGame.Engine
         private Vector2 _moveTowards = Vector2.Zero;
         private float distancePerSecond = 1f;
 
+        private ICameraTarget defaultFollow = null;
         private ICameraTarget following = null;
-        private bool smoothFollow = false;
+        private bool smoothFollow = true;
 
         private const float MAX_ZOOM = 6f;
         private const float MIN_ZOOM = 0.5f;
@@ -71,11 +72,6 @@ namespace SandboxGame.Engine
         public void SetZoom(float zoom)
         {
             _zoom = zoom;
-        }
-
-        public void SetTarget(Vector2 moveTowards)
-        {
-            _moveTowards = moveTowards;
         }
 
         public bool IsMoving()
@@ -171,6 +167,13 @@ namespace SandboxGame.Engine
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
         }
 
+        public void SetDefaultFollow(ICameraTarget target = null)
+        {
+            this.defaultFollow = target;
+            if (this.following is null)
+                following = target;
+        }
+
         public void Follow(ICameraTarget target, bool smooth = true)
         {
             // Setting our new follow target
@@ -181,7 +184,7 @@ namespace SandboxGame.Engine
         public void StopFollowing(bool resetToLastPosition = true)
         {
             // Stops following a target
-            following = null;
+            following = defaultFollow;
             if(!resetToLastPosition)
             {
                 _moveTowards = _position;

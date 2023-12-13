@@ -27,7 +27,7 @@ namespace SandboxGame.Scenes
 
             _grass = gameContext.AssetManager.GetSprite("grass");
 
-            _gameContext.Camera.Follow(_player);
+            _gameContext.Camera.SetDefaultFollow(_player);
             _gameContext.Camera.SetSpeed(500);
         }
 

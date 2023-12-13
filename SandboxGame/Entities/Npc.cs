@@ -25,7 +25,6 @@ namespace SandboxGame.Entities
         private MouseHelper mouseHelper;
         private Sprite sprite;
         private bool hovering;
-        private ICameraTarget oldTarget;
 
         public Npc(Sprite sprite, Camera camera, Vector2 position, MouseHelper mouseHelper)
         {
@@ -46,16 +45,10 @@ namespace SandboxGame.Entities
 
             if(hovering && mouseHelper.LeftClick)
             {
-                if(oldTarget is null)
-                {
-                    oldTarget = camera.Target;
-                    camera.Follow(this, true);
-                }
+                if (camera.Target == this)
+                    camera.StopFollowing();
                 else
-                {
-                    camera.Follow(oldTarget, true);
-                    oldTarget = null;
-                }
+                    camera.Follow(this);
             }
         }
     }
