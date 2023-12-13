@@ -27,7 +27,7 @@ namespace SandboxGame.Scenes
             _grass = gameContext.AssetManager.GetSprite("grass");
             _dummyGuy = gameContext.AssetManager.GetSprite("player").Copy();
             _gameContext.Camera.Follow(_player.Sprite, false);
-            _gameContext.Camera.SetSpeed(500);
+            _gameContext.Camera.SetSpeed(250);
         }
 
         private bool touchDummyGuy = false;
