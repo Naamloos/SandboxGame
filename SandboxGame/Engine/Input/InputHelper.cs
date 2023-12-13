@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Engine
+namespace SandboxGame.Engine.Input
 {
     public class InputHelper
     {
@@ -18,7 +18,7 @@ namespace SandboxGame.Engine
 
         public InputHelper()
         {
-            
+
         }
 
         public void Update()

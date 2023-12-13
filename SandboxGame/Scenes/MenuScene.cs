@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandboxGame.Engine;
+using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

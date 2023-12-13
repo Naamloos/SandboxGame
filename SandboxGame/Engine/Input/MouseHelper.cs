@@ -1,18 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using SandboxGame.Engine.Cameras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Engine
+namespace SandboxGame.Engine.Input
 {
     public class MouseHelper
     {
-        public bool RightButton {  get; private set; }
+        public bool RightButton { get; private set; }
         public bool LeftButton { get; private set; }
-        public bool LeftRelease {  get; private set; }
+        public bool LeftRelease { get; private set; }
         public bool RightRelease { get; private set; }
         public bool LeftClick { get; private set; }
         public bool RightClick { get; private set; }
@@ -24,7 +25,7 @@ namespace SandboxGame.Engine
 
         private GameWindow _window;
         private Camera _camera;
-        public MouseHelper(GameWindow gameWindow, Camera camera) 
+        public MouseHelper(GameWindow gameWindow, Camera camera)
         {
             _window = gameWindow;
             _camera = camera;

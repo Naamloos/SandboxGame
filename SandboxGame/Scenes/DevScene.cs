@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using SandboxGame.Engine;
+using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Scenes;
 using SandboxGame.Entities;
 using System;
 using System.Collections.Generic;
@@ -23,7 +25,8 @@ namespace SandboxGame.Scenes
             var playerSprite = gameContext.AssetManager.GetSprite("player");
 
             _player = new Player(playerSprite, gameContext.InputHelper, gameContext.Camera);
-            _npc = new Npc(playerSprite, gameContext.Camera, new Vector2(350, 400), gameContext.MouseHelper);
+            _npc = new Npc(playerSprite, gameContext.Camera, new Vector2(350, 400), gameContext.MouseHelper, gameContext.InputHelper, 
+                gameContext.AssetManager.GetFont("main"), gameContext.AssetManager.GetSprite("dialog"));
 
             _grass = gameContext.AssetManager.GetSprite("grass");
 

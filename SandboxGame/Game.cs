@@ -2,6 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandboxGame.Engine;
+using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Input;
+using SandboxGame.Engine.Scenes;
 using SandboxGame.Scenes;
 using System;
 
@@ -79,6 +83,7 @@ namespace SandboxGame
             _sceneManager.DrawUI(gameTime);
             var dbg = DebugHelper.GetDebugString();
             _spriteBatch.DrawString(_debugTextFont, dbg, new Vector2(10, 10), Color.DarkRed);
+            _camera.FlushUIDraw();
             _spriteBatch.End();
         }
     }

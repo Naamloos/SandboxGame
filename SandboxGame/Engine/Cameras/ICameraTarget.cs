@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Engine
+namespace SandboxGame.Engine.Cameras
 {
     public interface ICameraTarget
     {

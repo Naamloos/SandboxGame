@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Engine.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Engine
+namespace SandboxGame.Engine.Cameras
 {
     public class Camera
     {
@@ -41,6 +42,11 @@ namespace SandboxGame.Engine
         public ICameraTarget Target
         {
             get => following;
+        }
+
+        public float Zoom
+        {
+            get => _zoom;
         }
 
         private Matrix _translationMatrix
@@ -151,6 +157,22 @@ namespace SandboxGame.Engine
             draw();
 
             _spriteBatch.End();
+        }
+
+        private List<Action> _uiDraws = new List<Action>();
+        public void DrawToUI(Action draw)
+        {
+            _uiDraws.Add(draw);
+        }
+
+        public void FlushUIDraw()
+        {
+            foreach(var action in _uiDraws)
+            {
+                action();
+            }
+
+            _uiDraws.Clear();
         }
 
         public void EnableEffect(Effect effect)

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
 
-namespace SandboxGame.Engine
+namespace SandboxGame.Engine.Assets
 {
     public class AssetManager
     {
@@ -36,6 +36,7 @@ namespace SandboxGame.Engine
             _sprites.Add("tile", loadSprite("tile", 64, 64, TimeSpan.FromSeconds(.5f)));
             _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("grass", loadSprite("grass", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("dialog", loadSprite("dialog", 16, 16, TimeSpan.FromMilliseconds(500)));
         }
 
         public SpriteFont GetFont(string name = "")

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Engine
+namespace SandboxGame.Engine.Scenes
 {
     public abstract class BaseScene : IDisposable
     {

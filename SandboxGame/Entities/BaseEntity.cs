@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SandboxGame.Engine;
+using SandboxGame.Engine.Cameras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
