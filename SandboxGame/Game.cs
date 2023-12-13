@@ -44,6 +44,7 @@ namespace SandboxGame
             _debugTextFont = _assetManager.GetFont();
 
             _gameContext.MouseHelper = new MouseHelper(Window, _camera);
+            _camera.SetMouseHelper(_gameContext.MouseHelper);
             _gameContext.InputHelper = new InputHelper();
             _gameContext.SpriteBatch = _spriteBatch;
             _gameContext.Camera = _camera;

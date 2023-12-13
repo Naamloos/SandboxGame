@@ -12,17 +12,20 @@ namespace SandboxGame.Engine
     {
         private SpriteBatch _spriteBatch;
         private GameWindow _gameWindow;
+        private MouseHelper _mouseHelper;
 
         private Vector2 _position = new Vector2(0, 0);
         private float _zoom = 1f;
         private float _rotation = 0f;
 
         private Vector2 _moveTowards = Vector2.Zero;
-        private Vector2 _startingPosition;
         private float distancePerSecond = 1f;
 
-        private Sprite following = null;
+        private ICameraTarget following = null;
         private bool smoothFollow = false;
+
+        private const float MAX_ZOOM = 6f;
+        private const float MIN_ZOOM = 0.5f;
 
         public Vector2 ScreenCenter
         {
@@ -34,7 +37,7 @@ namespace SandboxGame.Engine
             get => following != null;
         }
 
-        public Sprite Target
+        public ICameraTarget Target
         {
             get => following;
         }
@@ -80,8 +83,28 @@ namespace SandboxGame.Engine
             return _moveTowards != _position;
         }
 
+        public void SetMouseHelper(MouseHelper mouseHelper)
+        {
+            _mouseHelper = mouseHelper;
+        }
+
         public void Update(GameTime gameTime)
         {
+            if (_mouseHelper != null)
+            {
+                if (_mouseHelper.ScrollUp && _zoom < MAX_ZOOM)
+                {
+                    _zoom += 0.15f;
+                }
+                if (_mouseHelper.ScrollDown && _zoom > MIN_ZOOM)
+                {
+                    _zoom -= 0.15f;
+                }
+            }
+
+            SetZoom(_zoom);
+
+            // If we're following a sprite, we update the _moveTowards target.
             if (following is not null)
             {
                 if (smoothFollow)
@@ -97,7 +120,8 @@ namespace SandboxGame.Engine
 
             var distance = Vector2.Distance(_position, _moveTowards);
             var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            var distanceTraveled = ((distancePerSecond / 1000) * frameTime) * (distance / 100);
+
+            var distanceTraveled = (distancePerSecond / 1000 * frameTime) * (distance / 1000 * frameTime);
 
             if (distance > distanceTraveled)
             {
@@ -108,7 +132,6 @@ namespace SandboxGame.Engine
             }
             else
             {
-                _startingPosition = _moveTowards;
                 _position = _moveTowards;
             }
 
@@ -136,24 +159,28 @@ namespace SandboxGame.Engine
 
         public void EnableEffect(Effect effect)
         {
+            // Restarts the spritebatch with an effect applied
             _spriteBatch.End();
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, effect: effect, transformMatrix: _translationMatrix);
         }
 
         public void DisableEffect()
         {
+            // Restarts the spritebatch with no effect applied
             _spriteBatch.End();
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
         }
 
-        public void Follow(Sprite sprite, bool smooth = true)
+        public void Follow(ICameraTarget target, bool smooth = true)
         {
-            following = sprite;
+            // Setting our new follow target
+            following = target;
             smoothFollow = smooth;
         }
 
         public void StopFollowing(bool resetToLastPosition = true)
         {
+            // Stops following a target
             following = null;
             if(!resetToLastPosition)
             {

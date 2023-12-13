@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Engine
 {
-    public class Sprite : IDisposable
+    public class Sprite : IDisposable, ICameraTarget
     {
         public int Width { get; private set; }
         public int Height { get; private set; }

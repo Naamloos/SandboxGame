@@ -7,38 +7,55 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.GameLogic
+namespace SandboxGame.Entities
 {
-    public class Player
+    public class Player : BaseEntity
     {
-        public Sprite Sprite { get => sprite; }
+        public override Rectangle Bounds
+        {
+            get
+            {
+                return new Rectangle(Position.ToPoint(), new Point(32, 32));
+            }
+        }
+
+        public override Vector2 Position { get; set; } = Vector2.Zero;
+
         private Sprite sprite;
         private InputHelper inputHelper;
+        private Camera camera;
 
-        private int x = 0;
-        private int y = 0;
         private float speed = 200;
 
         private bool movesRight = true;
 
-        public Player(Sprite player, InputHelper input)
+        public Player(Sprite player, InputHelper input, Camera camera)
         {
-            sprite = player;
+            sprite = player.Copy();
             inputHelper = input;
+            this.camera = camera;
         }
 
-        public void Update(GameTime gameTime, bool active = true)
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            sprite.Draw(spriteBatch, (int)Position.X, (int)Position.Y, camera: camera, flip: !movesRight);
+        }
+
+        public override void Update(GameTime gameTime)
         {
             var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             var distanceTraveled = (speed / 1000) * frameTime;
 
             DebugHelper.SetDebugValues("SPEED", distanceTraveled.ToString());
 
-            if (active)
+            if (camera.Target == this)
             {
+                float x = Position.X;
+                float y = Position.Y;
+
                 if (inputHelper.Left && !inputHelper.Right)
                 {
-                    x = (int)(x - distanceTraveled);
+                    x = x - distanceTraveled;
                     movesRight = true;
                 }
 
@@ -57,12 +74,9 @@ namespace SandboxGame.GameLogic
                 {
                     y = (int)(y + distanceTraveled);
                 }
-            }
-        }
 
-        public void Draw(SpriteBatch spriteBatch, Camera camera)
-        {
-            sprite.Draw(spriteBatch, x, y, camera: camera, flip: !movesRight);
+                Position = new Vector2(x, y);
+            }
         }
     }
 }
