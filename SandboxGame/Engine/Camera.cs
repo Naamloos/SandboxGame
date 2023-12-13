@@ -82,9 +82,6 @@ namespace SandboxGame.Engine
 
         public void Update(GameTime gameTime)
         {
-            var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            var distanceTraveled = (distancePerSecond / 1000) * frameTime;
-
             if (following is not null)
             {
                 if (smoothFollow)
@@ -99,6 +96,9 @@ namespace SandboxGame.Engine
             }
 
             var distance = Vector2.Distance(_position, _moveTowards);
+            var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            var distanceTraveled = ((distancePerSecond / 1000) * frameTime) * (distance / 100);
+
             if (distance > distanceTraveled)
             {
                 var direction = _moveTowards - _position;

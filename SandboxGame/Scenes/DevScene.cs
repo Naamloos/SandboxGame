@@ -31,7 +31,6 @@ namespace SandboxGame.Scenes
         }
 
         private bool touchDummyGuy = false;
-        private bool clickDummyGuy = false;
 
         public override void Draw(GameTime gameTime)
         {
@@ -77,7 +76,7 @@ namespace SandboxGame.Scenes
                 {
                     if (_gameContext.Camera.Target == _dummyGuy)
                     {
-                        _gameContext.Camera.Follow(_player.Sprite);
+                        _gameContext.Camera.Follow(_player.Sprite, false);
                     }
                     else
                     {
@@ -88,7 +87,6 @@ namespace SandboxGame.Scenes
             else
             {
                 touchDummyGuy = false;
-                clickDummyGuy = false;
             }
 
             _gameContext.Camera.SetZoom(_zoom);
