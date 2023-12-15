@@ -36,11 +36,11 @@ namespace SandboxGame.Entities
 
         public Player(GameContext gameContext) : base(gameContext)
         {
-            headSprite = GameContext.AssetManager.GetSprite("player_head").Copy();
-            bodySprite = GameContext.AssetManager.GetSprite("player_body").Copy();
-            handSprite = GameContext.AssetManager.GetSprite("player_hand").Copy();
-            leftFootSprite = GameContext.AssetManager.GetSprite("player_foot_l").Copy();
-            rightFootSprite = GameContext.AssetManager.GetSprite("player_foot_r").Copy();
+            headSprite = GameContext.AssetManager.GetSprite("player_head");
+            bodySprite = GameContext.AssetManager.GetSprite("player_body");
+            handSprite = GameContext.AssetManager.GetSprite("player_hand");
+            leftFootSprite = GameContext.AssetManager.GetSprite("player_foot_l");
+            rightFootSprite = GameContext.AssetManager.GetSprite("player_foot_r");
         }
 
         public override void Draw(SpriteBatch spriteBatch)

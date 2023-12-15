@@ -25,12 +25,20 @@ namespace SandboxGame.Scenes
 
         public override void Draw(GameTime gameTime)
         {
-            for(int i = 0; i < (15 * 15); i++)
-            {
-                int x = i % 15;
-                int y = (i - x) / 15;
+            // fake fill
+            var beginPos = GameContext.Camera.ScreenToWorld(new Vector2(-128, -128));
+            var startX = beginPos.X - (beginPos.X % 32);
+            var startY = beginPos.Y - (beginPos.Y % 32);
+            var endPos = GameContext.Camera.ScreenToWorld(new Vector2(GameContext.GameWindow.ClientBounds.Right + 128, GameContext.GameWindow.ClientBounds.Bottom + 128));
+            var endX = endPos.X - (endPos.X % 32);
+            var endY = endPos.Y - (endPos.Y % 32);
 
-                _grass.Draw(GameContext.SpriteBatch, x * 32, y * 32);
+            for(var x = startX; x < endX; x += 32)
+            {
+                for(var y = startY; y < endY; y+=32)
+                {
+                    _grass.Draw(GameContext.SpriteBatch, (int)x, (int)y);
+                }
             }
 
             _npc.Draw(GameContext.SpriteBatch);
