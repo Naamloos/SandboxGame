@@ -19,16 +19,14 @@ namespace SandboxGame.Scenes
         private float _textScale;
         private Vector2 _screenCenter;
 
-        private GameContext _gameContext;
         private DateTimeOffset _finishedTime;
 
-        public override void Initialize(GameContext gameContext)
+        public override void Initialize()
         {
-            _font = gameContext.AssetManager.GetFont("main");
+            _font = GameContext.AssetManager.GetFont("main");
             _textOrigin = _font.MeasureString(WELCOME_TEXT) / 2;
             _textScale = 0.5f;
-            _screenCenter = new Vector2(gameContext.GameWindow.ClientBounds.Width / 2, gameContext.GameWindow.ClientBounds.Height / 2);
-            _gameContext = gameContext;
+            _screenCenter = new Vector2(GameContext.GameWindow.ClientBounds.Width / 2, GameContext.GameWindow.ClientBounds.Height / 2);
 
             _finishedTime = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
         }
@@ -37,29 +35,28 @@ namespace SandboxGame.Scenes
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            _screenCenter = new Vector2(_gameContext.GameWindow.ClientBounds.Width / 2, _gameContext.GameWindow.ClientBounds.Height / 2);
+            _screenCenter = new Vector2(GameContext.GameWindow.ClientBounds.Width / 2, GameContext.GameWindow.ClientBounds.Height / 2);
 
             if (_textScale < 1f)
                 _textScale += (float)((0.25f / 1000f) * deltaTime);
 
             if(_finishedTime < DateTimeOffset.UtcNow)
             {
-                _gameContext.SceneManager.Switch<MenuScene>();
+                GameContext.SceneManager.Switch<MenuScene>();
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
+            GameContext.Camera.DrawToUI(() =>
+            {
+                GameContext.SpriteBatch.DrawString(_font, WELCOME_TEXT, _screenCenter, Color.Gold, 0, _textOrigin, _textScale, SpriteEffects.None, 1);
+            });
         }
 
         public override void Dispose()
         {
             // dispose if needed..
-        }
-
-        public override void DrawUI(GameTime gameTime)
-        {
-            _gameContext.SpriteBatch.DrawString(_font, WELCOME_TEXT, _screenCenter, Color.Gold, 0, _textOrigin, _textScale, SpriteEffects.None, 1);
         }
     }
 }

@@ -37,6 +37,13 @@ namespace SandboxGame.Engine.Assets
             _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("grass", loadSprite("grass", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("dialog", loadSprite("dialog", 16, 16, TimeSpan.FromMilliseconds(500)));
+            _sprites.Add("markiplier", loadSprite("markiplier", 32, 32, TimeSpan.FromSeconds(1)));
+
+            _sprites.Add("player_head", loadSprite("player_head", 16, 16, TimeSpan.FromSeconds(3)));
+            _sprites.Add("player_hand", loadSprite("player_hand", 8, 8, TimeSpan.FromSeconds(1)));
+            _sprites.Add("player_body", loadSprite("player_body", 16, 10, TimeSpan.FromSeconds(1)));
+            _sprites.Add("player_foot_l", loadSprite("player_foot_l", 8, 8, TimeSpan.FromSeconds(1)));
+            _sprites.Add("player_foot_r", loadSprite("player_foot_r", 8, 8, TimeSpan.FromSeconds(1)));
         }
 
         public SpriteFont GetFont(string name = "")
@@ -56,7 +63,7 @@ namespace SandboxGame.Engine.Assets
 
         public Sprite GetSprite(string name)
         {
-            return _sprites[name];
+            return _sprites[name].Copy();
         }
 
         private Sprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)
@@ -70,7 +77,8 @@ namespace SandboxGame.Engine.Assets
                 {
                     textures.Add(_contentManager.Load<Texture2D>($"Sprites/{name}" + (i > 0? $"_{i}" : "")));
                     i++;
-                }catch(Exception ex)
+                }
+                catch(Exception ex)
                 {
                     break;
                 }

@@ -25,30 +25,28 @@ namespace SandboxGame.Entities
 
         public override Vector2 Position { get; set; }
 
-        private Camera camera;
-        private MouseHelper mouseHelper;
-        private InputHelper inputHelper;
         private Sprite sprite;
         private bool hovering;
         private SpriteFont dialogFont;
         private Sprite dialogTicker;
 
-        public Npc(Sprite sprite, Camera camera, Vector2 position, MouseHelper mouseHelper, InputHelper inputHelper, SpriteFont dialogFont, Sprite dialogTicker)
+        private const string NPC_NAME = "Markiplier";
+        private const string NPC_DIALOG = "Hello everybody, my name is Markiplier\nAnd welcome to Five Nights At Freddy's\nHar Har HarHar Har";
+
+        public Npc(GameContext gameContext, string spriteName, Vector2 position) : base(gameContext)
         {
             Position = position;
-            this.camera = camera;
-            this.sprite = sprite;
-            this.mouseHelper = mouseHelper;
-            this.inputHelper = inputHelper;
-            this.dialogFont = dialogFont;
-            this.dialogTicker = dialogTicker;
+
+            this.sprite = GameContext.AssetManager.GetSprite(spriteName);
+            this.dialogFont = GameContext.AssetManager.GetFont("main");
+            this.dialogTicker = GameContext.AssetManager.GetSprite("dialog");
         }
 
         private Dialog dialog = null;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            sprite.Draw(spriteBatch, (int)Position.X, (int)Position.Y, hovering, camera: camera);
+            sprite.Draw(spriteBatch, (int)Position.X, (int)Position.Y, hovering, camera: GameContext.Camera);
 
             if(dialog != null)
             {
@@ -58,18 +56,17 @@ namespace SandboxGame.Entities
 
         public override void Update(GameTime gameTime)
         {
-            hovering = Bounds.Intersects(new Rectangle(mouseHelper.WorldPos.ToPoint(), new Point(1, 1)));
+            hovering = Bounds.Intersects(new Rectangle(GameContext.MouseHelper.WorldPos.ToPoint(), new Point(1, 1)));
 
-            if(hovering && mouseHelper.LeftClick && dialog == null)
+            if(hovering && GameContext.MouseHelper.LeftClick && dialog == null)
             {
-                camera.Follow(this);
-                dialog = new Dialog("Bob the NPC", "I do not think you're supposed to be here.\n" +
-                    "However, I'll ask you this one question...\n" +
-                    "Do you like my test room? :3", 
-                    inputHelper, mouseHelper, dialogFont, dialogTicker, this, camera, () =>
+                GameContext.Camera.Follow(this);
+
+                dialog = new Dialog(NPC_NAME, NPC_DIALOG, GameContext, this,
+                () =>
                 {
                     dialog = null;
-                    camera.StopFollowing();
+                    GameContext.Camera.StopFollowing();
                 });
             }
 

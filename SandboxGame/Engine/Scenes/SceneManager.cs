@@ -41,7 +41,8 @@ namespace SandboxGame.Engine.Scenes
                 }
 
                 currentScene = Activator.CreateInstance<T>();
-                currentScene.Initialize(_gameContext);
+                currentScene.GameContext = _gameContext;
+                currentScene.Initialize();
                 _updateLock.Release();
                 _drawLock.Release();
             });
@@ -68,18 +69,6 @@ namespace SandboxGame.Engine.Scenes
 
             _drawLock.Wait();
             currentScene.Draw(gameTime);
-            _drawLock.Release();
-        }
-
-        public void DrawUI(GameTime gameTime)
-        {
-            if (currentScene == null)
-            {
-                return;
-            }
-
-            _drawLock.Wait();
-            currentScene.DrawUI(gameTime);
             _drawLock.Release();
         }
     }

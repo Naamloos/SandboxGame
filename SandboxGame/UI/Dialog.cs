@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Input;
@@ -19,9 +20,7 @@ namespace SandboxGame.UI
         private int _currentIndex = 0;
         private BaseEntity _entity;
 
-        private InputHelper _inputHelper;
-        private MouseHelper _mouseHelper;
-        private Camera _camera;
+        private GameContext _gameContext;
 
         private SpriteFont _font;
         private Sprite _dialogTicker;
@@ -32,19 +31,15 @@ namespace SandboxGame.UI
 
         private Action _onDialogDone;
 
-        public Dialog(string name, string dialog, InputHelper inputHelper, MouseHelper mouseHelper, SpriteFont font, Sprite dialogTicker,
-            BaseEntity entity, Camera camera, Action OnDialogDone)
+        public Dialog(string name, string dialog, GameContext gameContext, BaseEntity entity, Action OnDialogDone)
         {
             _name = name;
             _dialog = dialog.Split('\n');
             _entity = entity;
+            _gameContext = gameContext;
 
-            _inputHelper = inputHelper;
-            _mouseHelper = mouseHelper;
-            _camera = camera;
-
-            _font = font;
-            _dialogTicker = dialogTicker;
+            _font = _gameContext.AssetManager.GetFont("main");
+            _dialogTicker = _gameContext.AssetManager.GetSprite("dialog");
 
             _onDialogDone = OnDialogDone;
         }
@@ -56,7 +51,7 @@ namespace SandboxGame.UI
                 return;
             }
 
-            _camera.DrawToUI(() =>
+            _gameContext.Camera.DrawToUI(() =>
             {
                 spriteBatch.DrawString(_font, _dialog[_currentIndex], _dialogPos, Color.White);
                 spriteBatch.DrawString(_font, _name, _namePos, Color.Yellow);
@@ -86,12 +81,12 @@ namespace SandboxGame.UI
             var nameSize = _font.MeasureString(_name);
             var dialogSize = _font.MeasureString(_dialog[_currentIndex]);
 
-            var entityTopCenter = _camera.WorldToScreen(new Vector2(_entity.Bounds.Center.X, _entity.Bounds.Top));
+            var entityTopCenter = _gameContext.Camera.WorldToScreen(new Vector2(_entity.Bounds.Center.X, _entity.Bounds.Top));
             _tickerPos = new Vector2(entityTopCenter.X - (_dialogTicker.Width / 2), (entityTopCenter.Y - 15) - _dialogTicker.Height);
             _dialogPos = new Vector2(entityTopCenter.X - (dialogSize.X / 2), (_tickerPos.Y - 15) - dialogSize.Y);
             _namePos = new Vector2(entityTopCenter.X - (nameSize.X / 2), (_dialogPos.Y - 15) - nameSize.Y);
 
-            if (_mouseHelper.LeftClick || _inputHelper.Interact)
+            if (_gameContext.MouseHelper.LeftClick || _gameContext.InputHelper.Interact)
             {
                 _currentIndex++;
             }

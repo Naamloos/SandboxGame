@@ -3,35 +3,24 @@ using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Scenes;
 using SandboxGame.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SandboxGame.Scenes
 {
     public class DevScene : BaseScene
     {
-        private GameContext _gameContext;
         private Player _player;
         private Npc _npc;
         private Sprite _grass;
 
-        public override void Initialize(GameContext gameContext)
+        public override void Initialize()
         {
-            _gameContext = gameContext;
+            _player = new Player(GameContext);
+            _npc = new Npc(GameContext, "markiplier", new Vector2(350, 400));
 
-            var playerSprite = gameContext.AssetManager.GetSprite("player");
+            _grass = GameContext.AssetManager.GetSprite("grass");
 
-            _player = new Player(playerSprite, gameContext.InputHelper, gameContext.Camera);
-            _npc = new Npc(playerSprite, gameContext.Camera, new Vector2(350, 400), gameContext.MouseHelper, gameContext.InputHelper, 
-                gameContext.AssetManager.GetFont("main"), gameContext.AssetManager.GetSprite("dialog"));
-
-            _grass = gameContext.AssetManager.GetSprite("grass");
-
-            _gameContext.Camera.SetDefaultFollow(_player);
-            _gameContext.Camera.SetSpeed(500);
+            GameContext.Camera.SetDefaultFollow(_player);
+            GameContext.Camera.SetSpeed(500);
         }
 
         public override void Draw(GameTime gameTime)
@@ -41,16 +30,11 @@ namespace SandboxGame.Scenes
                 int x = i % 15;
                 int y = (i - x) / 15;
 
-                _grass.Draw(_gameContext.SpriteBatch, x * 32, y * 32);
+                _grass.Draw(GameContext.SpriteBatch, x * 32, y * 32);
             }
 
-            _npc.Draw(_gameContext.SpriteBatch);
-            _player.Draw(_gameContext.SpriteBatch);
-        }
-
-        public override void DrawUI(GameTime gameTime)
-        {
-
+            _npc.Draw(GameContext.SpriteBatch);
+            _player.Draw(GameContext.SpriteBatch);
         }
 
         public override void Update(GameTime gameTime)
