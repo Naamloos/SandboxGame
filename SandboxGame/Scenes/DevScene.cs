@@ -26,10 +26,10 @@ namespace SandboxGame.Scenes
         public override void Draw(GameTime gameTime)
         {
             // fake fill
-            var beginPos = GameContext.Camera.ScreenToWorld(new Vector2(-128, -128));
+            var beginPos = GameContext.Camera.ScreenToWorld(new Vector2(-512, -512));
             var startX = beginPos.X - (beginPos.X % 32);
             var startY = beginPos.Y - (beginPos.Y % 32);
-            var endPos = GameContext.Camera.ScreenToWorld(new Vector2(GameContext.GameWindow.ClientBounds.Right + 128, GameContext.GameWindow.ClientBounds.Bottom + 128));
+            var endPos = GameContext.Camera.ScreenToWorld(new Vector2(GameContext.GameWindow.ClientBounds.Right + 512, GameContext.GameWindow.ClientBounds.Bottom + 512));
             var endX = endPos.X - (endPos.X % 32);
             var endY = endPos.Y - (endPos.Y % 32);
 
