@@ -24,7 +24,7 @@ namespace SandboxGame.Entities
 
         public override Vector2 Position { get; set; } = Vector2.Zero;
 
-        private float speed = 200;
+        private float speed = 345;
 
         private bool movesRight = true;
 
@@ -102,6 +102,8 @@ namespace SandboxGame.Entities
                 {
                     y = (int)(y + distanceTraveled);
                 }
+
+                // TODO normalize traveled distance to not have diagonal movement feel wrong.
 
                 Position = new Vector2(x, y);
             }

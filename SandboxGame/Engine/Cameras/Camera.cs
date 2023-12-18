@@ -27,7 +27,13 @@ namespace SandboxGame.Engine.Cameras
         private bool smoothFollow = true;
 
         private const float MAX_ZOOM = 6f;
-        private const float MIN_ZOOM = 0.5f;
+        private const float MIN_ZOOM = 0.25f;
+
+        public Rectangle WorldView
+        {
+            get => new Rectangle(ScreenToWorld(new Vector2(0, 0)).ToPoint(),
+                ScreenToWorld(new Vector2(_gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height)).ToPoint());
+        }
 
         public Vector2 ScreenCenter
         {
@@ -152,7 +158,7 @@ namespace SandboxGame.Engine.Cameras
 
         public void DrawOnCamera(Action draw)
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _translationMatrix);
 
             draw();
 
@@ -179,14 +185,14 @@ namespace SandboxGame.Engine.Cameras
         {
             // Restarts the spritebatch with an effect applied
             _spriteBatch.End();
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, effect: effect, transformMatrix: _translationMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, effect: effect, transformMatrix: _translationMatrix);
         }
 
         public void DisableEffect()
         {
             // Restarts the spritebatch with no effect applied
             _spriteBatch.End();
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _translationMatrix);
         }
 
         public void SetDefaultFollow(ICameraTarget target = null)

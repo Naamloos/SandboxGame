@@ -79,7 +79,7 @@ namespace SandboxGame
             });
 
             // UI layer
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             var dbg = DebugHelper.GetDebugString();
             _spriteBatch.DrawString(_debugTextFont, dbg, new Vector2(10, 10), Color.DarkRed);
             _camera.FlushUIDraw();
