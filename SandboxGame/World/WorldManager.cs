@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SandboxGame.WorldGen
+namespace SandboxGame.World
 {
     public class WorldManager
     {
@@ -169,10 +169,11 @@ namespace SandboxGame.WorldGen
                 int startY = (chunkY * _tileSize) * tiles.Length;
                 for(int y = 0; y < tiles[x].Length; y++)
                 {
+                    bool mirrored = x % 4 == 0 && y % 8 == 0;
                     if (tiles[x][y] > WorldManager.LAND_OFFSET)
-                        grass.Draw(spriteBatch, startX + (x * _tileSize), startY + (y * _tileSize), widthOverride: _tileSize, heightOverride: _tileSize);
+                        grass.Draw(spriteBatch, startX + (x * _tileSize), startY + (y * _tileSize), widthOverride: _tileSize, heightOverride: _tileSize, flip: mirrored);
                     else
-                        water.Draw(spriteBatch, startX + (x * _tileSize), startY + (y * _tileSize), widthOverride: _tileSize, heightOverride: _tileSize);
+                        water.Draw(spriteBatch, startX + (x * _tileSize), startY + (y * _tileSize), widthOverride: _tileSize, heightOverride: _tileSize, flip: mirrored);
                 }
             }
         }

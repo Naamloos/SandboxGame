@@ -3,7 +3,7 @@ using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Scenes;
 using SandboxGame.Entities;
-using SandboxGame.WorldGen;
+using SandboxGame.World;
 
 namespace SandboxGame.Scenes
 {
@@ -13,6 +13,7 @@ namespace SandboxGame.Scenes
         private Npc _npc;
         
         private WorldManager _chunkManager;
+        private WorldInteractionBox _interactionBox;
 
         public override void Initialize()
         {
@@ -23,11 +24,15 @@ namespace SandboxGame.Scenes
 
             GameContext.Camera.SetDefaultFollow(_player);
             GameContext.Camera.SetSpeed(500);
+
+
+            _interactionBox = new WorldInteractionBox(GameContext);
         }
 
         public override void Draw(GameTime gameTime)
         {
             _chunkManager.Draw(gameTime);
+            _interactionBox.Draw(gameTime);
             _npc.Draw(GameContext.SpriteBatch);
             _player.Draw(GameContext.SpriteBatch);
         }
@@ -37,6 +42,7 @@ namespace SandboxGame.Scenes
             _chunkManager.Update(gameTime);
             _player.Update(gameTime);
             _npc.Update(gameTime);
+            _interactionBox.Update(gameTime);
         }
 
         public override void Dispose()

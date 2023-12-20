@@ -44,6 +44,8 @@ namespace SandboxGame.Engine.Assets
             _sprites.Add("player_body", loadSprite("player_body", 16, 10, TimeSpan.FromSeconds(1)));
             _sprites.Add("player_foot_l", loadSprite("player_foot_l", 8, 8, TimeSpan.FromSeconds(1)));
             _sprites.Add("player_foot_r", loadSprite("player_foot_r", 8, 8, TimeSpan.FromSeconds(1)));
+
+            _sprites.Add("interact", loadSprite("interact", 32, 32, TimeSpan.FromSeconds(1)));
         }
 
         public SpriteFont GetFont(string name = "")
