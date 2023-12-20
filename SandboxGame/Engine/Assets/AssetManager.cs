@@ -38,6 +38,9 @@ namespace SandboxGame.Engine.Assets
             _sprites.Add("grass", loadSprite("grass", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("dialog", loadSprite("dialog", 16, 16, TimeSpan.FromMilliseconds(500)));
             _sprites.Add("markiplier", loadSprite("markiplier", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("beach_single", loadSprite("beach_single", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("beach_corner", loadSprite("beach_single", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("sand", loadSprite("sand", 32, 32, TimeSpan.FromSeconds(1)));
 
             _sprites.Add("player_head", loadSprite("player_head", 16, 16, TimeSpan.FromSeconds(3)));
             _sprites.Add("player_hand", loadSprite("player_hand", 8, 8, TimeSpan.FromSeconds(1)));

@@ -20,7 +20,7 @@ namespace SandboxGame.Scenes
             _player = new Player(GameContext);
             _npc = new Npc(GameContext, "markiplier", new Vector2(350, 400));
 
-            _chunkManager = new WorldManager(GameContext, 16, 32);
+            _chunkManager = new WorldManager(GameContext);
 
             GameContext.Camera.SetDefaultFollow(_player);
             GameContext.Camera.SetSpeed(500);

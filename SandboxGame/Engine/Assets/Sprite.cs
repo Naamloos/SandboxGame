@@ -40,7 +40,7 @@ namespace SandboxGame.Engine.Assets
         }
 
         public void Draw(SpriteBatch spriteBatch, int x, int y, bool bloom = false, bool flip = false,
-            Camera camera = null, Color? lightColor = null, int widthOverride = -1, int heightOverride = -1)
+            Camera camera = null, Color? lightColor = null, int widthOverride = -1, int heightOverride = -1, float rotation = 0)
         {
             int width = widthOverride > 0 ? widthOverride : Width;
             int height = heightOverride > 0 ? heightOverride : Height;
@@ -56,7 +56,7 @@ namespace SandboxGame.Engine.Assets
                 camera.DisableEffect();
             }
 
-            spriteBatch.Draw(_frames[_currentFrame], Bounds, null, lightColor ?? Color.White, 0f, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(_frames[_currentFrame], Bounds, null, lightColor ?? Color.White, rotation, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
         }
 
         public void SetDuration(TimeSpan duration)
