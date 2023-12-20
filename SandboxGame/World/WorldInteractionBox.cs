@@ -42,7 +42,7 @@ namespace SandboxGame.World
 
         public void Draw(GameTime gameTime)
         {
-            tile.Draw(gameContext.SpriteBatch, (int)position.X, (int)position.Y);
+            tile.Draw(gameContext.SpriteBatch, (int)position.X, (int)position.Y, lightColor: new Color(255,255,255,150));
         }
     }
 }

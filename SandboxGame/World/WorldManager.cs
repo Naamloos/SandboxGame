@@ -15,7 +15,7 @@ namespace SandboxGame.World
 {
     public class WorldManager
     {
-        private const int CHUNK_SIZE = 64;
+        private const int CHUNK_SIZE = 96;
         private const int TILE_SIZE = 32;
 
         private FastNoiseLite _noise;
