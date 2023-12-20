@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.World
+namespace SandboxGame.WorldGen
 {
     [ProtoContract]
     public struct Tile

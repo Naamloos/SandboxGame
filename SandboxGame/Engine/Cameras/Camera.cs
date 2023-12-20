@@ -27,7 +27,7 @@ namespace SandboxGame.Engine.Cameras
         private bool smoothFollow = true;
 
         private const float MAX_ZOOM = 6f;
-        private const float MIN_ZOOM = 0.25f;
+        private const float MIN_ZOOM = 0.8f;
 
         public Rectangle WorldView
         {

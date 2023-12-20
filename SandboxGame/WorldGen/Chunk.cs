@@ -11,7 +11,7 @@ using ProtoBuf;
 using System.IO;
 using System.Reflection;
 
-namespace SandboxGame.World
+namespace SandboxGame.WorldGen
 {
     [ProtoContract]
     public class Chunk
@@ -96,11 +96,9 @@ namespace SandboxGame.World
             }
         }
 
-        private static string basePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "chunks");
-
-        public static bool TryLoadFromFile(int x, int y, GameContext ctx, int tileSize, out Chunk chunk)
+        public static bool TryLoadFromFile(string worldName, int x, int y, GameContext ctx, int tileSize, out Chunk chunk)
         {
-            var filePath = Path.Combine(basePath, $"{x}-{y}.bin");
+            var filePath = Path.Combine(Program.WORLDS_PATH, worldName, $"{x}-{y}.bin");
             if(!File.Exists(filePath))
             {
                 chunk = null;
@@ -115,14 +113,14 @@ namespace SandboxGame.World
             return true;
         }
 
-        public void SaveToFile()
+        public void SaveToFile(string worldName)
         {
-            if(!Directory.Exists(basePath))
+            if(!Directory.Exists(Path.Combine(Program.WORLDS_PATH, worldName)))
             {
-                Directory.CreateDirectory(basePath);
+                Directory.CreateDirectory(Path.Combine(Program.WORLDS_PATH, worldName));
             }
 
-            var filePath = Path.Combine(basePath, $"{ChunkX}-{ChunkY}.bin");
+            var filePath = Path.Combine(Program.WORLDS_PATH, worldName, $"{ChunkX}-{ChunkY}.bin");
 
             bool exists = File.Exists(filePath);
 
