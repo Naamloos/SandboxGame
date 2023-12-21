@@ -2,14 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
-using SandboxGame.Engine.Cameras;
-using SandboxGame.Engine.Input;
 using SandboxGame.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SandboxGame.UI
 {
