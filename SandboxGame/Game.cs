@@ -35,7 +35,7 @@ namespace SandboxGame
         protected override void Initialize()
         {
             base.Initialize();
-            Window.Title = "🥺";
+            Window.Title = "SandBoxGame Pre-Alpha Indev Whatever";
         }
 
         protected override void LoadContent()
@@ -55,7 +55,7 @@ namespace SandboxGame
 
             _sceneManager = new SceneManager(_gameContext);
             _gameContext.SceneManager = _sceneManager;
-            _sceneManager.Switch<DevScene>();
+            _sceneManager.Switch<WelcomeScene>();
         }
 
         protected override void Update(GameTime gameTime)

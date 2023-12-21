@@ -6,7 +6,7 @@ using SandboxGame.WorldGen;
 
 namespace SandboxGame.Scenes
 {
-    public class DevScene : BaseScene
+    public class InGameScene : BaseScene
     {
         private Player _player;
         private Npc _npc;

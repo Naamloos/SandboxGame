@@ -38,7 +38,7 @@ namespace SandboxGame.Scenes
 
             if(_finishedTime < DateTimeOffset.UtcNow)
             {
-                GameContext.SceneManager.Switch<MenuScene>();
+                GameContext.SceneManager.Switch<InGameScene>();
             }
         }
 
