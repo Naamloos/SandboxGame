@@ -53,7 +53,16 @@ namespace SandboxGame.UI
 
             _gameContext.Camera.DrawToUI(() =>
             {
+                spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X - 2, _dialogPos.Y - 2), Color.Black);
+                spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X + 2, _dialogPos.Y + 2), Color.Black);
+                spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X + 2, _dialogPos.Y - 2), Color.Black);
+                spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X - 2, _dialogPos.Y + 2), Color.Black);
                 spriteBatch.DrawString(_font, _dialog[_currentIndex], _dialogPos, Color.White);
+
+                spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X - 2, _namePos.Y - 2), Color.Black);
+                spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X + 2, _namePos.Y + 2), Color.Black);
+                spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X + 2, _namePos.Y - 2), Color.Black);
+                spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X - 2, _namePos.Y + 2), Color.Black);
                 spriteBatch.DrawString(_font, _name, _namePos, Color.Yellow);
                 _dialogTicker.Draw(spriteBatch, (int)_tickerPos.X, (int)_tickerPos.Y);
             });
