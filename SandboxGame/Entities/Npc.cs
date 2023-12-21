@@ -31,7 +31,7 @@ namespace SandboxGame.Entities
         private Sprite dialogTicker;
 
         private const string NPC_NAME = "Markiplier";
-        private const string NPC_DIALOG = "Hello everybody, my name is Markiplier I am just chileng on the bech\nAnd welcome to Five Nights At Freddy's\nHar Har HarHar Har";
+        private const string NPC_DIALOG = "Hello everybody, my name is Markiplier\nAnd welcome to Five Nights At Freddy's\nHar Har HarHar Har";
 
         public Npc(GameContext gameContext, string spriteName, Vector2 position) : base(gameContext)
         {

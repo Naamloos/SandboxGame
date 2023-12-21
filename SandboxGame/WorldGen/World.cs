@@ -25,7 +25,7 @@ namespace SandboxGame.WorldGen
         private Dictionary<(int, int), Chunk> _chunkCache = new Dictionary<(int, int), Chunk>();
         private SemaphoreSlim _chunkLock = new SemaphoreSlim(1);
 
-        private World(GameContext gameContext, string name, WorldInfo worldInfo) 
+        private World(GameContext gameContext, string name, WorldInfo worldInfo)
         {
             _name = name;
             _worldInfo = worldInfo;
@@ -53,9 +53,9 @@ namespace SandboxGame.WorldGen
             visibleChunks = new Rectangle(x / fullChunkSize, y / fullChunkSize, width / fullChunkSize, height / fullChunkSize);
 
             // get chunks, update them
-            for(int cx = visibleChunks.X; cx < visibleChunks.Width; cx++)
+            for (int cx = visibleChunks.X; cx < visibleChunks.Width; cx++)
             {
-                for(int cy = visibleChunks.Y; cy < visibleChunks.Height; cy++)
+                for (int cy = visibleChunks.Y; cy < visibleChunks.Height; cy++)
                 {
                     GetChunk(cx, cy).Update(gameTime);
                 }
@@ -79,7 +79,7 @@ namespace SandboxGame.WorldGen
             var path = Path.Combine(Program.WORLDS_PATH, $"{name}.dat");
 
             WorldInfo worldInfo;
-            if (File.Exists(path)) 
+            if (File.Exists(path))
             {
                 using var file = File.OpenRead(path);
                 worldInfo = Serializer.Deserialize<WorldInfo>(file);
@@ -98,7 +98,7 @@ namespace SandboxGame.WorldGen
         private Chunk GetChunk(int chunkX, int chunkY)
         {
             // TODO unloading, loading from file, saving data, etc
-            if(_chunkCache.ContainsKey((chunkX, chunkY)))
+            if (_chunkCache.ContainsKey((chunkX, chunkY)))
             {
                 return _chunkCache[(chunkX, chunkY)];
             }
@@ -122,7 +122,7 @@ namespace SandboxGame.WorldGen
             int tileCount = _worldInfo.ChunkSize * _worldInfo.ChunkSize;
             Tile[] tiles = new Tile[tileCount];
 
-            for(int i = 0; i < tileCount; i++)
+            for (int i = 0; i < tileCount; i++)
             {
                 int y = (i % _worldInfo.ChunkSize);
                 int x = (i - y) / _worldInfo.ChunkSize;
@@ -142,7 +142,7 @@ namespace SandboxGame.WorldGen
         {
             float noiseValue = _noise.GetNoise(worldX, worldY);
 
-            if(noiseValue > LAND_OFFSET)
+            if (noiseValue > LAND_OFFSET)
             {
                 if (CheckIfTileTouchesWater(worldX, worldY))
                     return TileType.Sand;
@@ -158,7 +158,11 @@ namespace SandboxGame.WorldGen
             return (_noise.GetNoise(worldX - 1, worldY) < LAND_OFFSET)
                 || (_noise.GetNoise(worldX, worldY - 1) < LAND_OFFSET)
                 || (_noise.GetNoise(worldX + 1, worldY) < LAND_OFFSET)
-                || (_noise.GetNoise(worldX, worldY + 1) < LAND_OFFSET);
+                || (_noise.GetNoise(worldX, worldY + 1) < LAND_OFFSET)
+                || (_noise.GetNoise(worldX + 1, worldY + 1) < LAND_OFFSET)
+                || (_noise.GetNoise(worldX - 1, worldY + 1) < LAND_OFFSET)
+                || (_noise.GetNoise(worldX + 1, worldY - 1) < LAND_OFFSET)
+                || (_noise.GetNoise(worldX - 1, worldY - 1) < LAND_OFFSET);
         }
     }
 }
