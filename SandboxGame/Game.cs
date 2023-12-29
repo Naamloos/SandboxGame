@@ -42,7 +42,7 @@ namespace SandboxGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _camera = new Camera(_spriteBatch, Window);
-            _assetManager = new AssetManager(Content);
+            _assetManager = new AssetManager(Content, GraphicsDevice);
             _assetManager.Initialize();
             _debugTextFont = _assetManager.GetFont();
 

@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
 
 namespace SandboxGame.Engine.Assets
 {
     public class AssetManager
     {
         private ContentManager _contentManager;
+        private GraphicsDevice _graphics;
 
         private SpriteFont _fallbackFont;
 
@@ -16,9 +18,10 @@ namespace SandboxGame.Engine.Assets
 
         public Effect _colorOverlay { get; private set; }
 
-        public AssetManager(ContentManager contentManager)
+        public AssetManager(ContentManager contentManager, GraphicsDevice gd)
         {
             _contentManager = contentManager;
+            _graphics = gd;
         }
 
         public void Initialize()
@@ -30,10 +33,10 @@ namespace SandboxGame.Engine.Assets
             _fonts.Add("main", _contentManager.Load<SpriteFont>("Fonts/HopeGold"));
 
             _sprites.Add("water", loadSprite("water", 32, 32, TimeSpan.FromSeconds(.5f)));
-            _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromMilliseconds(Random.Shared.Next(2800, 3800))));
             _sprites.Add("grass", loadSprite("grass", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("dialog", loadSprite("dialog", 16, 16, TimeSpan.FromMilliseconds(500)));
-            _sprites.Add("markiplier", loadSprite("markiplier", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("markiplier", loadSprite("markiplier", 32, 32, TimeSpan.FromMilliseconds(Random.Shared.Next(2800, 3800))));
             _sprites.Add("beach_single", loadSprite("beach_single", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("beach_corner", loadSprite("beach_single", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("sand", loadSprite("sand", 32, 32, TimeSpan.FromSeconds(1)));
@@ -45,6 +48,8 @@ namespace SandboxGame.Engine.Assets
             _sprites.Add("player_foot_r", loadSprite("player_foot_r", 8, 8, TimeSpan.FromSeconds(1)));
 
             _sprites.Add("interact", loadSprite("interact", 32, 32, TimeSpan.FromSeconds(1)));
+
+            _sprites.Add("debug", generateBox());
         }
 
         public SpriteFont GetFont(string name = "")
@@ -65,6 +70,14 @@ namespace SandboxGame.Engine.Assets
         public Sprite GetSprite(string name)
         {
             return _sprites[name].Copy();
+        }
+
+        private Sprite generateBox()
+        {
+            var debugBox = new Texture2D(_graphics, 1, 1);
+            debugBox.SetData(new[] { Color.Red });
+
+            return new Sprite(1,1,TimeSpan.Zero, _colorOverlay, debugBox);
         }
 
         private Sprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)

@@ -30,7 +30,7 @@ namespace SandboxGame.WorldGen
 
         private Rectangle visibleChunks = new Rectangle(0, 0, 0, 0);
 
-        internal static float LAND_OFFSET = 0.5f;
+        internal static float LAND_OFFSET = 0.1f;
         public void Update(GameTime gameTime)
         {
             // determining what chunks are visible

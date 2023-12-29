@@ -49,6 +49,7 @@ namespace SandboxGame.Entities
 
         public override void Update(GameTime gameTime)
         {
+            sprite.Update(gameTime);
             hovering = Bounds.Intersects(new Rectangle(GameContext.MouseHelper.WorldPos.ToPoint(), new Point(1, 1)));
 
             if(hovering && GameContext.MouseHelper.LeftClick && dialog == null)
