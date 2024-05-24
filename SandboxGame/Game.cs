@@ -32,7 +32,7 @@ namespace SandboxGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-            IsFixedTimeStep = false; // set to false to unlock frame rate.
+            IsFixedTimeStep = launchArgs.UnlockFPS; // set to false to unlock frame rate.
         }
 
         protected override void Initialize()

@@ -70,8 +70,8 @@ namespace SandboxGame.Engine
         [LaunchArg("unlock-fps")] // so --unlock-fps, takes no argument
         public bool UnlockFPS { get; set; } = false;
 
-        [LaunchArg("test-arg")]
-        public string TestArg { get; set; } = "";
+        [LaunchArg("force-new-world")]
+        public bool ForceNewWorldGen { get; set; } = false;
     }
 
     [AttributeUsage(AttributeTargets.Property)]

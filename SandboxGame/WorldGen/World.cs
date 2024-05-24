@@ -26,6 +26,17 @@ namespace SandboxGame.WorldGen
             _noise = new FastNoiseLite();
             _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
             _noise.SetSeed(worldInfo.Seed);
+
+            if(gameContext.LaunchArgs.ForceNewWorldGen)
+            {
+                // Delete all old chunks
+                var worldsDir = Path.Combine(Program.WORLDS_PATH, name);
+                if (Directory.Exists(worldsDir))
+                {
+                    Directory.Delete(worldsDir, true);
+                }
+                Directory.CreateDirectory(worldsDir);
+            }
         }
 
         private Rectangle visibleChunks = new Rectangle(0, 0, 0, 0);
@@ -69,6 +80,11 @@ namespace SandboxGame.WorldGen
         public static World Load(string name, GameContext ctx)
         {
             var path = Path.Combine(Program.WORLDS_PATH, $"{name}.dat");
+
+            if(ctx.LaunchArgs.ForceNewWorldGen && File.Exists(path))
+            {
+                File.Delete(path);
+            }
 
             WorldInfo worldInfo;
             if (File.Exists(path))

@@ -1,8 +1,15 @@
 {
   "profiles": {
-    "SandboxGame": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Launch (Force New World)": {
       "commandName": "Project",
-      "commandLineArgs": "--arg-that-shouldnt-even-work --unlock-fps --test-arg 69"
+      "commandLineArgs": "--force-new-world"
+    },
+    "Launch SandboxGame": {
+      "commandName": "Project"
     }
   }
 }
