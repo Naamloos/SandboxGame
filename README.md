@@ -1,5 +1,8 @@
 # SandboxGame
-Simple-ish sandbox game I am developing. Contributions are welcome
+Simple-ish sandbox game I am developing. Currently in very early experimental pre-alpha whatever
+
+![image](https://github.com/Naamloos/SandboxGame/assets/12187179/e2af17b8-a0e2-4499-ae5e-601752801b0a)
+
 
 ## Features
 - [x] World Generation
