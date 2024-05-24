@@ -1,32 +1,53 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace SandboxGame.Engine.Input
 {
     public class InputHelper
     {
-        public bool Up { get; private set; }
-        public bool Down { get; private set; }
-        public bool Left { get; private set; }
-        public bool Right { get; private set; }
+        private List<Keys> currentlyHeldKeys = new List<Keys>();
+        private List<Keys> previouslyHeldKeys = new List<Keys>();
+        private GameContext gameContext;
 
-        public bool Interact { get; private set; }
-
-        public InputHelper()
+        public InputHelper(GameContext context)
         {
+            gameContext = context;
+        }
 
+        public bool GetKeyDown(string identifier) => GetKeyDown(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyDown(Keys key)
+        {
+            return currentlyHeldKeys.Contains(key);
+        }
+
+        public bool GetKeyUp(string identifier) => GetKeyUp(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyUp(Keys key)
+        {
+            return !currentlyHeldKeys.Contains(key);
+        }
+
+        public bool GetKeyPressed(string identifier) => GetKeyPressed(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyPressed(Keys key)
+        {
+            return currentlyHeldKeys.Contains(key) && !previouslyHeldKeys.Contains(key);
+        }
+
+        public bool GetKeyReleased(string identifier) => GetKeyReleased(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyReleased(Keys key)
+        {
+            return !currentlyHeldKeys.Contains(key) && previouslyHeldKeys.Contains(key);
         }
 
         public void Update()
         {
             var keyboardState = Keyboard.GetState();
 
-            Up = keyboardState.IsKeyDown(Keys.W);
-            Down = keyboardState.IsKeyDown(Keys.S);
-            Left = keyboardState.IsKeyDown(Keys.A);
-            Right = keyboardState.IsKeyDown(Keys.D);
-            Interact = keyboardState.IsKeyDown(Keys.E);
-
-            DebugHelper.SetDebugValues("INPUT", $"U {Up} D {Down} L {Left} R {Right} I {Interact}");
+            previouslyHeldKeys.Clear();
+            previouslyHeldKeys.AddRange(currentlyHeldKeys);
+            previouslyHeldKeys.RemoveAll(x => x == Keys.None);
+            currentlyHeldKeys.Clear();
+            currentlyHeldKeys.AddRange(keyboardState.GetPressedKeys());
+            currentlyHeldKeys.RemoveAll(x => x == Keys.None);
         }
     }
 }

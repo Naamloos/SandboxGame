@@ -32,14 +32,15 @@ namespace SandboxGame.Engine.Assets
 
             _fonts.Add("main", _contentManager.Load<SpriteFont>("Fonts/HopeGold"));
 
-            _sprites.Add("water", loadSprite("water", 32, 32, TimeSpan.FromSeconds(.5f)));
+            _sprites.Add("water", loadSprite("water", 16, 16, TimeSpan.FromSeconds(.5f)));
             _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromMilliseconds(Random.Shared.Next(2800, 3800))));
-            _sprites.Add("grass", loadSprite("grass", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("grass", loadSprite("grass", 16, 16, TimeSpan.FromSeconds(1)));
             _sprites.Add("dialog", loadSprite("dialog", 16, 16, TimeSpan.FromMilliseconds(500)));
             _sprites.Add("markiplier", loadSprite("markiplier", 32, 32, TimeSpan.FromMilliseconds(Random.Shared.Next(2800, 3800))));
             _sprites.Add("beach_single", loadSprite("beach_single", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("beach_corner", loadSprite("beach_single", 32, 32, TimeSpan.FromSeconds(1)));
             _sprites.Add("sand", loadSprite("sand", 32, 32, TimeSpan.FromSeconds(1)));
+            _sprites.Add("tree", loadSprite("tree", 32, 32, TimeSpan.FromSeconds(1)));
 
             _sprites.Add("player_head", loadSprite("player_head", 16, 16, TimeSpan.FromSeconds(3)));
             _sprites.Add("player_hand", loadSprite("player_hand", 8, 8, TimeSpan.FromSeconds(1)));

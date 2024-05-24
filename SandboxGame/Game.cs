@@ -48,14 +48,16 @@ namespace SandboxGame
 
             _gameContext.MouseHelper = new MouseHelper(Window, _camera);
             _camera.SetMouseHelper(_gameContext.MouseHelper);
-            _gameContext.InputHelper = new InputHelper();
+            _gameContext.InputHelper = new InputHelper(_gameContext);
             _gameContext.SpriteBatch = _spriteBatch;
             _gameContext.Camera = _camera;
             _gameContext.AssetManager = _assetManager;
 
             _sceneManager = new SceneManager(_gameContext);
             _gameContext.SceneManager = _sceneManager;
-            _sceneManager.Switch<WelcomeScene>();
+            _sceneManager.Switch<InGameScene>();
+            _gameContext.KeybindManager = new KeybindManager();
+            _gameContext.KeybindManager.LoadKeybinds();
         }
 
         protected override void Update(GameTime gameTime)
@@ -63,9 +65,16 @@ namespace SandboxGame
             _sceneManager.Update(gameTime);
             _camera.Update(gameTime);
             _gameContext.MouseHelper.Update();
+
             _gameContext.InputHelper.Update();
+
+            if(_gameContext.InputHelper.GetKeyPressed("debug"))
+            {
+                debugInfo = !debugInfo;
+            }
         }
 
+        private bool debugInfo = false;
         protected override void Draw(GameTime gameTime)
         {
             DebugHelper.SetDebugValues("FRAMERATE", Math.Round((1.0f / gameTime.ElapsedGameTime.TotalSeconds)).ToString());
@@ -79,8 +88,11 @@ namespace SandboxGame
 
             // UI layer
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-            var dbg = DebugHelper.GetDebugString();
-            _spriteBatch.DrawString(_debugTextFont, dbg, new Vector2(10, 10), Color.DarkRed);
+            if (debugInfo)
+            {
+                var dbg = DebugHelper.GetDebugString();
+                _spriteBatch.DrawString(_debugTextFont, dbg, new Vector2(10, 10), Color.YellowGreen);
+            }
             _camera.FlushUIDraw();
             _spriteBatch.End();
         }

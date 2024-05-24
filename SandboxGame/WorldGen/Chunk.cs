@@ -27,6 +27,7 @@ namespace SandboxGame.WorldGen
         private Sprite grass;
         private Sprite water;
         private Sprite sand;
+        private Sprite tree;
 
         private GameContext ctx;
         private int tileSize;
@@ -50,6 +51,7 @@ namespace SandboxGame.WorldGen
             this.grass = ctx.AssetManager.GetSprite("grass");
             this.water = ctx.AssetManager.GetSprite("water");
             this.sand = ctx.AssetManager.GetSprite("sand");
+            this.tree = ctx.AssetManager.GetSprite("tree");
             this.tileSize = tileSize;
         }
 
@@ -85,6 +87,11 @@ namespace SandboxGame.WorldGen
                     case TileType.Sand:
                         sand.Draw(ctx.SpriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, ctx.Camera, Color.White, tileSize, tileSize, 0);
                         break;
+                }
+
+                if(current.ContainsTree)
+                {
+                    tree.Draw(ctx.SpriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, ctx.Camera, Color.White, tileSize, tileSize, 0);
                 }
             }
         }

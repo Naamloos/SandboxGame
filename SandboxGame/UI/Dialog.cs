@@ -89,7 +89,7 @@ namespace SandboxGame.UI
             _dialogPos = new Vector2(entityTopCenter.X - (dialogSize.X / 2), (_tickerPos.Y - 15) - dialogSize.Y);
             _namePos = new Vector2(entityTopCenter.X - (nameSize.X / 2), (_dialogPos.Y - 15) - nameSize.Y);
 
-            if (_gameContext.MouseHelper.LeftClick || _gameContext.InputHelper.Interact)
+            if (_gameContext.MouseHelper.LeftClick || _gameContext.InputHelper.GetKeyPressed("interact"))
             {
                 _currentIndex++;
             }

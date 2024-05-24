@@ -122,7 +122,7 @@ namespace SandboxGame.WorldGen
                 int worldX = (chunkX * _worldInfo.ChunkSize) + x;
                 int worldY = (chunkY * _worldInfo.ChunkSize) + y;
 
-                tiles[i] = new Tile(GenerateTile(worldX, worldY));
+                tiles[i] = new Tile(GenerateTile(worldX, worldY), x == 5 && y == 8);
             }
 
             var chunk = new Chunk(chunkX, chunkY, _worldInfo.ChunkSize, _worldInfo.TileSize, tiles, _gameContext);

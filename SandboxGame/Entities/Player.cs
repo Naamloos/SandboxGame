@@ -92,27 +92,27 @@ namespace SandboxGame.Entities
 
                 walking = false;
 
-                if (GameContext.InputHelper.Left && !GameContext.InputHelper.Right)
+                if (GameContext.InputHelper.GetKeyDown("left") && GameContext.InputHelper.GetKeyUp("right"))
                 {
                     x = x - distanceTraveled;
                     movesRight = false;
                     walking = true;
                 }
 
-                if (GameContext.InputHelper.Right && !GameContext.InputHelper.Left)
+                if (GameContext.InputHelper.GetKeyDown("right") && GameContext.InputHelper.GetKeyUp("left"))
                 {
                     x = x + distanceTraveled;
                     movesRight = true;
                     walking = true;
                 }
 
-                if (GameContext.InputHelper.Up && !GameContext.InputHelper.Down)
+                if (GameContext.InputHelper.GetKeyDown("up") && GameContext.InputHelper.GetKeyUp("down"))
                 {
                     y = y - distanceTraveled;
                     walking = true;
                 }
 
-                if (GameContext.InputHelper.Down && !GameContext.InputHelper.Up)
+                if (GameContext.InputHelper.GetKeyDown("down") && GameContext.InputHelper.GetKeyUp("up"))
                 {
                     y = y + distanceTraveled;
                     walking = true;

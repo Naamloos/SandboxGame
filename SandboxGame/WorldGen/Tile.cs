@@ -8,9 +8,13 @@ namespace SandboxGame.WorldGen
         [ProtoMember(1)]
         public TileType TileType { get; set; }
 
-        public Tile(TileType tileType)
+        [ProtoMember(2)]
+        public bool ContainsTree { get; set; }
+
+        public Tile(TileType tileType, bool containsTree = false)
         {
             TileType = tileType;
+            ContainsTree = containsTree;
         }
     }
 }
