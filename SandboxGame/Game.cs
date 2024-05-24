@@ -23,9 +23,10 @@ namespace SandboxGame
         private GameContext _gameContext;
         private SpriteFont _debugTextFont;
 
-        public Game(string[] launchOptions)
+        public Game(LaunchArgs launchArgs)
         {
             _gameContext = new GameContext();
+            _gameContext.LaunchArgs = launchArgs;
             _graphics = new GraphicsDeviceManager(this);
             _gameContext.GameWindow = Window;
             Content.RootDirectory = "Content";

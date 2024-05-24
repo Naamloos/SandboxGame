@@ -19,6 +19,7 @@ namespace SandboxGame.Engine
         public MouseHelper MouseHelper { get; set; }
         public InputHelper InputHelper { get; set; }
         public KeybindManager KeybindManager { get; set; }
+        public LaunchArgs LaunchArgs { get; set; }
 
         public GameContext()
         {

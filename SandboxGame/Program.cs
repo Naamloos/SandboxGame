@@ -1,4 +1,6 @@
 ﻿
+using SandboxGame.Engine;
+using System;
 using System.IO;
 using System.Reflection;
 
@@ -8,7 +10,6 @@ namespace SandboxGame
     {
         public static string BASE_SAVE_PATH = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "savedata");
         public static string WORLDS_PATH = Path.Combine(BASE_SAVE_PATH, "worlds");
-        public static string PROFILES_PATH = Path.Combine(BASE_SAVE_PATH, "profiles");
 
         public static void Main(string[] args)
         {
@@ -19,11 +20,8 @@ namespace SandboxGame
             if(!Directory.Exists(WORLDS_PATH))
                 Directory.CreateDirectory(WORLDS_PATH);
 
-            if(!Directory.Exists(PROFILES_PATH))
-                Directory.CreateDirectory(PROFILES_PATH);
-
             // start running game
-            using var game = new Game(args);
+            using var game = new Game(new LaunchArgumentParser(args).Parse());
             game.Run();
         }
     }

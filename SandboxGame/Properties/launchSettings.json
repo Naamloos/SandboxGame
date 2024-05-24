@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SandboxGame": {
+      "commandName": "Project",
+      "commandLineArgs": "--arg-that-shouldnt-even-work --unlock-fps --test-arg 69"
+    }
+  }
+}
