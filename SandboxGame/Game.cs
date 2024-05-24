@@ -23,7 +23,7 @@ namespace SandboxGame
         private GameContext _gameContext;
         private SpriteFont _debugTextFont;
 
-        public Game()
+        public Game(string[] launchOptions)
         {
             _gameContext = new GameContext();
             _graphics = new GraphicsDeviceManager(this);

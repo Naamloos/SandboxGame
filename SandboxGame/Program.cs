@@ -10,7 +10,7 @@ namespace SandboxGame
         public static string WORLDS_PATH = Path.Combine(BASE_SAVE_PATH, "worlds");
         public static string PROFILES_PATH = Path.Combine(BASE_SAVE_PATH, "profiles");
 
-        public static void Main()
+        public static void Main(string[] args)
         {
             // ensure savedata directories are available
             if(!Directory.Exists(BASE_SAVE_PATH))
@@ -23,7 +23,7 @@ namespace SandboxGame
                 Directory.CreateDirectory(PROFILES_PATH);
 
             // start running game
-            using var game = new SandboxGame.Game();
+            using var game = new Game(args);
             game.Run();
         }
     }
