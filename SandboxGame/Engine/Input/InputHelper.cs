@@ -7,32 +7,33 @@ namespace SandboxGame.Engine.Input
     {
         private List<Keys> currentlyHeldKeys = new List<Keys>();
         private List<Keys> previouslyHeldKeys = new List<Keys>();
-        private GameContext gameContext;
 
-        public InputHelper(GameContext context)
+        private KeybindManager _keybindManager;
+
+        public InputHelper(KeybindManager keybindManager)
         {
-            gameContext = context;
+            _keybindManager = keybindManager;
         }
 
-        public bool GetKeyDown(string identifier) => GetKeyDown(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyDown(string identifier) => GetKeyDown(_keybindManager.GetKey(identifier));
         public bool GetKeyDown(Keys key)
         {
             return currentlyHeldKeys.Contains(key);
         }
 
-        public bool GetKeyUp(string identifier) => GetKeyUp(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyUp(string identifier) => GetKeyUp(_keybindManager.GetKey(identifier));
         public bool GetKeyUp(Keys key)
         {
             return !currentlyHeldKeys.Contains(key);
         }
 
-        public bool GetKeyPressed(string identifier) => GetKeyPressed(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyPressed(string identifier) => GetKeyPressed(_keybindManager.GetKey(identifier));
         public bool GetKeyPressed(Keys key)
         {
             return currentlyHeldKeys.Contains(key) && !previouslyHeldKeys.Contains(key);
         }
 
-        public bool GetKeyReleased(string identifier) => GetKeyReleased(gameContext.KeybindManager.GetKey(identifier));
+        public bool GetKeyReleased(string identifier) => GetKeyReleased(_keybindManager.GetKey(identifier));
         public bool GetKeyReleased(Keys key)
         {
             return !currentlyHeldKeys.Contains(key) && previouslyHeldKeys.Contains(key);

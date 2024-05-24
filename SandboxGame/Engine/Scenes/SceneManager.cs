@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,18 +8,18 @@ namespace SandboxGame.Engine.Scenes
 {
     public class SceneManager
     {
-        private GameContext _gameContext;
-
         private SemaphoreSlim _updateLock;
         private SemaphoreSlim _drawLock;
         private BaseScene? currentScene = null;
 
-        public SceneManager(GameContext gameContext) 
+        private IServiceProvider _serviceProvider;
+
+        // TODO INJECT A COUPLE OF THINGS IN SCENES BY DEFAULT? SPRITEBATCH, SCENEMANAGER, CAMERA, INPUT/MOUSE HELPERS
+        public SceneManager(IServiceProvider services) 
         {
+            _serviceProvider = services;
             _updateLock = new SemaphoreSlim(1);
             _drawLock = new SemaphoreSlim(1);
-
-            _gameContext = gameContext;
         }
 
         public void Switch<T>() where T : BaseScene
@@ -35,8 +36,8 @@ namespace SandboxGame.Engine.Scenes
                     currentScene.Dispose();
                 }
 
-                currentScene = Activator.CreateInstance<T>();
-                currentScene.GameContext = _gameContext;
+                var args = typeof(T).GetConstructors().First().GetParameters().Select(x => _serviceProvider.GetService(x.ParameterType)).ToArray();
+                currentScene = (T)Activator.CreateInstance(typeof(T), args);
                 currentScene.Initialize();
                 _updateLock.Release();
                 _drawLock.Release();

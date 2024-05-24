@@ -3,6 +3,8 @@ using SandboxGame.Engine.Assets;
 using SandboxGame.Engine;
 using ProtoBuf;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Engine.Cameras;
 
 namespace SandboxGame.WorldGen
 {
@@ -29,29 +31,32 @@ namespace SandboxGame.WorldGen
         private Sprite sand;
         private Sprite tree;
 
-        private GameContext ctx;
         private int tileSize;
 
-        public Chunk(int chunkX, int chunkY, int chunkSize, int tileSize, Tile[] tiles, GameContext gameContext)
+        private SpriteBatch spriteBatch;
+        private Camera camera;
+
+        public Chunk(int chunkX, int chunkY, int chunkSize, int tileSize, Tile[] tiles, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera)
         {
+            this.spriteBatch = spriteBatch;
+            this.camera = camera;
             this.Tiles = tiles;
             this.ChunkX = chunkX;
             this.ChunkY = chunkY;
             this.ChunkSize = chunkSize;
 
-            initialize(gameContext, tileSize);
+            initialize(tileSize, assetManager);
         }
 
         // for serialization
         private Chunk() { }
 
-        private void initialize(GameContext ctx, int tileSize)
+        private void initialize(int tileSize, AssetManager assetManager)
         {
-            this.ctx = ctx;
-            this.grass = ctx.AssetManager.GetSprite("grass");
-            this.water = ctx.AssetManager.GetSprite("water");
-            this.sand = ctx.AssetManager.GetSprite("sand");
-            this.tree = ctx.AssetManager.GetSprite("tree");
+            this.grass = assetManager.GetSprite("grass");
+            this.water = assetManager.GetSprite("water");
+            this.sand = assetManager.GetSprite("sand");
+            this.tree = assetManager.GetSprite("tree");
             this.tileSize = tileSize;
         }
 
@@ -79,24 +84,24 @@ namespace SandboxGame.WorldGen
                 {
                     default:
                     case TileType.Grass:
-                        grass.Draw(ctx.SpriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, ctx.Camera, Color.White, tileSize, tileSize, 0);
+                        grass.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
                         break;
                     case TileType.Water:
-                        water.Draw(ctx.SpriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, false, ctx.Camera, Color.White, tileSize, tileSize, 0);
+                        water.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, false, camera, Color.White, tileSize, tileSize, 0);
                         break;
                     case TileType.Sand:
-                        sand.Draw(ctx.SpriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, ctx.Camera, Color.White, tileSize, tileSize, 0);
+                        sand.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
                         break;
                 }
 
                 if(current.ContainsTree)
                 {
-                    tree.Draw(ctx.SpriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, ctx.Camera, Color.White, tileSize, tileSize, 0);
+                    tree.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
                 }
             }
         }
 
-        public static bool TryLoadFromFile(string worldName, int x, int y, GameContext ctx, int tileSize, out Chunk chunk)
+        public static bool TryLoadFromFile(string worldName, int x, int y, int tileSize, AssetManager assetManager, out Chunk chunk)
         {
             var filePath = Path.Combine(Program.WORLDS_PATH, worldName, $"{x}-{y}.bin");
             if(!File.Exists(filePath))
@@ -108,7 +113,7 @@ namespace SandboxGame.WorldGen
             using var file = File.OpenRead(filePath);
             
             chunk = Serializer.Deserialize<Chunk>(file);
-            chunk.initialize(ctx, tileSize);
+            chunk.initialize(tileSize, assetManager);
 
             return true;
         }

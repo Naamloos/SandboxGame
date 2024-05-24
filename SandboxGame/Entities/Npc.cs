@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Entity;
+using SandboxGame.Engine.Input;
 using SandboxGame.UI;
 
 namespace SandboxGame.Entities
@@ -26,22 +29,31 @@ namespace SandboxGame.Entities
         private const string NPC_NAME = "Markiplier";
         private const string NPC_DIALOG = "Hello everybody, my name is Markiplier\nAnd welcome to Five Nights At Freddy's\nHar Har HarHar Har";
 
-        public Npc(GameContext gameContext, string spriteName, Vector2 position) : base(gameContext)
-        {
-            Position = position;
+        private Camera camera;
+        private MouseHelper mouseHelper;
+        private InputHelper inputHelper;
+        private AssetManager assetManager;
+        private EntityManager entityManager;
 
-            this.sprite = GameContext.AssetManager.GetSprite(spriteName);
-            this.dialogFont = GameContext.AssetManager.GetFont("main");
-            this.dialogTicker = GameContext.AssetManager.GetSprite("dialog");
+        public Npc(AssetManager assetManager, Camera camera, MouseHelper mouseHelper, EntityManager entityManager) : base()
+        {
+            this.camera = camera;
+            this.mouseHelper = mouseHelper;
+            this.assetManager = assetManager;
+            this.entityManager = entityManager;
+
+            this.sprite = assetManager.GetSprite("markiplier");
+            this.dialogFont = assetManager.GetFont("main");
+            this.dialogTicker = assetManager.GetSprite("dialog");
         }
 
         private Dialog dialog = null;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            sprite.Draw(spriteBatch, (int)Position.X, (int)Position.Y, hovering, camera: GameContext.Camera);
+            sprite.Draw(spriteBatch, (int)Position.X, (int)Position.Y, hovering, camera: camera);
 
-            if(dialog != null)
+            if (dialog != null)
             {
                 dialog.Draw(spriteBatch);
             }
@@ -50,17 +62,17 @@ namespace SandboxGame.Entities
         public override void Update(GameTime gameTime)
         {
             sprite.Update(gameTime);
-            hovering = Bounds.Intersects(new Rectangle(GameContext.MouseHelper.WorldPos.ToPoint(), new Point(1, 1)));
+            hovering = Bounds.Intersects(new Rectangle(mouseHelper.WorldPos.ToPoint(), new Point(1, 1)));
 
-            if(hovering && GameContext.MouseHelper.LeftClick && dialog == null)
+            if (hovering && mouseHelper.LeftClick && dialog == null)
             {
-                GameContext.Camera.Follow(this);
+                camera.Follow(this);
 
-                dialog = new Dialog(NPC_NAME, NPC_DIALOG, GameContext, this,
-                () =>
+                dialog = entityManager.SpawnEntity<Dialog>();
+                dialog.SetData(NPC_NAME, NPC_DIALOG, this, () =>
                 {
                     dialog = null;
-                    GameContext.Camera.StopFollowing();
+                    camera.StopFollowing();
                 });
             }
 

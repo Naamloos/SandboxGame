@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ProtoBuf;
 using SandboxGame.Engine;
+using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Cameras;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -13,21 +16,25 @@ namespace SandboxGame.WorldGen
         private string _name;
 
         private FastNoiseLite _noise;
-        private GameContext _gameContext;
         private Dictionary<(int, int), Chunk> _chunkCache = new Dictionary<(int, int), Chunk>();
         private SemaphoreSlim _chunkLock = new SemaphoreSlim(1);
 
-        private World(GameContext gameContext, string name, WorldInfo worldInfo)
+        private AssetManager assetManager;
+        private SpriteBatch spriteBatch;
+        private Camera camera;
+
+        private World(string name, WorldInfo worldInfo, bool forceNew, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera)
         {
+            this.assetManager = assetManager;
+            this.spriteBatch = spriteBatch;
             _name = name;
             _worldInfo = worldInfo;
-            _gameContext = gameContext;
 
             _noise = new FastNoiseLite();
             _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
             _noise.SetSeed(worldInfo.Seed);
 
-            if(gameContext.LaunchArgs.ForceNewWorldGen)
+            if(forceNew)
             {
                 // Delete all old chunks
                 var worldsDir = Path.Combine(Program.WORLDS_PATH, name);
@@ -42,10 +49,10 @@ namespace SandboxGame.WorldGen
         private Rectangle visibleChunks = new Rectangle(0, 0, 0, 0);
 
         internal static float LAND_OFFSET = 0.1f;
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Camera camera)
         {
             // determining what chunks are visible
-            var viewPort = _gameContext.Camera.WorldView;
+            var viewPort = camera.WorldView;
             var fullChunkSize = _worldInfo.ChunkSize * _worldInfo.TileSize;
 
             var x = (viewPort.X - (viewPort.X % fullChunkSize)) - fullChunkSize;
@@ -77,11 +84,11 @@ namespace SandboxGame.WorldGen
             }
         }
 
-        public static World Load(string name, GameContext ctx)
+        public static World Load(string name, bool forceNew, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera)
         {
             var path = Path.Combine(Program.WORLDS_PATH, $"{name}.dat");
 
-            if(ctx.LaunchArgs.ForceNewWorldGen && File.Exists(path))
+            if(forceNew && File.Exists(path))
             {
                 File.Delete(path);
             }
@@ -99,7 +106,7 @@ namespace SandboxGame.WorldGen
                 Serializer.Serialize(file, worldInfo);
             }
 
-            var world = new World(ctx, name, worldInfo);
+            var world = new World(name, worldInfo, forceNew, assetManager, spriteBatch, camera);
             return world;
         }
 
@@ -112,7 +119,7 @@ namespace SandboxGame.WorldGen
             }
 
             _chunkLock.Wait();
-            if (Chunk.TryLoadFromFile(_name, chunkX, chunkY, _gameContext, _worldInfo.TileSize, out Chunk chunk))
+            if (Chunk.TryLoadFromFile(_name, chunkX, chunkY, _worldInfo.TileSize, assetManager, out Chunk chunk))
             {
                 _chunkCache.Add((chunkX, chunkY), chunk);
                 _chunkLock.Release();
@@ -141,7 +148,7 @@ namespace SandboxGame.WorldGen
                 tiles[i] = new Tile(GenerateTile(worldX, worldY), x == 5 && y == 8);
             }
 
-            var chunk = new Chunk(chunkX, chunkY, _worldInfo.ChunkSize, _worldInfo.TileSize, tiles, _gameContext);
+            var chunk = new Chunk(chunkX, chunkY, _worldInfo.ChunkSize, _worldInfo.TileSize, tiles, assetManager, spriteBatch, camera);
             chunk.SaveToFile(_name);
             return chunk;
         }

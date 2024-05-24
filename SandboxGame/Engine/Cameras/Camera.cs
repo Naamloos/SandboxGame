@@ -60,12 +60,13 @@ namespace SandboxGame.Engine.Cameras
                 * Matrix.CreateTranslation(new Vector3(ScreenCenter, 0));
         }
 
-        public Camera(SpriteBatch spriteBatch, GameWindow window)
+        public Camera(SpriteBatch spriteBatch, GameWindow window, MouseHelper mouseHelper)
         {
             _spriteBatch = spriteBatch;
             _gameWindow = window;
             _position = new Vector2(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
             _moveTowards = _position;
+            _mouseHelper = mouseHelper;
         }
 
         public void Reset()
@@ -86,11 +87,6 @@ namespace SandboxGame.Engine.Cameras
         public bool IsMoving()
         {
             return _moveTowards != _position;
-        }
-
-        public void SetMouseHelper(MouseHelper mouseHelper)
-        {
-            _mouseHelper = mouseHelper;
         }
 
         public void Update(GameTime gameTime)
@@ -139,6 +135,8 @@ namespace SandboxGame.Engine.Cameras
             {
                 _position = _moveTowards;
             }
+
+            _mouseHelper.WorldPos = ScreenToWorld(_mouseHelper.ScreenPos);
 
             DebugHelper.SetDebugValues("CAMERA", $"x: {_position.X.ToString().PadRight(15)} y: {_position.Y.ToString().PadRight(15)}");
         }

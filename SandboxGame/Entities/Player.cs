@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Input;
 
 namespace SandboxGame.Entities
 {
@@ -30,17 +32,24 @@ namespace SandboxGame.Entities
         private Sprite player;
         private Sprite debugBox;
 
-        public Player(GameContext gameContext) : base(gameContext)
+        SpriteBatch spriteBatch;
+        Camera camera;
+        InputHelper inputHelper;
+
+        public Player(AssetManager assetManager, SpriteBatch spriteBatch, Camera camera, InputHelper inputHelper) : base()
         {
+            this.spriteBatch = spriteBatch;
+            this.camera = camera;
+            this.inputHelper = inputHelper;
             //headSprite = GameContext.AssetManager.GetSprite("player_head");
             //bodySprite = GameContext.AssetManager.GetSprite("player_body");
             //handSprite = GameContext.AssetManager.GetSprite("player_hand");
             //leftFootSprite = GameContext.AssetManager.GetSprite("player_foot_l");
             //rightFootSprite = GameContext.AssetManager.GetSprite("player_foot_r");
 
-            player = GameContext.AssetManager.GetSprite("player");
+            player = assetManager.GetSprite("player");
 
-            debugBox = GameContext.AssetManager.GetSprite("debug");
+            debugBox = assetManager.GetSprite("debug");
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -63,7 +72,7 @@ namespace SandboxGame.Entities
             //leftFootSprite.Draw(spriteBatch, rightFoot.X, rightFoot.Y);
 
             player.Draw(spriteBatch, (int)Position.X, (int)Position.Y, flip: movesRight, rotation: walking? hop : 0f);
-            debugBox.Draw(GameContext.SpriteBatch, (int)center.X, (int)center.Y);
+            debugBox.Draw(spriteBatch, (int)center.X, (int)center.Y);
         }
 
         float hop = 0f;
@@ -85,34 +94,34 @@ namespace SandboxGame.Entities
 
             DebugHelper.SetDebugValues("SPEED", distanceTraveled.ToString());
 
-            if (GameContext.Camera.Target == this)
+            if (camera.Target == this)
             {
                 float x = Position.X;
                 float y = Position.Y;
 
                 walking = false;
 
-                if (GameContext.InputHelper.GetKeyDown("left") && GameContext.InputHelper.GetKeyUp("right"))
+                if (inputHelper.GetKeyDown("left") && inputHelper.GetKeyUp("right"))
                 {
                     x = x - distanceTraveled;
                     movesRight = false;
                     walking = true;
                 }
 
-                if (GameContext.InputHelper.GetKeyDown("right") && GameContext.InputHelper.GetKeyUp("left"))
+                if (inputHelper.GetKeyDown("right") && inputHelper.GetKeyUp("left"))
                 {
                     x = x + distanceTraveled;
                     movesRight = true;
                     walking = true;
                 }
 
-                if (GameContext.InputHelper.GetKeyDown("up") && GameContext.InputHelper.GetKeyUp("down"))
+                if (inputHelper.GetKeyDown("up") && inputHelper.GetKeyUp("down"))
                 {
                     y = y - distanceTraveled;
                     walking = true;
                 }
 
-                if (GameContext.InputHelper.GetKeyDown("down") && GameContext.InputHelper.GetKeyUp("up"))
+                if (inputHelper.GetKeyDown("down") && inputHelper.GetKeyUp("up"))
                 {
                     y = y + distanceTraveled;
                     walking = true;

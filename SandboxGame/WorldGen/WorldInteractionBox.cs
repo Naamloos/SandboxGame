@@ -1,25 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Input;
+using SandboxGame.Entities;
 using System;
 
 namespace SandboxGame.WorldGen
 {
-    public class WorldInteractionBox
+    public class WorldInteractionBox : BaseEntity
     {
         private Sprite tile;
-        private GameContext gameContext;
         private Vector2 position = Vector2.Zero;
+        private MouseHelper mouseHelper;
+        private SpriteBatch spriteBatch;
 
-        public WorldInteractionBox(GameContext ctx)
+        public override Rectangle Bounds => throw new NotImplementedException();
+
+        public override Vector2 Position { get => position; set => position = value; }
+
+        public WorldInteractionBox(MouseHelper mouseHelper, SpriteBatch spriteBatch, AssetManager assetManager)
         {
-            gameContext = ctx;
-            tile = ctx.AssetManager.GetSprite("interact");
+            this.mouseHelper = mouseHelper;
+            this.spriteBatch = spriteBatch;
+            tile = assetManager.GetSprite("interact");
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            var pos = gameContext.MouseHelper.WorldPos;
+            var pos = mouseHelper.WorldPos;
 
             // This could be better but it works.
             bool xNegative = pos.X < 0;
@@ -36,9 +45,9 @@ namespace SandboxGame.WorldGen
             position = new Vector2(x, y);
         }
 
-        public void Draw(GameTime gameTime)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            tile.Draw(gameContext.SpriteBatch, (int)position.X, (int)position.Y, lightColor: new Color(255,255,255,150));
+            tile.Draw(spriteBatch, (int)position.X, (int)position.Y, lightColor: new Color(255, 255, 255, 150));
         }
     }
 }

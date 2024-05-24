@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Input;
 using SandboxGame.Engine.Scenes;
 
 namespace SandboxGame.Scenes
@@ -12,11 +14,26 @@ namespace SandboxGame.Scenes
         private Sprite _grassTest;
         private SpriteFont _font;
 
+        private AssetManager _assetManager;
+        private Camera _camera;
+        private GameWindow _gameWindow;
+        private MouseHelper _mouseHelper;
+        private SpriteBatch _spriteBatch;
+
+        public MenuScene(AssetManager assetManager, Camera camera, GameWindow gameWindow, MouseHelper mouseHelper, SpriteBatch spriteBatch)
+        {
+            _assetManager = assetManager;
+            _camera = camera;
+            _gameWindow = gameWindow;
+            _mouseHelper = mouseHelper;
+            _spriteBatch = spriteBatch;
+        }
+
         public override void Initialize()
         {
-            _grassTest = GameContext.AssetManager.GetSprite("tile");
-            _font = GameContext.AssetManager.GetFont("main");
-            GameContext.Camera.SetSpeed(200f);
+            _grassTest = _assetManager.GetSprite("tile");
+            _font = _assetManager.GetFont("main");
+            _camera.SetSpeed(200f);
         }
 
         private bool mouseTouchesSprite = false;
@@ -28,18 +45,18 @@ namespace SandboxGame.Scenes
         {
             _grassTest.Update(gameTime);
 
-            mouseTouchesSprite = _grassTest.Bounds.Intersects(new Rectangle(GameContext.Camera.ScreenToWorld(Mouse.GetState(GameContext.GameWindow).Position.ToVector2()).ToPoint(),
+            mouseTouchesSprite = _grassTest.Bounds.Intersects(new Rectangle(_camera.ScreenToWorld(Mouse.GetState(_gameWindow).Position.ToVector2()).ToPoint(),
                 new Point(1, 1)));
 
-            if (GameContext.MouseHelper.LeftClick && mouseTouchesSprite)
+            if (_mouseHelper.LeftClick && mouseTouchesSprite)
             {
-                if(GameContext.Camera.IsFollowing)
+                if(_camera.IsFollowing)
                 {
-                    GameContext.Camera.StopFollowing(false);
+                    _camera.StopFollowing(false);
                 }
                 else
                 {
-                    GameContext.Camera.Follow(_grassTest, smooth: false);
+                    _camera.Follow(_grassTest, smooth: false);
                 }
             }
 
@@ -57,16 +74,16 @@ namespace SandboxGame.Scenes
 
         public override void Draw(GameTime gameTime)
         {
-            GameContext.SpriteBatch.GraphicsDevice.SetRenderTarget(null);
-            GameContext.SpriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
-            _grassTest.Draw(GameContext.SpriteBatch, posX, 200,
-                camera: GameContext.Camera, bloom: mouseTouchesSprite);
-            GameContext.SpriteBatch.DrawString(_font, "Drawn on Game layer", GameContext.Camera.ScreenCenter, Color.Yellow);
+            _spriteBatch.GraphicsDevice.SetRenderTarget(null);
+            _spriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
+            _grassTest.Draw(_spriteBatch, posX, 200,
+                camera: _camera, bloom: mouseTouchesSprite);
+            _spriteBatch.DrawString(_font, "Drawn on Game layer", _camera.ScreenCenter, Color.Yellow);
 
-            GameContext.Camera.DrawToUI(() =>
+            _camera.DrawToUI(() =>
             {
-                var mouse = Mouse.GetState(GameContext.GameWindow);
-                GameContext.SpriteBatch.DrawString(_font, "Drawn on UI layer (Camera Moving)", new Vector2(15, GameContext.Camera.ScreenCenter.Y),
+                var mouse = Mouse.GetState(_gameWindow);
+                _spriteBatch.DrawString(_font, "Drawn on UI layer (Camera Moving)", new Vector2(15, _camera.ScreenCenter.Y),
                     mouse.LeftButton == ButtonState.Pressed ? Color.Red : Color.Beige);
             });
         }

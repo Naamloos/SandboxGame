@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using SandboxGame.Engine.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,12 @@ namespace SandboxGame.Engine.Input
     public class KeybindManager
     {
         private Dictionary<string, KeybindInfo> keybinds = new();
-        private GameContext gameContext;
+        private IStorageSupplier _storageSupplier;
 
-        public KeybindManager(GameContext ctx)
+        public KeybindManager(IStorageSupplier storageSupplier)
         {
-            gameContext = ctx;
+            _storageSupplier = storageSupplier;
+            LoadKeybinds();
         }
 
         public void LoadKeybinds()
@@ -30,7 +32,7 @@ namespace SandboxGame.Engine.Input
             keybinds.Add("interact", new KeybindInfo("e", "Interact", Keys.E));
 
             // load binds from file, override the defaults
-            var loadedKeybinds = gameContext.StorageSupplier.ReadConfigFile<Dictionary<string, KeybindInfo>>("keybinds");
+            var loadedKeybinds = _storageSupplier.ReadConfigFile<Dictionary<string, KeybindInfo>>("keybinds");
             foreach (var bind in loadedKeybinds)
             {
                 if (keybinds.ContainsKey(bind.Key))
@@ -44,7 +46,7 @@ namespace SandboxGame.Engine.Input
             }
 
             // re-save file
-            gameContext.StorageSupplier.StoreConfigFile("keybinds", keybinds);
+            _storageSupplier.StoreConfigFile("keybinds", keybinds);
         }
 
         public Keys GetKey(string identifier) => keybinds[identifier].CurrentKey;

@@ -22,6 +22,7 @@ namespace SandboxGame.Engine.Assets
         {
             _contentManager = contentManager;
             _graphics = gd;
+            Initialize();
         }
 
         public void Initialize()

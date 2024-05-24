@@ -16,14 +16,12 @@ namespace SandboxGame.Engine.Input
         public bool ScrollDown { get; private set; }
 
         public Vector2 ScreenPos { get; private set; }
-        public Vector2 WorldPos { get; private set; }
+        public Vector2 WorldPos { get; set; }
 
         private GameWindow _window;
-        private Camera _camera;
-        public MouseHelper(GameWindow gameWindow, Camera camera)
+        public MouseHelper(GameWindow gameWindow)
         {
             _window = gameWindow;
-            _camera = camera;
 
             // grab initial scroll
             previousScroll = Mouse.GetState(gameWindow).ScrollWheelValue;
@@ -38,7 +36,6 @@ namespace SandboxGame.Engine.Input
             var state = Mouse.GetState(_window);
 
             ScreenPos = state.Position.ToVector2();
-            WorldPos = _camera.ScreenToWorld(ScreenPos);
 
             RightButton = state.RightButton == ButtonState.Pressed;
             LeftButton = state.LeftButton == ButtonState.Pressed;
