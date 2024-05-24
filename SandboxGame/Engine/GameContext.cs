@@ -4,11 +4,13 @@ using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Input;
 using SandboxGame.Engine.Scenes;
+using SandboxGame.Engine.Storage;
 
 namespace SandboxGame.Engine
 {
     public class GameContext
     {
+        public IStorageSupplier StorageSupplier;
         public SceneManager SceneManager { get; set; }
         public AssetManager AssetManager { get; set; }
         public Camera Camera { get; set; }

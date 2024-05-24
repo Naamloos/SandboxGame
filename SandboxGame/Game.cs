@@ -5,6 +5,8 @@ using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Input;
 using SandboxGame.Engine.Scenes;
+using SandboxGame.Engine.Storage;
+using SandboxGame.Engine.Storage.Serialization;
 using SandboxGame.Scenes;
 using System;
 
@@ -40,6 +42,8 @@ namespace SandboxGame
 
         protected override void LoadContent()
         {
+            _gameContext.StorageSupplier = new FileStorageSupplier();
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _camera = new Camera(_spriteBatch, Window);
             _assetManager = new AssetManager(Content, GraphicsDevice);
@@ -56,7 +60,7 @@ namespace SandboxGame
             _sceneManager = new SceneManager(_gameContext);
             _gameContext.SceneManager = _sceneManager;
             _sceneManager.Switch<InGameScene>();
-            _gameContext.KeybindManager = new KeybindManager();
+            _gameContext.KeybindManager = new KeybindManager(_gameContext);
             _gameContext.KeybindManager.LoadKeybinds();
         }
 
