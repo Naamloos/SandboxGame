@@ -10,6 +10,7 @@ using SandboxGame.Engine.Storage;
 using SandboxGame.Engine.Storage.Serialization;
 using SandboxGame.Scenes;
 using System;
+using System.Security.Principal;
 
 namespace SandboxGame
 {

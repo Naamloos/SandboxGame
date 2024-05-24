@@ -5,7 +5,7 @@ using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
-using SandboxGame.UI;
+using System.Linq;
 
 namespace SandboxGame.Entities
 {
@@ -20,6 +20,8 @@ namespace SandboxGame.Entities
         }
 
         public override Vector2 Position { get; set; }
+
+        public override bool IsWorldEntity => true;
 
         private Sprite sprite;
         private bool hovering;
@@ -62,18 +64,19 @@ namespace SandboxGame.Entities
         public override void Update(GameTime gameTime)
         {
             sprite.Update(gameTime);
-            hovering = Bounds.Intersects(new Rectangle(mouseHelper.WorldPos.ToPoint(), new Point(1, 1)));
+            var interactable = FindEntitiesNearby(150, x => x.GetType() == typeof(Player)).Any();
+            hovering = Bounds.Intersects(new Rectangle(mouseHelper.WorldPos.ToPoint(), new Point(1, 1))) && interactable;
 
             if (hovering && mouseHelper.LeftClick && dialog == null)
             {
-                camera.Follow(this);
+                    camera.Follow(this);
 
-                dialog = entityManager.SpawnEntity<Dialog>();
-                dialog.SetData(NPC_NAME, NPC_DIALOG, this, () =>
-                {
-                    dialog = null;
-                    camera.StopFollowing();
-                });
+                    dialog = entityManager.SpawnEntity<Dialog>();
+                    dialog.SetData(NPC_NAME, NPC_DIALOG, this, () =>
+                    {
+                        dialog = null;
+                        camera.StopFollowing();
+                    });
             }
 
             if (dialog != null)

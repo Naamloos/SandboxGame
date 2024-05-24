@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
-using SandboxGame.Entities;
 using System;
 
-namespace SandboxGame.UI
+namespace SandboxGame.Entities
 {
     public class Dialog : BaseEntity
     {
@@ -49,9 +49,11 @@ namespace SandboxGame.UI
 
         bool firstTick = true;
 
-        public override Rectangle Bounds => new Rectangle(0,0,0,0);
+        public override Rectangle Bounds => new Rectangle(0, 0, 0, 0);
 
         public override Vector2 Position { get => new Vector2(0, 0); set { return; } }
+
+        public override bool IsWorldEntity => false;
 
         public override void Update(GameTime gameTime)
         {
@@ -75,9 +77,9 @@ namespace SandboxGame.UI
             var dialogSize = _font.MeasureString(_dialog[_currentIndex]);
 
             var entityTopCenter = _camera.WorldToScreen(new Vector2(_entity.Bounds.Center.X, _entity.Bounds.Top));
-            _tickerPos = new Vector2(entityTopCenter.X - (_dialogTicker.Width / 2), (entityTopCenter.Y - 15) - _dialogTicker.Height);
-            _dialogPos = new Vector2(entityTopCenter.X - (dialogSize.X / 2), (_tickerPos.Y - 15) - dialogSize.Y);
-            _namePos = new Vector2(entityTopCenter.X - (nameSize.X / 2), (_dialogPos.Y - 15) - nameSize.Y);
+            _tickerPos = new Vector2(entityTopCenter.X - _dialogTicker.Width / 2, entityTopCenter.Y - 15 - _dialogTicker.Height);
+            _dialogPos = new Vector2(entityTopCenter.X - dialogSize.X / 2, _tickerPos.Y - 15 - dialogSize.Y);
+            _namePos = new Vector2(entityTopCenter.X - nameSize.X / 2, _dialogPos.Y - 15 - nameSize.Y);
 
             if (_mouseHelper.LeftClick || _inputHelper.GetKeyPressed("interact"))
             {

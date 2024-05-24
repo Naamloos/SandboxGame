@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
 
 namespace SandboxGame.Entities
@@ -18,6 +19,8 @@ namespace SandboxGame.Entities
         }
 
         public override Vector2 Position { get; set; } = Vector2.Zero;
+
+        public override bool IsWorldEntity => true;
 
         private float speed = 345;
 

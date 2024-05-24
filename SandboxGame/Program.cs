@@ -41,6 +41,8 @@ namespace SandboxGame
 
             Game = new Game();
 
+            // Assets can only be loaded in loadContent, 
+            // I mean- you can load some stuff later but just to be safe
             Game.OnLoadContent += loadContent;
 
             Game.Run();

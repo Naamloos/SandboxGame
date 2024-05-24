@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
-using SandboxGame.Entities;
 using System;
 
 namespace SandboxGame.WorldGen
@@ -18,6 +18,8 @@ namespace SandboxGame.WorldGen
         public override Rectangle Bounds => throw new NotImplementedException();
 
         public override Vector2 Position { get => position; set => position = value; }
+
+        public override bool IsWorldEntity => true;
 
         public WorldInteractionBox(MouseHelper mouseHelper, SpriteBatch spriteBatch, AssetManager assetManager)
         {
