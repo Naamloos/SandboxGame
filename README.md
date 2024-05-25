@@ -3,6 +3,9 @@ Simple-ish sandbox game I am developing. Currently in very early experimental pr
 
 ![image](https://github.com/Naamloos/SandboxGame/assets/12187179/e2af17b8-a0e2-4499-ae5e-601752801b0a)
 
+![image](https://github.com/Naamloos/SandboxGame/assets/12187179/015470c6-9fc3-419d-b46b-8c6b417d6f86)
+
+
 <sup><sub>oh no makriplier do'tn drown!!1</sub></sup>
 
 
