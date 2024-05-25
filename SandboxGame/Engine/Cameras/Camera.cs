@@ -32,6 +32,11 @@ namespace SandboxGame.Engine.Cameras
                 ScreenToWorld(new Vector2(_gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height)).ToPoint());
         }
 
+        public Rectangle ScreenView
+        {
+            get => new Rectangle(0, 0, _gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height);
+        }
+
         public Vector2 ScreenCenter
         {
             get => new Vector2(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);

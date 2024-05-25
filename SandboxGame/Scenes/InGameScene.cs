@@ -15,6 +15,7 @@ namespace SandboxGame.Scenes
     {
         private Player _player;
         private Npc _npc;
+        private ChatBox _chatBox;
         
         private World _world;
         private WorldInteractionBox _interactionBox;
@@ -41,6 +42,7 @@ namespace SandboxGame.Scenes
             _player = _entityManager.SpawnEntity<Player>();
             _npc = _entityManager.SpawnEntity<Npc>();
             _npc.SetPosition(new Vector2(350, 400));
+            _chatBox = _entityManager.SpawnEntity<ChatBox>();
 
             _world = World.Load("my world", _launchArgs.ForceNewWorldGen, _assetManager, _spriteBatch, _camera);
 
@@ -57,6 +59,7 @@ namespace SandboxGame.Scenes
             _interactionBox.Draw(_spriteBatch);
             _npc.Draw(_spriteBatch);
             _player.Draw(_spriteBatch);
+            _chatBox.Draw(_spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
@@ -65,6 +68,7 @@ namespace SandboxGame.Scenes
             _player.Update(gameTime);
             _npc.Update(gameTime);
             _interactionBox.Update(gameTime);
+            _chatBox.Update(gameTime);
         }
 
         public override void Dispose()

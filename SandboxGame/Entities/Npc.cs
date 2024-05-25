@@ -64,7 +64,8 @@ namespace SandboxGame.Entities
         public override void Update(GameTime gameTime)
         {
             sprite.Update(gameTime);
-            var interactable = FindEntitiesNearby(150, x => x.GetType() == typeof(Player)).Any();
+            // NPCs can be interacted with from a longer range, make it 250 :)
+            var interactable = FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
             hovering = Bounds.Intersects(new Rectangle(mouseHelper.WorldPos.ToPoint(), new Point(1, 1))) && interactable;
 
             if (hovering && mouseHelper.LeftClick && dialog == null)

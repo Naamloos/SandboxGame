@@ -5,6 +5,7 @@ using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
+using System.Linq;
 
 namespace SandboxGame.Entities
 {
@@ -97,7 +98,9 @@ namespace SandboxGame.Entities
 
             DebugHelper.SetDebugValues("SPEED", distanceTraveled.ToString());
 
-            if (camera.Target == this)
+            var chatOpened = EntityManager.FindEntityOfType<ChatBox>().Any(x => x.IsActive);
+
+            if (camera.Target == this && !chatOpened)
             {
                 float x = Position.X;
                 float y = Position.Y;

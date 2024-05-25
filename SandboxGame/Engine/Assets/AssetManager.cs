@@ -51,7 +51,8 @@ namespace SandboxGame.Engine.Assets
 
             _sprites.Add("interact", loadSprite("interact", 32, 32, TimeSpan.FromSeconds(1)));
 
-            _sprites.Add("debug", generateBox());
+            _sprites.Add("debug", generateBox(Color.Red));
+            _sprites.Add("chat_back", generateBox(Color.Black));
         }
 
         public SpriteFont GetFont(string name = "")
@@ -74,10 +75,10 @@ namespace SandboxGame.Engine.Assets
             return _sprites[name].Copy();
         }
 
-        private Sprite generateBox()
+        private Sprite generateBox(Color color)
         {
             var debugBox = new Texture2D(_graphics, 1, 1);
-            debugBox.SetData(new[] { Color.Red });
+            debugBox.SetData(new[] { color });
 
             return new Sprite(1,1,TimeSpan.Zero, _colorOverlay, debugBox);
         }

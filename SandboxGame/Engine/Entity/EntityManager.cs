@@ -33,6 +33,10 @@ namespace SandboxGame.Engine.Entity
             return entity;
         }
 
+        public IEnumerable<BaseEntity> FindEntities(Func<BaseEntity, bool> predicate) => _loadedEntities.Where(predicate);
+
+        public IEnumerable<T> FindEntityOfType<T>() where T : BaseEntity => _loadedEntities.Where(x => x.GetType() == typeof(T)).Cast<T>();
+
         public void UnloadEntity(BaseEntity entity)
         {
             _loadedEntities.Remove(entity);
