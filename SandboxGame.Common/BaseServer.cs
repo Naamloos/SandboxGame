@@ -8,6 +8,10 @@ namespace SandboxGame.Common
 {
     public abstract class BaseServer
     {
+        public abstract Task StartAsync();
+
+        public abstract Task StopAsync();
+
         public async Task TickAsync()
         {
 
