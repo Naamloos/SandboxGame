@@ -40,21 +40,21 @@ namespace SandboxGame.WorldGen
         public Chunk(int chunkX, int chunkY, int chunkSize, int tileSize, Tile[] tiles, AssetManager assetManager, 
             SpriteBatch spriteBatch, Camera camera)
         {
-            this.spriteBatch = spriteBatch;
             this.camera = camera;
             this.Tiles = tiles;
             this.ChunkX = chunkX;
             this.ChunkY = chunkY;
             this.ChunkSize = chunkSize;
 
-            Initialize(tileSize, assetManager);
+            Initialize(tileSize, assetManager, spriteBatch);
         }
 
         // for serialization
         private Chunk() { }
 
-        public void Initialize(int tileSize, AssetManager assetManager)
+        public void Initialize(int tileSize, AssetManager assetManager, SpriteBatch spriteBatch)
         {
+            this.spriteBatch = spriteBatch;
             this.grass = assetManager.GetSprite("grass");
             this.water = assetManager.GetSprite("water");
             this.sand = assetManager.GetSprite("sand");

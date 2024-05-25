@@ -102,7 +102,7 @@ namespace SandboxGame.WorldGen
 
             if (chunk is not null)
             {
-                chunk.Initialize(_worldInfo.TileSize, assetManager);
+                chunk.Initialize(_worldInfo.TileSize, assetManager, spriteBatch);
                 _chunkCache.Add((chunkX, chunkY), chunk);
                 _chunkLock.Release();
                 return chunk;
