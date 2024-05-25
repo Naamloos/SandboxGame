@@ -4,7 +4,7 @@ using System;
 namespace SandboxGame.WorldGen
 {
     [ProtoContract]
-    public struct WorldInfo
+    public class WorldInfo
     {
         [ProtoMember(1)]
         public string Description { get; set; } = "My World!";

@@ -5,6 +5,7 @@ using ProtoBuf;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Storage;
 
 namespace SandboxGame.WorldGen
 {
@@ -36,7 +37,8 @@ namespace SandboxGame.WorldGen
         private SpriteBatch spriteBatch;
         private Camera camera;
 
-        public Chunk(int chunkX, int chunkY, int chunkSize, int tileSize, Tile[] tiles, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera)
+        public Chunk(int chunkX, int chunkY, int chunkSize, int tileSize, Tile[] tiles, AssetManager assetManager, 
+            SpriteBatch spriteBatch, Camera camera)
         {
             this.spriteBatch = spriteBatch;
             this.camera = camera;
@@ -45,13 +47,13 @@ namespace SandboxGame.WorldGen
             this.ChunkY = chunkY;
             this.ChunkSize = chunkSize;
 
-            initialize(tileSize, assetManager);
+            Initialize(tileSize, assetManager);
         }
 
         // for serialization
         private Chunk() { }
 
-        private void initialize(int tileSize, AssetManager assetManager)
+        public void Initialize(int tileSize, AssetManager assetManager)
         {
             this.grass = assetManager.GetSprite("grass");
             this.water = assetManager.GetSprite("water");
@@ -99,38 +101,6 @@ namespace SandboxGame.WorldGen
                     tree.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
                 }
             }
-        }
-
-        public static bool TryLoadFromFile(string worldName, int x, int y, int tileSize, AssetManager assetManager, out Chunk chunk)
-        {
-            var filePath = Path.Combine(Program.WORLDS_PATH, worldName, $"{x}-{y}.bin");
-            if(!File.Exists(filePath))
-            {
-                chunk = null;
-                return false;
-            }
-
-            using var file = File.OpenRead(filePath);
-            
-            chunk = Serializer.Deserialize<Chunk>(file);
-            chunk.initialize(tileSize, assetManager);
-
-            return true;
-        }
-
-        public void SaveToFile(string worldName)
-        {
-            if(!Directory.Exists(Path.Combine(Program.WORLDS_PATH, worldName)))
-            {
-                Directory.CreateDirectory(Path.Combine(Program.WORLDS_PATH, worldName));
-            }
-
-            var filePath = Path.Combine(Program.WORLDS_PATH, worldName, $"{ChunkX}-{ChunkY}.bin");
-
-            bool exists = File.Exists(filePath);
-
-            using var file = exists? File.OpenWrite(filePath) : File.Create(filePath);
-            Serializer.Serialize(file, this);
         }
     }
 }

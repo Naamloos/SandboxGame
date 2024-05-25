@@ -1,4 +1,7 @@
-﻿using SandboxGame.Engine.Storage.Serialization;
+﻿using ProtoBuf;
+using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Storage.Serialization;
+using SandboxGame.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -72,5 +75,70 @@ namespace SandboxGame.Engine.Storage
 
         private Stream getFileStream(string filePath, bool read = false) 
             => File.Exists(filePath) ? new FileStream(filePath, read? FileMode.Open : FileMode.Truncate, read? FileAccess.Read : FileAccess.Write) : File.Create(filePath);
+
+        public Chunk ReadChunk(string world, int x, int y)
+        {
+            var dirPath = Path.Combine(_worldsPath, world);
+            if(!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            var filePath = Path.Combine(dirPath, $"chunk-{x}-{y}.bin");
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+
+            using var file = File.OpenRead(filePath);
+            return Serializer.Deserialize<Chunk>(file);
+        }
+
+        public void WriteChunkFile(string world, int x, int y, Chunk chunk)
+        {
+            var dirPath = Path.Combine(_worldsPath, world);
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            var filePath = Path.Combine(dirPath, $"chunk-{x}-{y}.bin");
+
+            bool exists = File.Exists(filePath);
+
+            using var file = exists ? File.OpenWrite(filePath) : File.Create(filePath);
+            Serializer.Serialize<Chunk>(file, chunk);
+        }
+
+        public WorldInfo ReadWorldMetadata(string world)
+        {
+            var dirPath = Path.Combine(_worldsPath, world);
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            var filePath = Path.Combine(dirPath, $"metadata.bin");
+
+            if (File.Exists(filePath))
+            {
+                using var file = File.OpenRead(filePath);
+                return _dataSerializer.DeserializeDataFromStream<WorldInfo>(file);
+            }
+
+            return default;
+        }
+
+        public void WriteWorldMetadata(string world, WorldInfo worldInfo)
+        {
+            var dirPath = Path.Combine(_worldsPath, world);
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            var filePath = Path.Combine(dirPath, $"metadata.bin");
+            using var file = File.Create(filePath);
+            _dataSerializer.SerializeDataToStream(worldInfo, file);
+        }
+
+        public void DeleteWorld(string world)
+        {
+            var dirPath = Path.Combine(_worldsPath, world);
+            if(Directory.Exists(dirPath))
+                Directory.Delete(dirPath, true);
+        }
     }
 }

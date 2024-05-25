@@ -6,6 +6,7 @@ using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
 using SandboxGame.Engine.Scenes;
+using SandboxGame.Engine.Storage;
 using SandboxGame.Entities;
 using SandboxGame.WorldGen;
 
@@ -13,6 +14,8 @@ namespace SandboxGame.Scenes
 {
     public class InGameScene : BaseScene
     {
+        const string DEV_WORLD_NAME = "default";
+
         private Player _player;
         private Npc _npc;
         private ChatBox _chatBox;
@@ -25,30 +28,45 @@ namespace SandboxGame.Scenes
         private SpriteBatch _spriteBatch;
         private Camera _camera;
         private AssetManager _assetManager;
-        private MouseHelper _mouseHelper;
+        private IStorageSupplier _storage;
 
         public InGameScene(EntityManager entityManager, LaunchArgs launchArgs, SpriteBatch spriteBatch, 
-            Camera camera, AssetManager assetManager, MouseHelper mouseHelper)
+            Camera camera, AssetManager assetManager, IStorageSupplier storage)
         {
             _entityManager = entityManager;
             _launchArgs = launchArgs;
             _spriteBatch = spriteBatch;
             _camera = camera;
             _assetManager = assetManager;
+            _storage = storage;
         }
 
         public override void Initialize()
         {
+            _chatBox = _entityManager.SpawnEntity<ChatBox>();
+            RegenerateWorld(_launchArgs.ForceNewWorldGen);
+        }
+
+        public void RegenerateWorld(bool deleteOld)
+        {
+            _entityManager.UnloadEntity(_player);
+            _entityManager.UnloadEntity(_npc);
+            _entityManager.UnloadEntity(_interactionBox);
+
             _player = _entityManager.SpawnEntity<Player>();
+            _player.SetPosition(Vector2.Zero);
             _npc = _entityManager.SpawnEntity<Npc>();
             _npc.SetPosition(new Vector2(350, 400));
-            _chatBox = _entityManager.SpawnEntity<ChatBox>();
 
-            _world = World.Load("my world", _launchArgs.ForceNewWorldGen, _assetManager, _spriteBatch, _camera);
+            if (deleteOld)
+            {
+                _storage.DeleteWorld(DEV_WORLD_NAME);
+            }
+            _world = World.Load(DEV_WORLD_NAME, _assetManager, _spriteBatch, _camera, _storage);
 
             _camera.SetDefaultFollow(_player);
+            _camera.Follow(_player);
             _camera.SetSpeed(500);
-
 
             _interactionBox = _entityManager.SpawnEntity<WorldInteractionBox>();
         }

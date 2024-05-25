@@ -8,9 +8,11 @@ namespace SandboxGame.Engine.Scenes
 {
     public class SceneManager
     {
+        public BaseScene Current => currentScene;
+
         private SemaphoreSlim _updateLock;
         private SemaphoreSlim _drawLock;
-        private BaseScene? currentScene = null;
+        private BaseScene currentScene = null;
 
         private IServiceProvider _serviceProvider;
 

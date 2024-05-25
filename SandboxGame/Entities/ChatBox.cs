@@ -6,6 +6,8 @@ using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Entity;
 using SandboxGame.Engine.Input;
+using SandboxGame.Engine.Scenes;
+using SandboxGame.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,12 +41,15 @@ namespace SandboxGame.Entities
 
         private float maxChatMessages;
 
-        public ChatBox(AssetManager assetManager, Camera camera, GameWindow gameWindow, InputHelper inputHelper)
+        private SceneManager sceneManager;
+
+        public ChatBox(AssetManager assetManager, Camera camera, GameWindow gameWindow, InputHelper inputHelper, SceneManager sceneManager)
         {
             chatFont = assetManager.GetFont();
             this.camera = camera;
             this.inputHelper = inputHelper;
             this.gameWindow = gameWindow;
+            this.sceneManager = sceneManager;
 
             chatBack = assetManager.GetSprite("chat_back");
             markerSize = chatFont.MeasureString("> ");
@@ -113,7 +118,7 @@ namespace SandboxGame.Entities
                 inputText = inputText.Substring(0, inputText.Length - 1);
                 return;
             }
-            if(e.Key == Keys.Escape || textSize.X > 500 - (markerSize.X + 10)) // 500 = box width, 10 = 5x padding on both sides
+            if(e.Key == Keys.Escape || textSize.X > 500 - (markerSize.X + 10) || e.Key == Keys.Enter) // 500 = box width, 10 = 5x padding on both sides
             {
                 return;
             }
@@ -131,6 +136,18 @@ namespace SandboxGame.Entities
                 {
                     var meText = fullCommand.Substring(3);
                     chatHistory.Add(("User " + meText, Color.HotPink));
+                }
+                else if(fullCommand == "regenerate")
+                {
+                    if(sceneManager.Current is InGameScene)
+                    {
+                        (sceneManager.Current as InGameScene).RegenerateWorld(true);
+                        chatHistory.Add(("Regenerated and restarted world!", Color.Beige));
+                    }
+                    else
+                    {
+                        chatHistory.Add(("Couldn't regenerate world...", Color.Red));
+                    }
                 }
                 else
                 {

@@ -30,7 +30,7 @@ namespace SandboxGame
         public Game()
         {
             this.GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content"; // cowabummer I can not change this mauricio
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
             IsFixedTimeStep = true; // set to false to unlock frame rate.

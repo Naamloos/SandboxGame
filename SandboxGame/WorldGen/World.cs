@@ -4,6 +4,7 @@ using ProtoBuf;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Storage;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -22,28 +23,19 @@ namespace SandboxGame.WorldGen
         private AssetManager assetManager;
         private SpriteBatch spriteBatch;
         private Camera camera;
+        private IStorageSupplier storage;
 
-        private World(string name, WorldInfo worldInfo, bool forceNew, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera)
+        private World(string name, WorldInfo worldInfo, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera, IStorageSupplier storage)
         {
             this.assetManager = assetManager;
             this.spriteBatch = spriteBatch;
+            this.storage = storage;
             _name = name;
             _worldInfo = worldInfo;
 
             _noise = new FastNoiseLite();
             _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
             _noise.SetSeed(worldInfo.Seed);
-
-            if(forceNew)
-            {
-                // Delete all old chunks
-                var worldsDir = Path.Combine(Program.WORLDS_PATH, name);
-                if (Directory.Exists(worldsDir))
-                {
-                    Directory.Delete(worldsDir, true);
-                }
-                Directory.CreateDirectory(worldsDir);
-            }
         }
 
         private Rectangle visibleChunks = new Rectangle(0, 0, 0, 0);
@@ -84,29 +76,16 @@ namespace SandboxGame.WorldGen
             }
         }
 
-        public static World Load(string name, bool forceNew, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera)
+        public static World Load(string name, AssetManager assetManager, SpriteBatch spriteBatch, Camera camera, IStorageSupplier storage)
         {
-            var path = Path.Combine(Program.WORLDS_PATH, $"{name}.dat");
-
-            if(forceNew && File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            WorldInfo worldInfo;
-            if (File.Exists(path))
-            {
-                using var file = File.OpenRead(path);
-                worldInfo = Serializer.Deserialize<WorldInfo>(file);
-            }
-            else
+            WorldInfo worldInfo = storage.ReadWorldMetadata("world");
+            if(worldInfo is null)
             {
                 worldInfo = new WorldInfo();
-                using var file = File.Create(path);
-                Serializer.Serialize(file, worldInfo);
+                storage.WriteWorldMetadata(name, worldInfo);
             }
 
-            var world = new World(name, worldInfo, forceNew, assetManager, spriteBatch, camera);
+            var world = new World(name, worldInfo, assetManager, spriteBatch, camera, storage);
             return world;
         }
 
@@ -119,8 +98,11 @@ namespace SandboxGame.WorldGen
             }
 
             _chunkLock.Wait();
-            if (Chunk.TryLoadFromFile(_name, chunkX, chunkY, _worldInfo.TileSize, assetManager, out Chunk chunk))
+            var chunk = storage.ReadChunk(_name, chunkX, chunkY);
+
+            if (chunk is not null)
             {
+                chunk.Initialize(_worldInfo.TileSize, assetManager);
                 _chunkCache.Add((chunkX, chunkY), chunk);
                 _chunkLock.Release();
                 return chunk;
@@ -149,7 +131,7 @@ namespace SandboxGame.WorldGen
             }
 
             var chunk = new Chunk(chunkX, chunkY, _worldInfo.ChunkSize, _worldInfo.TileSize, tiles, assetManager, spriteBatch, camera);
-            chunk.SaveToFile(_name);
+            storage.WriteChunkFile(_name, chunkX, chunkY, chunk);
             return chunk;
         }
 

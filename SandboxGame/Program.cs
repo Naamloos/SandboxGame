@@ -22,8 +22,6 @@ namespace SandboxGame
 {
     public static class Program
     {
-        public static string BASE_SAVE_PATH = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "savedata");
-        public static string WORLDS_PATH = Path.Combine(BASE_SAVE_PATH, "worlds");
         private static string[] ARGS;
 
         public static Game Game { get; private set; } // HACK
@@ -31,13 +29,6 @@ namespace SandboxGame
         public static void Main(string[] args)
         {
             ARGS = args;
-
-            // ensure savedata directories are available
-            if(!Directory.Exists(BASE_SAVE_PATH))
-                Directory.CreateDirectory(BASE_SAVE_PATH);
-
-            if(!Directory.Exists(WORLDS_PATH))
-                Directory.CreateDirectory(WORLDS_PATH);
 
             Game = new Game();
 
