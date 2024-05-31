@@ -52,7 +52,7 @@ namespace SandboxGame.WorldGen
             var width = (viewPort.Width - (viewPort.Width % fullChunkSize)) + fullChunkSize;
             var height = (viewPort.Height - (viewPort.Height % fullChunkSize)) + fullChunkSize;
 
-            visibleChunks = new Rectangle(x / fullChunkSize, y / fullChunkSize, width / fullChunkSize, height / fullChunkSize);
+            visibleChunks = new Rectangle((int)x / fullChunkSize, (int)y / fullChunkSize, (int)width / fullChunkSize, (int)height / fullChunkSize);
 
             // get chunks, update them
             for (int cx = visibleChunks.X; cx < visibleChunks.Width; cx++)

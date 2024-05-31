@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Camera;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Cameras;
 using System;
@@ -10,7 +12,7 @@ namespace SandboxGame.Engine.Entity
 {
     public abstract class BaseEntity : ICameraTarget
     {
-        public abstract Rectangle Bounds { get; }
+        public abstract RectangleUnit Bounds { get; }
 
         public abstract Vector2 Position { get; set; }
 

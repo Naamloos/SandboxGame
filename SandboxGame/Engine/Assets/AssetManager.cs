@@ -3,17 +3,18 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
+using SandboxGame.Api.Assets;
 
 namespace SandboxGame.Engine.Assets
 {
-    public class AssetManager
+    public class AssetManager : IAssetManager
     {
         private ContentManager _contentManager;
         private GraphicsDevice _graphics;
 
         private SpriteFont _fallbackFont;
 
-        private Dictionary<string, Sprite> _sprites = new();
+        private Dictionary<string, LoadedSprite> _sprites = new();
         private Dictionary<string, SpriteFont> _fonts = new();
 
         public Effect _colorOverlay { get; private set; }
@@ -70,20 +71,25 @@ namespace SandboxGame.Engine.Assets
             }
         }
 
-        public Sprite GetSprite(string name)
+        public LoadedSprite GetSprite(string name)
         {
-            return _sprites[name].Copy();
+            return _sprites[name].Copy() as LoadedSprite;
         }
 
-        private Sprite generateBox(Color color)
+        public LoadedSprite GetSprite<T>(string name) where T : LoadedSprite
+        {
+            return _sprites[typeof(T).Name].Copy() as LoadedSprite;
+        }
+
+        private LoadedSprite generateBox(Color color)
         {
             var debugBox = new Texture2D(_graphics, 1, 1);
             debugBox.SetData(new[] { color });
 
-            return new Sprite(1,1,TimeSpan.Zero, _colorOverlay, debugBox);
+            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, debugBox);
         }
 
-        private Sprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)
+        private LoadedSprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)
         {
             int i = 0;
             List<Texture2D> textures = new List<Texture2D>();
@@ -101,7 +107,23 @@ namespace SandboxGame.Engine.Assets
                 }
             }
 
-            return new Sprite(baseWidth, baseHeight, baseDuration, _colorOverlay, textures.ToArray());
+            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, textures.ToArray());
+        }
+
+        public void RegisterSprite<T>() where T : ISpriteAsset
+        {
+            List<Texture2D> textures = new List<Texture2D>();
+
+            var sprite = Activator.CreateInstance<T>();
+
+            for (int i = 0; i < sprite.Frames; i++)
+            {
+                textures.Add(Texture2D.FromStream(_graphics, sprite.GetFrame(i)));
+            }
+
+            var metaData = sprite.GetMetadata();
+
+            _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height, metaData.AnimationDuration, _colorOverlay, textures.ToArray()));
         }
     }
 }

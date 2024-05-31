@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Entity;
@@ -10,12 +11,12 @@ namespace SandboxGame.WorldGen
 {
     public class WorldInteractionBox : BaseEntity
     {
-        private Sprite tile;
+        private LoadedSprite tile;
         private Vector2 position = Vector2.Zero;
         private MouseHelper mouseHelper;
         private SpriteBatch spriteBatch;
 
-        public override Rectangle Bounds => throw new NotImplementedException();
+        public override RectangleUnit Bounds => new RectangleUnit(0,0,0,0);
 
         public override Vector2 Position { get => position; set => position = value; }
 

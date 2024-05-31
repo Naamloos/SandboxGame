@@ -48,7 +48,11 @@ namespace SandboxGame.Server
             while (true)
             {
                 var receivedBytes = await client.ReceiveAsync(buffer);
-                // TODO handle packet
+
+                // first, read packet id, then, read length, then read data
+                var packetId = BitConverter.ToInt32(buffer.Array, 0);
+                var packetLength = BitConverter.ToInt32(buffer.Array, 4);
+                var packetData = Encoding.UTF8.GetString(buffer.Array, 8, packetLength); // TODO proper packet data reading
             }
         }
     }

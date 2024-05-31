@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -11,11 +12,11 @@ namespace SandboxGame.Entities
 {
     public class Player : BaseEntity
     {
-        public override Rectangle Bounds
+        public override RectangleUnit Bounds
         {
             get
             {
-                return new Rectangle(Position.ToPoint(), new Point(32, 32));
+                return new RectangleUnit(Position.X, Position.Y, 32, 32);
             }
         }
 
@@ -27,14 +28,14 @@ namespace SandboxGame.Entities
 
         private bool movesRight = true;
 
-        private Sprite headSprite;
-        private Sprite bodySprite;
-        private Sprite handSprite;
-        private Sprite leftFootSprite;
-        private Sprite rightFootSprite;
+        private LoadedSprite headSprite;
+        private LoadedSprite bodySprite;
+        private LoadedSprite handSprite;
+        private LoadedSprite leftFootSprite;
+        private LoadedSprite rightFootSprite;
 
-        private Sprite player;
-        private Sprite debugBox;
+        private LoadedSprite player;
+        private LoadedSprite debugBox;
 
         SpriteBatch spriteBatch;
         Camera camera;
@@ -58,7 +59,7 @@ namespace SandboxGame.Entities
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Point center = Bounds.Center;
+            PointUnit center = Bounds.Center;
 
             //Point bodyPos = new Point(center.X - bodySprite.Width / 2, center.Y - bodySprite.Height / 2);
             //Point headPos = new Point(center.X - headSprite.Width / 2, (bodyPos.Y + 1) - (headSprite.Height));

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -11,7 +12,7 @@ namespace SandboxGame.Scenes
 {
     internal class MenuScene : BaseScene
     {
-        private Sprite _grassTest;
+        private LoadedSprite _grassTest;
         private SpriteFont _font;
 
         private AssetManager _assetManager;
@@ -45,12 +46,11 @@ namespace SandboxGame.Scenes
         {
             _grassTest.Update(gameTime);
 
-            mouseTouchesSprite = _grassTest.Bounds.Intersects(new Rectangle(_camera.ScreenToWorld(Mouse.GetState(_gameWindow).Position.ToVector2()).ToPoint(),
-                new Point(1, 1)));
+            mouseTouchesSprite = _grassTest.Bounds.Intersects(new RectangleUnit(_mouseHelper.WorldPos.X, _mouseHelper.WorldPos.Y, 1, 1));
 
             if (_mouseHelper.LeftClick && mouseTouchesSprite)
             {
-                if(_camera.IsFollowing)
+                if (_camera.IsFollowing)
                 {
                     _camera.StopFollowing(false);
                 }
@@ -60,11 +60,11 @@ namespace SandboxGame.Scenes
                 }
             }
 
-            if(posX > 700)
+            if (posX > 700)
             {
                 goesLeft = true;
             }
-            else if( posX < 300)
+            else if (posX < 300)
             {
                 goesLeft = false;
             }
@@ -78,7 +78,7 @@ namespace SandboxGame.Scenes
             _spriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
             _grassTest.Draw(_spriteBatch, posX, 200,
                 camera: _camera, bloom: mouseTouchesSprite);
-            _spriteBatch.DrawString(_font, "Drawn on Game layer", _camera.ScreenCenter, Color.Yellow);
+            _spriteBatch.DrawString(_font, "Drawn on Game layer", new Vector2((int)_camera.ScreenCenter.X, (int)_camera.ScreenCenter.Y), Color.Yellow);
 
             _camera.DrawToUI(() =>
             {

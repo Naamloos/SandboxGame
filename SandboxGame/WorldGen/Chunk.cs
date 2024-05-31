@@ -27,10 +27,10 @@ namespace SandboxGame.WorldGen
         [ProtoMember(5)]
         public Tile[] Tiles { get; set; }
 
-        private Sprite grass;
-        private Sprite water;
-        private Sprite sand;
-        private Sprite tree;
+        private LoadedSprite grass;
+        private LoadedSprite water;
+        private LoadedSprite sand;
+        private LoadedSprite tree;
 
         private int tileSize;
 

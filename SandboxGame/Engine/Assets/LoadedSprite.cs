@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Assets;
+using SandboxGame.Api.Camera;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine.Cameras;
 using System;
 using System.Collections.Generic;
@@ -7,7 +10,7 @@ using System.Linq;
 
 namespace SandboxGame.Engine.Assets
 {
-    public class Sprite : IDisposable, ICameraTarget
+    public class LoadedSprite : IDisposable, ICameraTarget, ILoadedSprite
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -17,9 +20,9 @@ namespace SandboxGame.Engine.Assets
         private int _currentFrame;
         private Effect _colorOverlay;
 
-        public Rectangle Bounds { get; private set; }
+        public RectangleUnit Bounds { get; private set; }
 
-        public Sprite(int width, int height, TimeSpan duration, Effect colorOverlay, params Texture2D[] frames)
+        public LoadedSprite(int width, int height, TimeSpan duration, Effect colorOverlay, params Texture2D[] frames)
         {
             Width = width;
             Height = height;
@@ -42,7 +45,7 @@ namespace SandboxGame.Engine.Assets
             int width = widthOverride > 0 ? widthOverride : Width;
             int height = heightOverride > 0 ? heightOverride : Height;
 
-            Bounds = new Rectangle(x, y, width, height);
+            Bounds = new RectangleUnit(x, y, width, height);
 
             if(bloom && camera is not null)
             {
@@ -53,7 +56,8 @@ namespace SandboxGame.Engine.Assets
                 camera.DisableEffect();
             }
 
-            spriteBatch.Draw(_frames[_currentFrame], Bounds, null, lightColor ?? Color.White, rotation, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            var rect = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);
+            spriteBatch.Draw(_frames[_currentFrame], rect, null, lightColor ?? Color.White, rotation, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
         }
 
         public void SetDuration(TimeSpan duration)
@@ -67,9 +71,9 @@ namespace SandboxGame.Engine.Assets
             _frames.Clear();
         }
 
-        public Sprite Copy()
+        public ILoadedSprite Copy()
         {
-            return new Sprite(Width, Height, _duration, _colorOverlay ,_frames.ToArray());
+            return new LoadedSprite(Width, Height, _duration, _colorOverlay ,_frames.ToArray());
         }
     }
 }

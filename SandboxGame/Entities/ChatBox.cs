@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Entity;
@@ -18,7 +19,7 @@ namespace SandboxGame.Entities
 {
     public class ChatBox : BaseEntity
     {
-        public override Rectangle Bounds => new Rectangle(0, 0, 0, 0);
+        public override RectangleUnit Bounds => new RectangleUnit(0, 0, 0, 0);
 
         public override Vector2 Position { get => new Vector2(0, 0); set { return; } }
 
@@ -31,7 +32,7 @@ namespace SandboxGame.Entities
         private bool active = false;
         private SpriteFont chatFont;
         private Camera camera;
-        private Sprite chatBack;
+        private LoadedSprite chatBack;
         private InputHelper inputHelper;
         private GameWindow gameWindow;
 
@@ -63,7 +64,7 @@ namespace SandboxGame.Entities
             {
                 if (active)
                 {
-                    chatBack.Draw(spriteBatch, 0, camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
+                    chatBack.Draw(spriteBatch, 0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
                         lightColor: new Color(0, 0, 0, 180));
                     spriteBatch.DrawString(chatFont, "> ", new Vector2(5, camera.ScreenView.Bottom - (markerSize.Y + 5)), Color.BlueViolet);
                     spriteBatch.DrawString(chatFont, inputText, new Vector2(5 + markerSize.X, camera.ScreenView.Bottom - (textSize.Y + 5)), Color.White);

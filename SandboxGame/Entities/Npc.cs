@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -11,11 +12,11 @@ namespace SandboxGame.Entities
 {
     public class Npc : BaseEntity
     {
-        public override Rectangle Bounds
+        public override RectangleUnit Bounds
         {
             get
             {
-                return new Rectangle(Position.ToPoint(), new Point(32, 32));
+                return new RectangleUnit(Position.X, Position.Y, 32, 32);
             }
         }
 
@@ -23,10 +24,10 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => true;
 
-        private Sprite sprite;
+        private LoadedSprite sprite;
         private bool hovering;
         private SpriteFont dialogFont;
-        private Sprite dialogTicker;
+        private LoadedSprite dialogTicker;
 
         private const string NPC_NAME = "Markiplier";
         private const string NPC_DIALOG = "Hello everybody, my name is Markiplier\nAnd welcome to Five Nights At Freddy's\nHar Har HarHar Har";
@@ -66,7 +67,7 @@ namespace SandboxGame.Entities
             sprite.Update(gameTime);
             // NPCs can be interacted with from a longer range, make it 250 :)
             var interactable = FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
-            hovering = Bounds.Intersects(new Rectangle(mouseHelper.WorldPos.ToPoint(), new Point(1, 1))) && interactable;
+            hovering = Bounds.Intersects(new RectangleUnit(mouseHelper.WorldPos.X, mouseHelper.WorldPos.Y, 1, 1)) && interactable;
 
             if (hovering && mouseHelper.LeftClick && dialog == null)
             {

@@ -1,22 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Camera;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine.Input;
 using System;
 using System.Collections.Generic;
 
 namespace SandboxGame.Engine.Cameras
 {
-    public class Camera
+    public class Camera : ICamera
     {
         private SpriteBatch _spriteBatch;
         private GameWindow _gameWindow;
         private MouseHelper _mouseHelper;
 
-        private Vector2 _position = new Vector2(0, 0);
+        private PointUnit _position = PointUnit.Zero;
         private float _zoom = 2.4f;
         private float _rotation = 0f;
 
-        private Vector2 _moveTowards = Vector2.Zero;
+        private PointUnit _moveTowards = PointUnit.Zero;
         private float distancePerSecond = 1f;
 
         private ICameraTarget defaultFollow = null;
@@ -26,20 +28,24 @@ namespace SandboxGame.Engine.Cameras
         private const float MAX_ZOOM = 6f;
         private const float MIN_ZOOM = 0.8f;
 
-        public Rectangle WorldView
+        public RectangleUnit WorldView
         {
-            get => new Rectangle(ScreenToWorld(new Vector2(0, 0)).ToPoint(),
-                ScreenToWorld(new Vector2(_gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height)).ToPoint());
+            get
+            {
+                var xy = ScreenToWorld(new Vector2(0, 0));
+                var wh = ScreenToWorld(new Vector2(_gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height));
+                return new RectangleUnit(xy.X, xy.Y, wh.X, wh.Y);
+            }
         }
 
-        public Rectangle ScreenView
+        public RectangleUnit ScreenView
         {
-            get => new Rectangle(0, 0, _gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height);
+            get => new RectangleUnit(0, 0, _gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height);
         }
 
-        public Vector2 ScreenCenter
+        public PointUnit ScreenCenter
         {
-            get => new Vector2(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
+            get => new PointUnit(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
         }
 
         public bool IsFollowing
@@ -62,21 +68,21 @@ namespace SandboxGame.Engine.Cameras
             get => Matrix.CreateTranslation(-(int)_position.X, -(int)_position.Y, 0)
                 * Matrix.CreateRotationZ(_rotation)
                 * Matrix.CreateScale(new Vector3(_zoom, _zoom, 1))
-                * Matrix.CreateTranslation(new Vector3(ScreenCenter, 0));
+                * Matrix.CreateTranslation(new Vector3(ScreenCenter.X, ScreenCenter.Y, 0));
         }
 
         public Camera(SpriteBatch spriteBatch, GameWindow window, MouseHelper mouseHelper)
         {
             _spriteBatch = spriteBatch;
             _gameWindow = window;
-            _position = new Vector2(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
+            _position = new PointUnit(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
             _moveTowards = _position;
             _mouseHelper = mouseHelper;
         }
 
         public void Reset()
         {
-            _moveTowards = new Vector2(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
+            _moveTowards = new PointUnit(_gameWindow.ClientBounds.Width * 0.5f, _gameWindow.ClientBounds.Height * 0.5f);
         }
 
         public void SetSpeed(float traveledPerSecond)
@@ -115,16 +121,16 @@ namespace SandboxGame.Engine.Cameras
             {
                 if (smoothFollow)
                 {
-                    _moveTowards = following.Bounds.Center.ToVector2();
+                    _moveTowards = following.Bounds.Center;
                 }
                 else
                 {
-                    _position = following.Bounds.Center.ToVector2();
+                    _position = following.Bounds.Center;
                     return;
                 }
             }
 
-            var distance = Vector2.Distance(_position, _moveTowards);
+            var distance = PointUnit.Distance(_position, _moveTowards);
             var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             var distanceTraveled = (distancePerSecond / 1000 * frameTime) * (distance / 1000 * frameTime);

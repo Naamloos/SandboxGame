@@ -27,6 +27,7 @@
     <PackageReference Include="protobuf-net" Version="3.2.30" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SandboxGame.Api\SandboxGame.Api.csproj" />
     <ProjectReference Include="..\SandboxGame.Common\SandboxGame.Common.csproj" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

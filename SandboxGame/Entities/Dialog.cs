@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -17,7 +18,7 @@ namespace SandboxGame.Entities
         private BaseEntity _entity;
 
         private SpriteFont _font;
-        private Sprite _dialogTicker;
+        private LoadedSprite _dialogTicker;
 
         private Vector2 _dialogPos = Vector2.Zero;
         private Vector2 _namePos = Vector2.Zero;
@@ -49,7 +50,7 @@ namespace SandboxGame.Entities
 
         bool firstTick = true;
 
-        public override Rectangle Bounds => new Rectangle(0, 0, 0, 0);
+        public override RectangleUnit Bounds => new RectangleUnit(0, 0, 0, 0);
 
         public override Vector2 Position { get => new Vector2(0, 0); set { return; } }
 
