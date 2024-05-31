@@ -11,5 +11,9 @@ namespace SandboxGame.Api.Assets
         public void RegisterSprite<T>() where T : ISpriteAsset;
 
         public ILoadedSprite GetSprite<T>() where T : ISpriteAsset;
+
+        public ILoadedSoundEffect GetSoundEffect<T>() where T : ISoundEffectAsset;
+
+        public void RegisterSoundEffect<T>() where T : ISoundEffectAsset;
     }
 }

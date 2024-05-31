@@ -18,7 +18,7 @@ namespace SandboxGame.Api.Assets
         /// </summary>
         /// <param name="frame">Frame id, 0 to <see cref="Frames"/> - 1</param>
         /// <returns>Asset stream</returns>
-        public Stream GetFrame(int frame);
+        public Stream GetFrameStream(int frame);
 
         public SpriteMetadata GetMetadata();
     }

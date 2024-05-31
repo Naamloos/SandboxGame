@@ -7,15 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\dialup-internet.mp3" />
     <None Remove="Assets\klungo.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\dialup-internet.mp3" />
     <EmbeddedResource Include="Assets\klungo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SandboxGame.Api\SandboxGame.Api.csproj" />
   </ItemGroup>
+  
+  <Target Name="MovePluginBuild" AfterTargets="Build">
+    <Move SourceFiles="bin\Debug\net8.0\ExampleMod.dll" DestinationFolder="..\SandboxGame\bin\Debug\net8.0\data\mods" />
+  </Target>
 
 </Project>

@@ -6,16 +6,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExampleMod.Assets
+namespace ExampleMod.Sprites
 {
-    public class SomeCoolSprite : ISpriteAsset
+    public class KlungoSprite : ISpriteAsset
     {
         public int Frames => 1;
 
-        public Stream GetFrame(int frame)
+        public Stream GetFrameStream(int frame)
         {
             // Make sure this item is an embedded resource!
-            return this.GetType().Assembly.GetManifestResourceStream("ExampleMod.Assets.klungo.png")!;
+            return GetType().Assembly.GetManifestResourceStream("ExampleMod.Assets.klungo.png")!;
+            // For animated sprites, you'll want to load every frame by it's given index. The amount of frames is returned by the Frames property.
         }
 
         public SpriteMetadata GetMetadata()

@@ -1,4 +1,4 @@
-﻿using ExampleMod.Assets;
+﻿using ExampleMod.Sprites;
 using SandboxGame.Api.Assets;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace ExampleMod.Entities
 {
-    public class SomeCoolEntity : IEntity
+    public class KlungoEntity : IEntity
     {
-        public RectangleUnit Bounds => new RectangleUnit(Position.X, Position.Y, someCoolLoadedSprite.Width, someCoolLoadedSprite.Height);
+        public RectangleUnit Bounds => new RectangleUnit(Position.X, Position.Y, klungoSprite.Width, klungoSprite.Height);
 
         public PointUnit Position { get; set; } = new PointUnit(-100, -100);
 
@@ -20,16 +20,16 @@ namespace ExampleMod.Entities
 
         public IEntityManager EntityManager { get; set; }
 
-        private ILoadedSprite someCoolLoadedSprite;
+        private ILoadedSprite klungoSprite;
 
-        public SomeCoolEntity(IAssetManager assetManager) 
+        public KlungoEntity(IAssetManager assetManager) 
         {
-            this.someCoolLoadedSprite = assetManager.GetSprite<SomeCoolSprite>();
+            this.klungoSprite = assetManager.GetSprite<KlungoSprite>();
         }
 
         public void Draw()
         {
-            someCoolLoadedSprite.Draw((int)Position.X, (int)Position.Y); // TODO accept float values
+            klungoSprite.Draw((int)Position.X, (int)Position.Y); // TODO accept float values
         }
 
         public void SetPosition(PointUnit position)

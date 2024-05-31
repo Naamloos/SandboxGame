@@ -1,5 +1,6 @@
-﻿using ExampleMod.Assets;
-using ExampleMod.Entities;
+﻿using ExampleMod.Entities;
+using ExampleMod.SoundEffects;
+using ExampleMod.Sprites;
 using SandboxGame.Api;
 using SandboxGame.Api.Assets;
 using SandboxGame.Api.Entity;
@@ -32,7 +33,8 @@ namespace ExampleMod
         public void OnLoad()
         {
             Console.WriteLine("ExampleMod loading assets!");
-            assetManager.RegisterSprite<SomeCoolSprite>(); // this is our cool sprite :3
+            assetManager.RegisterSprite<KlungoSprite>(); // this is our cool sprite :3
+            assetManager.RegisterSoundEffect<DialupSoundEffect>();
             // I recommend actually doing this in the OnLoad method of your mod, since the game may break loading assets elsewhere. Not sure though.
         }
 
@@ -43,7 +45,8 @@ namespace ExampleMod
 
         public void OnWorldLoaded()
         {
-            entityManager.SpawnEntity<SomeCoolEntity>(); // this is our cool entity :3
+            entityManager.SpawnEntity<KlungoEntity>(); // this is our cool entity :3
+            assetManager.GetSoundEffect<DialupSoundEffect>().Play(1f);
         }
     }
 }

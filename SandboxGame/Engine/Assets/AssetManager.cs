@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using SandboxGame.Api.Assets;
+using Microsoft.Xna.Framework.Audio;
+using SandboxGame.Engine.Cameras;
 
 namespace SandboxGame.Engine.Assets
 {
@@ -13,20 +15,23 @@ namespace SandboxGame.Engine.Assets
         private GraphicsDevice _graphics;
         private GameTimeHelper _gameTime;
         private SpriteBatch _spriteBatch;
+        private Camera _camera;
 
         private SpriteFont _fallbackFont;
 
         private Dictionary<string, LoadedSprite> _sprites = new();
         private Dictionary<string, SpriteFont> _fonts = new();
+        private Dictionary<string, ILoadedSoundEffect> _soundEffects = new();
 
         public Effect _colorOverlay { get; private set; }
 
-        public AssetManager(ContentManager contentManager, GraphicsDevice gd, GameTimeHelper gameTime, SpriteBatch spriteBatch)
+        public AssetManager(ContentManager contentManager, GraphicsDevice gd, GameTimeHelper gameTime, SpriteBatch spriteBatch, Camera camera)
         {
             _contentManager = contentManager;
             _graphics = gd;
             _gameTime = gameTime;
             _spriteBatch = spriteBatch;
+            _camera = camera;
             Initialize();
         }
 
@@ -82,7 +87,12 @@ namespace SandboxGame.Engine.Assets
 
         public ILoadedSprite GetSprite<T>() where T : ISpriteAsset
         {
-            return _sprites[typeof(T).Name].Copy() as LoadedSprite;
+            return _sprites[typeof(T).Name].Copy();
+        }
+
+        public ILoadedSoundEffect GetSoundEffect<T>() where T : ISoundEffectAsset
+        {
+            return _soundEffects[typeof(T).Name];
         }
 
         private LoadedSprite generateBox(Color color)
@@ -122,12 +132,18 @@ namespace SandboxGame.Engine.Assets
 
             for (int i = 0; i < sprite.Frames; i++)
             {
-                textures.Add(Texture2D.FromStream(_graphics, sprite.GetFrame(i)));
+                textures.Add(Texture2D.FromStream(_graphics, sprite.GetFrameStream(i)));
             }
 
             var metaData = sprite.GetMetadata();
 
             _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height, metaData.AnimationDuration, _colorOverlay, _spriteBatch, _gameTime, textures.ToArray()));
+        }
+
+        public void RegisterSoundEffect<T>() where T : ISoundEffectAsset
+        {
+            var soundEffect = Activator.CreateInstance<T>();
+            _soundEffects.Add(typeof(T).Name, new LoadedSoundEffect(SoundEffect.FromStream(soundEffect.GetStream()), _camera));
         }
     }
 }
