@@ -79,7 +79,7 @@ namespace SandboxGame.Entities
             var nameSize = _font.MeasureString(_name);
             var dialogSize = _font.MeasureString(_dialog[_currentIndex]);
 
-            var entityTopCenter = _camera.WorldToScreen(new Vector2(_entity.Bounds.Center.X, _entity.Bounds.Top));
+            var entityTopCenter = _camera.WorldToScreen(new PointUnit(_entity.Bounds.Center.X, _entity.Bounds.Top));
             _tickerPos = new Vector2(entityTopCenter.X - _dialogTicker.Width / 2, entityTopCenter.Y - 15 - _dialogTicker.Height);
             _dialogPos = new Vector2(entityTopCenter.X - dialogSize.X / 2, _tickerPos.Y - 15 - dialogSize.Y);
             _namePos = new Vector2(entityTopCenter.X - nameSize.X / 2, _dialogPos.Y - 15 - nameSize.Y);

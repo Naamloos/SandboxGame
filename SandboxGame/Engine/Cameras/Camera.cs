@@ -32,8 +32,8 @@ namespace SandboxGame.Engine.Cameras
         {
             get
             {
-                var xy = ScreenToWorld(new Vector2(0, 0));
-                var wh = ScreenToWorld(new Vector2(_gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height));
+                var xy = ScreenToWorld(new PointUnit(0, 0));
+                var wh = ScreenToWorld(new PointUnit(_gameWindow.ClientBounds.Width, _gameWindow.ClientBounds.Height));
                 return new RectangleUnit(xy.X, xy.Y, wh.X, wh.Y);
             }
         }
@@ -147,20 +147,32 @@ namespace SandboxGame.Engine.Cameras
                 _position = _moveTowards;
             }
 
-            var screenToWorld = ScreenToWorld(new Vector2((int)_mouseHelper.ScreenPos.X, (int)_mouseHelper.ScreenPos.Y));
+            var screenToWorld = ScreenToWorld(new PointUnit((int)_mouseHelper.ScreenPos.X, (int)_mouseHelper.ScreenPos.Y));
             _mouseHelper.WorldPos = new PointUnit(screenToWorld.X, screenToWorld.Y); // TODO implement translation matrixes for my own units
 
             DebugHelper.SetDebugValues("CAMERA", $"x: {_position.X.ToString().PadRight(15)} y: {_position.Y.ToString().PadRight(15)}");
         }
 
-        public Vector2 WorldToScreen(Vector2 worldCoords)
+        private Vector2 WorldToScreen(Vector2 worldCoords)
         {
             return Vector2.Transform(worldCoords, _translationMatrix);
         }
 
-        public Vector2 ScreenToWorld(Vector2 screenCoords)
+        private Vector2 ScreenToWorld(Vector2 screenCoords)
         {
             return Vector2.Transform(screenCoords, Matrix.Invert(_translationMatrix));
+        }
+
+        public PointUnit WorldToScreen(PointUnit worldCoords)
+        {
+            var screenCoords = WorldToScreen(new Vector2(worldCoords.X, worldCoords.Y));
+            return new PointUnit(screenCoords.X, screenCoords.Y);
+        }
+
+        public PointUnit ScreenToWorld(PointUnit screenCoords)
+        {
+            var worldCoords = ScreenToWorld(new Vector2(screenCoords.X, screenCoords.Y));
+            return new PointUnit(worldCoords.X, worldCoords.Y);
         }
 
         public void DrawOnCamera(Action draw)

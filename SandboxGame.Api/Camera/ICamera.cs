@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using SandboxGame.Api.Units;
@@ -17,5 +18,9 @@ namespace SandboxGame.Api.Camera
         float Zoom { get; }
 
         public void DrawOnCamera(Action draw);
+
+        public PointUnit WorldToScreen(PointUnit worldCoords);
+
+        public PointUnit ScreenToWorld(PointUnit screenCoords);
     }
 }
