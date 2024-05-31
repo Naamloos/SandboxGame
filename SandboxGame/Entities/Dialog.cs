@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
@@ -52,11 +53,15 @@ namespace SandboxGame.Entities
 
         bool firstTick = true;
 
-        public override RectangleUnit Bounds => new RectangleUnit(0, 0, 0, 0);
+        public override RenderLayer RenderLayer => RenderLayer.UserInterface;
+
+        public override RectangleUnit Bounds => new RectangleUnit(0, 0, _camera.ScreenView.Width, _camera.ScreenView.Height);
 
         public override PointUnit Position { get => new PointUnit(0, 0); set { return; } }
 
         public override bool IsWorldEntity => false;
+
+        public override bool Interactable => false;
 
         public override void Update()
         {
@@ -69,13 +74,9 @@ namespace SandboxGame.Entities
 
             if (_currentIndex >= _dialog.Length)
             {
-                if (_onDialogDone is not null)
-                {
-                    _onDialogDone();
-                    _onDialogDone = null;
-                }
                 return;
             }
+
             var nameSize = _font.MeasureString(_name);
             var dialogSize = _font.MeasureString(_dialog[_currentIndex]);
 
@@ -84,12 +85,18 @@ namespace SandboxGame.Entities
             _dialogPos = new Vector2(entityTopCenter.X - dialogSize.X / 2, _tickerPos.Y - 15 - dialogSize.Y);
             _namePos = new Vector2(entityTopCenter.X - nameSize.X / 2, _dialogPos.Y - 15 - nameSize.Y);
 
-            if (_mouseHelper.LeftClick || _inputHelper.GetKeyPressed("interact"))
-            {
-                _currentIndex++;
-            }
-
             _dialogTicker.Update();
+        }
+
+        public override void OnClick()
+        {
+            _currentIndex++;
+
+            if (_onDialogDone is not null)
+            {
+                _onDialogDone();
+                _onDialogDone = null;
+            }
         }
 
         public override void Draw()
@@ -115,5 +122,8 @@ namespace SandboxGame.Entities
                 _dialogTicker.Draw((int)_tickerPos.X, (int)_tickerPos.Y);
             });
         }
+
+        // Operator overload converting to boolean
+        public static implicit operator bool(Dialog d) => d is not null;
     }
 }

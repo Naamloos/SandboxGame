@@ -14,7 +14,7 @@ namespace SandboxGame.Api.Assets
 
         public void Update();
 
-        public void Draw(int x, int y, bool bloom = false, bool flip = false,
+        public void Draw(int x, int y, bool interactable = false, bool flip = false,
             ICamera camera = null, uint? lightColor = null, int widthOverride = -1, int heightOverride = -1, float rotation = 0);
     }
 }

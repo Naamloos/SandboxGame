@@ -23,6 +23,8 @@ namespace SandboxGame.WorldGen
 
         public override bool IsWorldEntity => true;
 
+        public override bool Interactable => false;
+
         public WorldInteractionBox(MouseHelper mouseHelper, SpriteBatch spriteBatch, AssetManager assetManager)
         {
             this.mouseHelper = mouseHelper;

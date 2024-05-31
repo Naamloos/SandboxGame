@@ -1,4 +1,5 @@
 ﻿using ExampleMod.Sprites;
+using SandboxGame.Api;
 using SandboxGame.Api.Assets;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
@@ -20,6 +21,10 @@ namespace ExampleMod.Entities
 
         public IEntityManager EntityManager { get; set; }
 
+        public bool Interactable => true;
+
+        public RenderLayer RenderLayer => RenderLayer.Foreground;
+
         private ILoadedSprite klungoSprite;
 
         public KlungoEntity(IAssetManager assetManager) 
@@ -29,7 +34,7 @@ namespace ExampleMod.Entities
 
         public void Draw()
         {
-            klungoSprite.Draw((int)Position.X, (int)Position.Y); // TODO accept float values
+            klungoSprite.Draw((int)Position.X, (int)Position.Y, interactable: this.Interactable); // TODO accept float values
         }
 
         public void SetPosition(PointUnit position)
@@ -40,6 +45,13 @@ namespace ExampleMod.Entities
         public void Update()
         {
             // Update logic here
+            // Randomize position from -100, -100 to 100, 100
+            Position = new PointUnit(new Random().Next(-100, 100), new Random().Next(-100, 100));
+        }
+
+        public void OnClick()
+        {
+
         }
     }
 }

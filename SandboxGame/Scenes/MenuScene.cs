@@ -37,8 +37,6 @@ namespace SandboxGame.Scenes
             _camera.SetSpeed(200f);
         }
 
-        private bool mouseTouchesSprite = false;
-
         private int posX = 500;
         private bool goesLeft = false;
 
@@ -46,9 +44,7 @@ namespace SandboxGame.Scenes
         {
             _grassTest.Update();
 
-            mouseTouchesSprite = _grassTest.Bounds.Intersects(new RectangleUnit(_mouseHelper.WorldPos.X, _mouseHelper.WorldPos.Y, 1, 1));
-
-            if (_mouseHelper.LeftClick && mouseTouchesSprite)
+            if (_mouseHelper.LeftClick)
             {
                 if (_camera.IsFollowing)
                 {
@@ -76,8 +72,7 @@ namespace SandboxGame.Scenes
         {
             _spriteBatch.GraphicsDevice.SetRenderTarget(null);
             _spriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
-            _grassTest.Draw(posX, 200,
-                camera: _camera, bloom: mouseTouchesSprite);
+            _grassTest.Draw(posX, 200, camera: _camera, interactable: true);
             _spriteBatch.DrawString(_font, "Drawn on Game layer", new Vector2((int)_camera.ScreenCenter.X, (int)_camera.ScreenCenter.Y), Color.Yellow);
 
             _camera.DrawToUI(() =>

@@ -4,6 +4,7 @@ using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,13 @@ namespace SandboxGame.Engine.Assets
         private Effect _colorOverlay;
 
         private SpriteBatch _spriteBatch;
-        private GameTimeHelper gameTime;
+        private GameTimeHelper _gameTime;
+        private MouseHelper _mouseHelper;
 
         public RectangleUnit Bounds { get; private set; }
 
-        public LoadedSprite(int width, int height, TimeSpan duration, Effect colorOverlay, SpriteBatch spriteBatch, GameTimeHelper gameTimeHelper, params Texture2D[] frames)
+        public LoadedSprite(int width, int height, TimeSpan duration, Effect colorOverlay, 
+            SpriteBatch spriteBatch, GameTimeHelper gameTimeHelper, MouseHelper mouseHelper, params Texture2D[] frames)
         {
             Width = width;
             Height = height;
@@ -34,17 +37,22 @@ namespace SandboxGame.Engine.Assets
             _frames = frames.ToList();
             _colorOverlay = colorOverlay;
             _spriteBatch = spriteBatch;
-            gameTime = gameTimeHelper;
+            _gameTime = gameTimeHelper;
+            _mouseHelper = mouseHelper;
         }
+
+        private bool hovering = false;
 
         public void Update()
         {
-            var timer = gameTime.TotalGameTime.TotalMilliseconds % _duration.TotalMilliseconds;
+            var timer = _gameTime.TotalGameTime.TotalMilliseconds % _duration.TotalMilliseconds;
             var progress = (100 / _duration.TotalMilliseconds) * timer;
             _currentFrame = (int)Math.Abs((_frames.Count * progress) / 100);
+
+            hovering = Bounds.Intersects(_mouseHelper.WorldPos.AsRectangle());
         }
 
-        public void Draw(int x, int y, bool bloom = false, bool flip = false,
+        public void Draw(int x, int y, bool interactable = false, bool flip = false,
             ICamera camera = null, uint? lightColor = null, int widthOverride = -1, int heightOverride = -1, float rotation = 0)
         {
             int width = widthOverride > 0 ? widthOverride : Width;
@@ -53,7 +61,7 @@ namespace SandboxGame.Engine.Assets
 
             Bounds = new RectangleUnit(x, y, width, height);
 
-            if(bloom && camera is not null)
+            if(interactable && hovering && camera is not null)
             {
                 _colorOverlay.Parameters["overlayColor"].SetValue(Color.White.ToVector4());
                 gameCamera.EnableEffect(_colorOverlay);
@@ -81,7 +89,7 @@ namespace SandboxGame.Engine.Assets
 
         public ILoadedSprite Copy()
         {
-            return new LoadedSprite(Width, Height, _duration, _colorOverlay, _spriteBatch, gameTime ,_frames.ToArray());
+            return new LoadedSprite(Width, Height, _duration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, _frames.ToArray());
         }
     }
 }

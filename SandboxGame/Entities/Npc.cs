@@ -25,6 +25,8 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => true;
 
+        public override bool Interactable => dialog == null;
+
         private LoadedSprite sprite;
         private bool hovering;
         private SpriteFont dialogFont;
@@ -55,11 +57,26 @@ namespace SandboxGame.Entities
 
         public override void Draw()
         {
-            sprite.Draw((int)Position.X, (int)Position.Y, hovering, camera: camera);
+            sprite.Draw((int)Position.X, (int)Position.Y, camera: camera, interactable: this.Interactable);
 
             if (dialog != null)
             {
                 dialog.Draw();
+            }
+        }
+
+        public override void OnClick()
+        {
+            if(dialog == null)
+            {
+                camera.Follow(this);
+
+                dialog = entityManager.SpawnEntity<Dialog>();
+                dialog.SetData(NPC_NAME, NPC_DIALOG, this, () =>
+                {
+                    dialog = null;
+                    camera.StopFollowing();
+                });
             }
         }
 
@@ -70,19 +87,7 @@ namespace SandboxGame.Entities
             var interactable = FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
             hovering = Bounds.Intersects(new RectangleUnit(mouseHelper.WorldPos.X, mouseHelper.WorldPos.Y, 1, 1)) && interactable;
 
-            if (hovering && mouseHelper.LeftClick && dialog == null)
-            {
-                    camera.Follow(this);
-
-                    dialog = entityManager.SpawnEntity<Dialog>();
-                    dialog.SetData(NPC_NAME, NPC_DIALOG, this, () =>
-                    {
-                        dialog = null;
-                        camera.StopFollowing();
-                    });
-            }
-
-            if (dialog != null)
+            if (dialog)
             {
                 dialog.Update();
             }

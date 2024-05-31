@@ -29,6 +29,7 @@ namespace SandboxGame.Engine.DependencyInjection
         private InputHelper _inputHelper;
         private GameTimeHelper _gameTimeHelper;
         private ModManager _modManager;
+        private ILogger _logger;
 
         private bool debugInfo = false;
 
@@ -37,6 +38,8 @@ namespace SandboxGame.Engine.DependencyInjection
             InputHelper inputHelper, GameTimeHelper gameTimeHelper,
             ILogger<GameHostService> logger)
         {
+            _logger = logger;
+
             _camera = camera;
             _sceneManager = sceneManager;
             _spriteBatch = spriteBatch;

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using SandboxGame.Api.Assets;
 using Microsoft.Xna.Framework.Audio;
 using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Input;
 
 namespace SandboxGame.Engine.Assets
 {
@@ -16,6 +17,7 @@ namespace SandboxGame.Engine.Assets
         private GameTimeHelper _gameTime;
         private SpriteBatch _spriteBatch;
         private Camera _camera;
+        private MouseHelper _mouseHelper;
 
         private SpriteFont _fallbackFont;
 
@@ -25,13 +27,14 @@ namespace SandboxGame.Engine.Assets
 
         public Effect _colorOverlay { get; private set; }
 
-        public AssetManager(ContentManager contentManager, GraphicsDevice gd, GameTimeHelper gameTime, SpriteBatch spriteBatch, Camera camera)
+        public AssetManager(ContentManager contentManager, GraphicsDevice gd, GameTimeHelper gameTime, SpriteBatch spriteBatch, Camera camera, MouseHelper mouseHelper)
         {
             _contentManager = contentManager;
             _graphics = gd;
             _gameTime = gameTime;
             _spriteBatch = spriteBatch;
             _camera = camera;
+            _mouseHelper = mouseHelper;
             Initialize();
         }
 
@@ -100,7 +103,7 @@ namespace SandboxGame.Engine.Assets
             var debugBox = new Texture2D(_graphics, 1, 1);
             debugBox.SetData(new[] { color });
 
-            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, _spriteBatch, _gameTime, debugBox);
+            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, debugBox);
         }
 
         private LoadedSprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)
@@ -121,7 +124,7 @@ namespace SandboxGame.Engine.Assets
                 }
             }
 
-            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, _spriteBatch, _gameTime, textures.ToArray());
+            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, textures.ToArray());
         }
 
         public void RegisterSprite<T>() where T : ISpriteAsset
@@ -137,7 +140,8 @@ namespace SandboxGame.Engine.Assets
 
             var metaData = sprite.GetMetadata();
 
-            _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height, metaData.AnimationDuration, _colorOverlay, _spriteBatch, _gameTime, textures.ToArray()));
+            _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height,
+                metaData.AnimationDuration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, textures.ToArray()));
         }
 
         public void RegisterSoundEffect<T>() where T : ISoundEffectAsset

@@ -30,6 +30,10 @@ namespace SandboxGame.Engine.Entity
 
         public abstract bool IsWorldEntity { get; }
 
+        public abstract bool Interactable { get; }
+
+        public virtual RenderLayer RenderLayer => RenderLayer.Foreground;
+
         public void SetPosition(PointUnit position)
         {
             Position = position;
@@ -38,6 +42,11 @@ namespace SandboxGame.Engine.Entity
         public IEnumerable<IEntity> FindEntitiesNearby(float distance, Func<IEntity, bool> searchParams)
         {
             return EntityManager.FindEntitiesNearby(this, distance, searchParams);
+        }
+
+        public virtual void OnClick()
+        {
+            
         }
     }
 }

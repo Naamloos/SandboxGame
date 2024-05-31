@@ -9,15 +9,21 @@ namespace SandboxGame.Api.Entity
 {
     public interface IEntity
     {
+        public RenderLayer RenderLayer { get; }
+
         public RectangleUnit Bounds { get; }
 
         public PointUnit Position { get; set; }
 
         public bool IsWorldEntity { get; }
 
+        public bool Interactable { get; }
+
         public void Update();
 
         public void Draw();
+
+        public void OnClick();
 
         public void SetPosition(PointUnit position);
 

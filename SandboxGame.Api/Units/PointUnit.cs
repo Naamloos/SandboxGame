@@ -18,6 +18,8 @@ namespace SandboxGame.Api.Units
             Y = y;
         }
 
+        public RectangleUnit AsRectangle(float width = 1, float height = 1) => new RectangleUnit(X, Y, width, height);
+
         public static PointUnit Zero => new PointUnit(0, 0);
 
         // "borrowed" from MonoGame

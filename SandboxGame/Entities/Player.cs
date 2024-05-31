@@ -25,6 +25,8 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => true;
 
+        public override bool Interactable => false;
+
         private float speed = 345;
 
         private bool movesRight = true;

@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using SandboxGame.Api;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine.Assets;
+using SandboxGame.Engine.Cameras;
+using SandboxGame.Engine.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +20,14 @@ namespace SandboxGame.Engine.Entity
 
         private List<IEntity> _loadedEntities = new List<IEntity>();
 
-        public EntityManager(IServiceProvider serviceProvider) 
+        private MouseHelper _mouseHelper;
+        private Camera _camera;
+
+        public EntityManager(IServiceProvider serviceProvider, MouseHelper mouseHelper, Camera _camera) 
         {
             this._serviceProvider = serviceProvider;
+            this._mouseHelper = mouseHelper;
+            this._camera = _camera;
         }
 
         public T SpawnEntity<T>() where T : IEntity
@@ -32,22 +40,52 @@ namespace SandboxGame.Engine.Entity
 
             _loadedEntities.Add(entity);
 
+            // re-order render layers
+            _loadedEntities = _loadedEntities.OrderBy(x => x.RenderLayer).ToList();
+
             return entity;
         }
 
         public void UpdateEntities()
         {
-            for (var i = 0; i < _loadedEntities.Count; i++)
+            // ensure no race conditions
+            var entities = new List<IEntity>();
+            entities.AddRange(_loadedEntities);
+
+            for (var i = 0; i < entities.Count; i++)
             {
-                _loadedEntities[i].Update();
+                entities[i].Update();
+
+                if (entities[i].Interactable)
+                {
+                    var isUI = entities[i].RenderLayer == RenderLayer.UserInterface;
+                    var intersects = isUI ? _mouseHelper.ScreenPos.AsRectangle().Intersects(entities[i].Bounds)
+                        : _mouseHelper.WorldPos.AsRectangle().Intersects(entities[i].Bounds);
+
+                    if (intersects && _mouseHelper.LeftClick)
+                    {
+                        entities[i].OnClick();
+                    }
+                }
             }
         }
 
         public void DrawEntities()
         {
-            for (var i = 0; i < _loadedEntities.Count; i++)
+            // ensure no race conditions
+            var entities = new List<IEntity>();
+            entities.AddRange(_loadedEntities);
+
+            for (var i = 0; i < entities.Count; i++)
             {
-                _loadedEntities[i].Draw();
+                if (entities[i].RenderLayer == RenderLayer.UserInterface)
+                {
+                    _camera.DrawToUI(() => entities[i].Draw());
+                }
+                else
+                {
+                    entities[i].Draw();
+                }
             }
         }
 

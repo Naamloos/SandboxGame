@@ -28,6 +28,8 @@ namespace SandboxGame.Entities
 
         public bool IsActive => active;
 
+        public override bool Interactable => false;
+
         private List<(string, Color)> chatHistory = new List<(string, Color)>();
 
         private bool active = false;
