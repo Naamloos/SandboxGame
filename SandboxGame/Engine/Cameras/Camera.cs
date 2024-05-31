@@ -5,6 +5,7 @@ using SandboxGame.Api.Units;
 using SandboxGame.Engine.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace SandboxGame.Engine.Cameras
 {
@@ -192,7 +193,8 @@ namespace SandboxGame.Engine.Cameras
 
         public void FlushUIDraw()
         {
-            foreach(var action in _uiDraws)
+            var draws = _uiDraws.ToImmutableArray();
+            foreach(var action in draws)
             {
                 action();
             }

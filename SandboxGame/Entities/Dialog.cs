@@ -55,23 +55,16 @@ namespace SandboxGame.Entities
 
         public override RenderLayer RenderLayer => RenderLayer.UserInterface;
 
-        public override RectangleUnit Bounds => new RectangleUnit(0, 0, _camera.ScreenView.Width, _camera.ScreenView.Height);
+        public override RectangleUnit Bounds => _camera.ScreenView;
 
         public override PointUnit Position { get => new PointUnit(0, 0); set { return; } }
 
         public override bool IsWorldEntity => false;
 
-        public override bool Interactable => false;
+        public override bool Interactable => true;
 
         public override void Update()
         {
-            if (firstTick)
-            {
-                // mouse input hack
-                firstTick = false;
-                return;
-            }
-
             if (_currentIndex >= _dialog.Length)
             {
                 return;
@@ -91,11 +84,13 @@ namespace SandboxGame.Entities
         public override void OnClick()
         {
             _currentIndex++;
-
-            if (_onDialogDone is not null)
+            if (_currentIndex >= _dialog.Length)
             {
-                _onDialogDone();
-                _onDialogDone = null;
+                if (_onDialogDone is not null)
+                {
+                    _onDialogDone();
+                    _onDialogDone = null;
+                }
             }
         }
 

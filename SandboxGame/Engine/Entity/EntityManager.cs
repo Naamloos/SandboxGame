@@ -7,6 +7,7 @@ using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -30,6 +31,9 @@ namespace SandboxGame.Engine.Entity
             this._camera = _camera;
         }
 
+        private List<IEntity> _queuedSpawns = new List<IEntity>();
+        private List<IEntity> _queuedDespawns = new List<IEntity>();
+
         public T SpawnEntity<T>() where T : IEntity
         {
             var args = typeof(T).GetConstructors().First().GetParameters().Select(x => _serviceProvider.GetService(x.ParameterType)).ToArray();
@@ -37,54 +41,58 @@ namespace SandboxGame.Engine.Entity
             var entity = (T)Activator.CreateInstance(typeof(T), args);
 
             entity.EntityManager = this;
-
-            _loadedEntities.Add(entity);
-
-            // re-order render layers
-            _loadedEntities = _loadedEntities.OrderBy(x => x.RenderLayer).ToList();
+            _queuedSpawns.Add(entity);
 
             return entity;
         }
 
+        // To ensure we don't modify the collection while iterating.
+        private void flushSpawns()
+        {
+            _loadedEntities.AddRange(_queuedSpawns);
+            _loadedEntities.RemoveAll(x => _queuedDespawns.Contains(x));
+            _queuedSpawns.Clear();
+            _queuedDespawns.Clear();
+            // re-order render layers
+            _loadedEntities = _loadedEntities.OrderBy(x => x.RenderLayer).ToList();
+        }
+
         public void UpdateEntities()
         {
-            // ensure no race conditions
-            var entities = new List<IEntity>();
-            entities.AddRange(_loadedEntities);
-
-            for (var i = 0; i < entities.Count; i++)
+            var count = _loadedEntities.Count;
+            for (var i = 0; i < count; i++)
             {
-                entities[i].Update();
+                _loadedEntities[i].Update();
 
-                if (entities[i].Interactable)
+                if (_loadedEntities[i].Interactable)
                 {
-                    var isUI = entities[i].RenderLayer == RenderLayer.UserInterface;
-                    var intersects = isUI ? _mouseHelper.ScreenPos.AsRectangle().Intersects(entities[i].Bounds)
-                        : _mouseHelper.WorldPos.AsRectangle().Intersects(entities[i].Bounds);
+                    var isUI = _loadedEntities[i].RenderLayer == RenderLayer.UserInterface;
+                    var intersects = isUI ? _mouseHelper.ScreenPos.AsRectangle().Intersects(_loadedEntities[i].Bounds)
+                        : _mouseHelper.WorldPos.AsRectangle().Intersects(_loadedEntities[i].Bounds);
 
                     if (intersects && _mouseHelper.LeftClick)
                     {
-                        entities[i].OnClick();
+                        _loadedEntities[i].OnClick();
                     }
                 }
             }
+
+            flushSpawns();
         }
 
         public void DrawEntities()
         {
-            // ensure no race conditions
-            var entities = new List<IEntity>();
-            entities.AddRange(_loadedEntities);
-
-            for (var i = 0; i < entities.Count; i++)
+            var entities = _loadedEntities.ToImmutableArray();
+            for (var i = 0; i < entities.Length; i++)
             {
-                if (entities[i].RenderLayer == RenderLayer.UserInterface)
+                var entity = entities[i];
+                if (entity.RenderLayer == RenderLayer.UserInterface)
                 {
-                    _camera.DrawToUI(() => entities[i].Draw());
+                    _camera.DrawToUI(() => entity.Draw());
                 }
                 else
                 {
-                    entities[i].Draw();
+                    entity.Draw();
                 }
             }
         }
@@ -95,7 +103,7 @@ namespace SandboxGame.Engine.Entity
 
         public void UnloadEntity(IEntity entity)
         {
-            _loadedEntities.Remove(entity);
+            _queuedDespawns.Add(entity);
         }
 
         /// <summary>
@@ -103,7 +111,7 @@ namespace SandboxGame.Engine.Entity
         /// </summary>
         public void UnloadAllEntities() 
         {
-            _loadedEntities.Clear();
+            _queuedDespawns.AddRange(_loadedEntities);
         }
 
         public IEnumerable<IEntity> FindEntitiesNearby(IEntity entity, float distance, Func<IEntity, bool> searchParams)
