@@ -15,5 +15,9 @@ namespace SandboxGame.Api
         public void OnUnload();
 
         public void OnWorldLoaded();
+
+        public void OnWorldDraw();
+
+        public void OnWorldUpdate();
     }
 }

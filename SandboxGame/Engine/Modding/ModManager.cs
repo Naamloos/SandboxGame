@@ -56,7 +56,7 @@ namespace SandboxGame.Engine.Modding
                 var mod = (IMod)Activator.CreateInstance(modType, parameters);
                 mod.OnLoad();
                 var metadata = mod.GetMetadata();
-                _logger.LogInformation($"Loaded mod {metadata.Name}\nversion: {metadata.Version}\nauthor: {metadata.Author}\n{metadata.Description}");
+                _logger.LogInformation($"Loaded mod {metadata.Name} {metadata.Version} by {metadata.Author} - {metadata.Description}");
                 _loadedMods.Add(mod);
             }
             _logger.LogInformation("Done mod initialization");
@@ -78,6 +78,22 @@ namespace SandboxGame.Engine.Modding
             foreach(var mod in _loadedMods)
             {
                 mod.OnWorldLoaded();
+            }
+        }
+
+        public void WorldDraw()
+        {
+            foreach(var mod in _loadedMods)
+            {
+                mod.OnWorldDraw();
+            }
+        }
+
+        public void WorldUpdate()
+        {
+            foreach(var mod in _loadedMods)
+            {
+                mod.OnWorldUpdate();
             }
         }
     }

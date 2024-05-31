@@ -8,6 +8,7 @@ using SandboxGame.Api;
 using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
 using SandboxGame.Api.Entity;
+using SandboxGame.Api.Input;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -46,7 +47,14 @@ namespace SandboxGame
 
         private static void loadContent(Game game)
         {
-            Task.Run(() => CreateHostBuilder(ARGS, game).Build().Run());
+            Task.Run(() => CreateHostBuilder(ARGS, game).Build().Run())
+                .ContinueWith(t => { 
+                    if(t.IsFaulted)
+                    {
+                        Console.WriteLine(t.Exception);
+                        throw t.Exception;
+                    }
+                });
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, Game game)
@@ -72,8 +80,6 @@ namespace SandboxGame
 
                     /* Services not yet, but soon available to mods */
                     services.AddSingleton<MouseHelper>();
-                    services.AddSingleton<InputHelper>();
-                    services.AddSingleton<KeybindManager>();
 
                     /* Services also available to Mods */
                     services.AddSingleton<IAssetManager, AssetManager>();
@@ -89,6 +95,12 @@ namespace SandboxGame
 
                     services.AddSingleton<ICamera, Camera>();
                     services.AddSingleton(x => x.GetService<ICamera>() as Camera);
+
+                    services.AddSingleton<IKeybindManager, KeybindManager>();
+                    services.AddSingleton(x => x.GetService<IKeybindManager>() as KeybindManager);
+
+                    services.AddSingleton<IInputHelper, InputHelper>();
+                    services.AddSingleton(x => x.GetService<IInputHelper>() as InputHelper);
 
                     services.AddLogging();
                 });

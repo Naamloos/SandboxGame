@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api.Input;
 using SandboxGame.Engine.Storage;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace SandboxGame.Engine.Input
 {
     // TODO Optimize?
     // TODO Implement rebinding
-    public class KeybindManager
+    public class KeybindManager : IKeybindManager
     {
         private Dictionary<string, KeybindInfo> keybinds = new();
         private IStorageSupplier _storageSupplier;
@@ -29,7 +30,7 @@ namespace SandboxGame.Engine.Input
             keybinds.Add("left", new KeybindInfo("left", "Move Left", Keys.A));
             keybinds.Add("right", new KeybindInfo("right", "Move Right", Keys.D));
             keybinds.Add("debug", new KeybindInfo("debug", "Show Debug Info", Keys.F1));
-            keybinds.Add("interact", new KeybindInfo("e", "Interact", Keys.E));
+            keybinds.Add("interact", new KeybindInfo("interact", "Interact", Keys.E));
 
             // load binds from file, override the defaults
             var loadedKeybinds = _storageSupplier.ReadConfigFile<Dictionary<string, KeybindInfo>>("keybinds");
@@ -48,6 +49,18 @@ namespace SandboxGame.Engine.Input
             // re-save file
             _storageSupplier.StoreConfigFile("keybinds", keybinds);
         }
+
+        public void RegisterKeybind(string identifier, string displayName, int defaultKeyCode)
+        {
+            if(keybinds.ContainsKey(identifier))
+            {
+                return;
+            }
+            keybinds.Add(identifier, new KeybindInfo(identifier, displayName, (Keys)defaultKeyCode));
+            _storageSupplier.StoreConfigFile("keybinds", keybinds);
+        }
+
+        public int GetKeyCode(string identifier) => (int)keybinds[identifier].CurrentKey;
 
         public Keys GetKey(string identifier) => keybinds[identifier].CurrentKey;
     }

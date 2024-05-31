@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace ExampleMod.SoundEffects
 {
-    public class DialupSoundEffect : ISoundEffectAsset
+    public class BruhSoundEffect : ISoundEffectAsset
     {
         public Stream GetStream()
         {
-            return GetType().Assembly.GetManifestResourceStream("ExampleMod.Assets.dialup-internet.mp3")!;
+            // this HAS to be a wav file!!!
+            return GetType().Assembly.GetManifestResourceStream("ExampleMod.Assets.bruh.wav")!;
         }
     }
 }

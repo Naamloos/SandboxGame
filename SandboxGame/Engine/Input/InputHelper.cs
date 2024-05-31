@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api.Input;
 using System.Collections.Generic;
 
 namespace SandboxGame.Engine.Input
 {
-    public class InputHelper
+    public class InputHelper : IInputHelper
     {
         private List<Keys> currentlyHeldKeys = new List<Keys>();
         private List<Keys> previouslyHeldKeys = new List<Keys>();

@@ -78,6 +78,7 @@ namespace SandboxGame.Scenes
             _interactionBox.Draw();
 
             _entityManager.DrawEntities();
+            _modManager.WorldDraw();
         }
 
         public override void Update(GameTime gameTime)
@@ -88,6 +89,7 @@ namespace SandboxGame.Scenes
 
             _interactionBox.Update();
             _chatBox.Update();
+            _modManager.WorldUpdate();
         }
 
         public override void Dispose()
