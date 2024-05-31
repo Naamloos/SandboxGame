@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -21,7 +22,7 @@ namespace SandboxGame.Entities
     {
         public override RectangleUnit Bounds => new RectangleUnit(0, 0, 0, 0);
 
-        public override Vector2 Position { get => new Vector2(0, 0); set { return; } }
+        public override PointUnit Position { get => new PointUnit(0, 0); set { return; } }
 
         public override bool IsWorldEntity => false;
 
@@ -43,14 +44,16 @@ namespace SandboxGame.Entities
         private float maxChatMessages;
 
         private SceneManager sceneManager;
+        private SpriteBatch spriteBatch;
 
-        public ChatBox(AssetManager assetManager, Camera camera, GameWindow gameWindow, InputHelper inputHelper, SceneManager sceneManager)
+        public ChatBox(AssetManager assetManager, Camera camera, GameWindow gameWindow, InputHelper inputHelper, SceneManager sceneManager, SpriteBatch spriteBatch)
         {
             chatFont = assetManager.GetFont();
             this.camera = camera;
             this.inputHelper = inputHelper;
             this.gameWindow = gameWindow;
             this.sceneManager = sceneManager;
+            this.spriteBatch = spriteBatch;
 
             chatBack = assetManager.GetSprite("chat_back");
             markerSize = chatFont.MeasureString("> ");
@@ -58,14 +61,14 @@ namespace SandboxGame.Entities
             maxChatMessages = (int)Math.Floor((double)(200 / (markerSize.Y + 5)));
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw()
         {
             camera.DrawToUI(() =>
             {
                 if (active)
                 {
-                    chatBack.Draw(spriteBatch, 0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
-                        lightColor: new Color(0, 0, 0, 180));
+                    chatBack.Draw(0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
+                        lightColor: ColorHelper.RGBA(0, 0, 0, 180));
                     spriteBatch.DrawString(chatFont, "> ", new Vector2(5, camera.ScreenView.Bottom - (markerSize.Y + 5)), Color.BlueViolet);
                     spriteBatch.DrawString(chatFont, inputText, new Vector2(5 + markerSize.X, camera.ScreenView.Bottom - (textSize.Y + 5)), Color.White);
                 }
@@ -79,7 +82,7 @@ namespace SandboxGame.Entities
             });
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             textSize = chatFont.MeasureString(inputText);
 

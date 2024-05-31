@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Camera;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
@@ -10,7 +11,7 @@ using System.Linq;
 
 namespace SandboxGame.Entities
 {
-    public class Npc : BaseEntity
+    public class Npc : BaseEntity, ICameraTarget
     {
         public override RectangleUnit Bounds
         {
@@ -20,7 +21,7 @@ namespace SandboxGame.Entities
             }
         }
 
-        public override Vector2 Position { get; set; }
+        public override PointUnit Position { get; set; }
 
         public override bool IsWorldEntity => true;
 
@@ -52,19 +53,19 @@ namespace SandboxGame.Entities
 
         private Dialog dialog = null;
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw()
         {
-            sprite.Draw(spriteBatch, (int)Position.X, (int)Position.Y, hovering, camera: camera);
+            sprite.Draw((int)Position.X, (int)Position.Y, hovering, camera: camera);
 
             if (dialog != null)
             {
-                dialog.Draw(spriteBatch);
+                dialog.Draw();
             }
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
-            sprite.Update(gameTime);
+            sprite.Update();
             // NPCs can be interacted with from a longer range, make it 250 :)
             var interactable = FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
             hovering = Bounds.Intersects(new RectangleUnit(mouseHelper.WorldPos.X, mouseHelper.WorldPos.Y, 1, 1)) && interactable;
@@ -83,7 +84,7 @@ namespace SandboxGame.Entities
 
             if (dialog != null)
             {
-                dialog.Update(gameTime);
+                dialog.Update();
             }
         }
     }

@@ -20,9 +20,12 @@ namespace SandboxGame.Engine.Assets
         private int _currentFrame;
         private Effect _colorOverlay;
 
+        private SpriteBatch _spriteBatch;
+        private GameTimeHelper gameTime;
+
         public RectangleUnit Bounds { get; private set; }
 
-        public LoadedSprite(int width, int height, TimeSpan duration, Effect colorOverlay, params Texture2D[] frames)
+        public LoadedSprite(int width, int height, TimeSpan duration, Effect colorOverlay, SpriteBatch spriteBatch, GameTimeHelper gameTimeHelper, params Texture2D[] frames)
         {
             Width = width;
             Height = height;
@@ -30,34 +33,39 @@ namespace SandboxGame.Engine.Assets
             _currentFrame = 0;
             _frames = frames.ToList();
             _colorOverlay = colorOverlay;
+            _spriteBatch = spriteBatch;
+            gameTime = gameTimeHelper;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             var timer = gameTime.TotalGameTime.TotalMilliseconds % _duration.TotalMilliseconds;
             var progress = (100 / _duration.TotalMilliseconds) * timer;
             _currentFrame = (int)Math.Abs((_frames.Count * progress) / 100);
         }
 
-        public void Draw(SpriteBatch spriteBatch, int x, int y, bool bloom = false, bool flip = false,
-            Camera camera = null, Color? lightColor = null, int widthOverride = -1, int heightOverride = -1, float rotation = 0)
+        public void Draw(int x, int y, bool bloom = false, bool flip = false,
+            ICamera camera = null, uint? lightColor = null, int widthOverride = -1, int heightOverride = -1, float rotation = 0)
         {
             int width = widthOverride > 0 ? widthOverride : Width;
             int height = heightOverride > 0 ? heightOverride : Height;
+            var gameCamera = camera as Camera;
 
             Bounds = new RectangleUnit(x, y, width, height);
 
             if(bloom && camera is not null)
             {
                 _colorOverlay.Parameters["overlayColor"].SetValue(Color.White.ToVector4());
-                camera.EnableEffect(_colorOverlay);
+                gameCamera.EnableEffect(_colorOverlay);
                 var glowBounds = new Rectangle(x - 2, y - 2, width + 4, height + 4);
-                spriteBatch.Draw(_frames[_currentFrame], glowBounds, null, Color.White, 0f, Vector2.Zero, flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                camera.DisableEffect();
+                _spriteBatch.Draw(_frames[_currentFrame], glowBounds, null, Color.White, 0f, Vector2.Zero, flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                gameCamera.DisableEffect();
             }
 
+            Color light = lightColor is not null ? new Color(lightColor.Value) : Color.White;
+
             var rect = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);
-            spriteBatch.Draw(_frames[_currentFrame], rect, null, lightColor ?? Color.White, rotation, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            _spriteBatch.Draw(_frames[_currentFrame], rect, null, light, rotation, Vector2.Zero, flip? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
         }
 
         public void SetDuration(TimeSpan duration)
@@ -73,7 +81,7 @@ namespace SandboxGame.Engine.Assets
 
         public ILoadedSprite Copy()
         {
-            return new LoadedSprite(Width, Height, _duration, _colorOverlay ,_frames.ToArray());
+            return new LoadedSprite(Width, Height, _duration, _colorOverlay, _spriteBatch, gameTime ,_frames.ToArray());
         }
     }
 }

@@ -6,6 +6,7 @@ using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Storage;
+using SandboxGame.Api;
 
 namespace SandboxGame.WorldGen
 {
@@ -64,8 +65,8 @@ namespace SandboxGame.WorldGen
 
         public void Update(GameTime gameTime)
         {
-            grass.Update(gameTime);
-            water.Update(gameTime);
+            grass.Update();
+            water.Update();
         }
 
         public void Draw(GameTime gameTime)
@@ -86,19 +87,19 @@ namespace SandboxGame.WorldGen
                 {
                     default:
                     case TileType.Grass:
-                        grass.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
+                        grass.Draw(startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, ColorHelper.RGBA(255,255,255), tileSize, tileSize, 0);
                         break;
                     case TileType.Water:
-                        water.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, false, camera, Color.White, tileSize, tileSize, 0);
+                        water.Draw(startX + (x * tileSize), startY + (y * tileSize), false, false, camera, ColorHelper.RGBA(255, 255, 255), tileSize, tileSize, 0);
                         break;
                     case TileType.Sand:
-                        sand.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
+                        sand.Draw(startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, ColorHelper.RGBA(255, 255, 255), tileSize, tileSize, 0);
                         break;
                 }
 
                 if(current.ContainsTree)
                 {
-                    tree.Draw(spriteBatch, startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, Color.White, tileSize, tileSize, 0);
+                    tree.Draw(startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, ColorHelper.RGBA(255, 255, 255), tileSize, tileSize, 0);
                 }
             }
         }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using SandboxGame.Api.Entity;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine.Assets;
 using System;
 using System.Collections.Generic;
@@ -9,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Engine.Entity
 {
-    public class EntityManager
+    public class EntityManager : IEntityManager
     {
         private IServiceProvider _serviceProvider;
 
-        private List<BaseEntity> _loadedEntities = new List<BaseEntity>();
+        private List<IEntity> _loadedEntities = new List<IEntity>();
 
         public EntityManager(IServiceProvider serviceProvider) 
         {
             this._serviceProvider = serviceProvider;
         }
 
-        public T SpawnEntity<T>() where T : BaseEntity
+        public T SpawnEntity<T>() where T : IEntity
         {
             var args = typeof(T).GetConstructors().First().GetParameters().Select(x => _serviceProvider.GetService(x.ParameterType)).ToArray();
 
@@ -33,11 +35,27 @@ namespace SandboxGame.Engine.Entity
             return entity;
         }
 
-        public IEnumerable<BaseEntity> FindEntities(Func<BaseEntity, bool> predicate) => _loadedEntities.Where(predicate);
+        public void UpdateEntities()
+        {
+            for (var i = 0; i < _loadedEntities.Count; i++)
+            {
+                _loadedEntities[i].Update();
+            }
+        }
 
-        public IEnumerable<T> FindEntityOfType<T>() where T : BaseEntity => _loadedEntities.Where(x => x.GetType() == typeof(T)).Cast<T>();
+        public void DrawEntities()
+        {
+            for (var i = 0; i < _loadedEntities.Count; i++)
+            {
+                _loadedEntities[i].Draw();
+            }
+        }
 
-        public void UnloadEntity(BaseEntity entity)
+        public IEnumerable<IEntity> FindEntities(Func<IEntity, bool> predicate) => _loadedEntities.Where(predicate);
+
+        public IEnumerable<T> FindEntityOfType<T>() where T : IEntity => _loadedEntities.Where(x => x.GetType() == typeof(T)).Cast<T>();
+
+        public void UnloadEntity(IEntity entity)
         {
             _loadedEntities.Remove(entity);
         }
@@ -50,7 +68,7 @@ namespace SandboxGame.Engine.Entity
             _loadedEntities.Clear();
         }
 
-        public IEnumerable<BaseEntity> FindEntitiesNearby(BaseEntity entity, float distance, Func<BaseEntity, bool> searchParams)
-            => _loadedEntities.Where(x => x.IsWorldEntity && x != entity && searchParams(x) && Vector2.Distance(entity.Position, x.Position) < distance);
+        public IEnumerable<IEntity> FindEntitiesNearby(IEntity entity, float distance, Func<IEntity, bool> searchParams)
+            => _loadedEntities.Where(x => x.IsWorldEntity && x != entity && searchParams(x) && PointUnit.Distance(entity.Position, x.Position) < distance);
     }
 }

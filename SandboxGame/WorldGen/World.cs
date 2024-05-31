@@ -1,17 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProtoBuf;
+using SandboxGame.Api.World;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Storage;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
 namespace SandboxGame.WorldGen
 {
-    public class World
+    public class World : IWorld
     {
         private WorldInfo _worldInfo;
         private string _name;
@@ -41,6 +43,9 @@ namespace SandboxGame.WorldGen
         private Rectangle visibleChunks = new Rectangle(0, 0, 0, 0);
 
         internal static float LAND_OFFSET = 0.1f;
+
+        public event EventHandler OnWorldLoaded;
+
         public void Update(GameTime gameTime, Camera camera)
         {
             // determining what chunks are visible
@@ -86,6 +91,7 @@ namespace SandboxGame.WorldGen
             }
 
             var world = new World(name, worldInfo, assetManager, spriteBatch, camera, storage);
+
             return world;
         }
 

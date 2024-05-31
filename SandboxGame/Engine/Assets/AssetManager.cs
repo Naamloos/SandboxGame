@@ -11,6 +11,8 @@ namespace SandboxGame.Engine.Assets
     {
         private ContentManager _contentManager;
         private GraphicsDevice _graphics;
+        private GameTimeHelper _gameTime;
+        private SpriteBatch _spriteBatch;
 
         private SpriteFont _fallbackFont;
 
@@ -19,10 +21,12 @@ namespace SandboxGame.Engine.Assets
 
         public Effect _colorOverlay { get; private set; }
 
-        public AssetManager(ContentManager contentManager, GraphicsDevice gd)
+        public AssetManager(ContentManager contentManager, GraphicsDevice gd, GameTimeHelper gameTime, SpriteBatch spriteBatch)
         {
             _contentManager = contentManager;
             _graphics = gd;
+            _gameTime = gameTime;
+            _spriteBatch = spriteBatch;
             Initialize();
         }
 
@@ -76,7 +80,7 @@ namespace SandboxGame.Engine.Assets
             return _sprites[name].Copy() as LoadedSprite;
         }
 
-        public LoadedSprite GetSprite<T>(string name) where T : LoadedSprite
+        public ILoadedSprite GetSprite<T>() where T : ISpriteAsset
         {
             return _sprites[typeof(T).Name].Copy() as LoadedSprite;
         }
@@ -86,7 +90,7 @@ namespace SandboxGame.Engine.Assets
             var debugBox = new Texture2D(_graphics, 1, 1);
             debugBox.SetData(new[] { color });
 
-            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, debugBox);
+            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, _spriteBatch, _gameTime, debugBox);
         }
 
         private LoadedSprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)
@@ -107,7 +111,7 @@ namespace SandboxGame.Engine.Assets
                 }
             }
 
-            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, textures.ToArray());
+            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, _spriteBatch, _gameTime, textures.ToArray());
         }
 
         public void RegisterSprite<T>() where T : ISpriteAsset
@@ -123,7 +127,7 @@ namespace SandboxGame.Engine.Assets
 
             var metaData = sprite.GetMetadata();
 
-            _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height, metaData.AnimationDuration, _colorOverlay, textures.ToArray()));
+            _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height, metaData.AnimationDuration, _colorOverlay, _spriteBatch, _gameTime, textures.ToArray()));
         }
     }
 }

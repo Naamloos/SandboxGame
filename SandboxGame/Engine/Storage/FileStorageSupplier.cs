@@ -140,5 +140,15 @@ namespace SandboxGame.Engine.Storage
             if(Directory.Exists(dirPath))
                 Directory.Delete(dirPath, true);
         }
+
+        public IEnumerable<Stream> GetModStreams()
+        {
+            List<Stream> mods = new List<Stream>();
+            foreach (var file in Directory.GetFiles(_modsPath))
+            {
+                mods.Add(File.OpenRead(file));
+            }
+            return mods;
+        }
     }
 }

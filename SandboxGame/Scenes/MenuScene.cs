@@ -44,7 +44,7 @@ namespace SandboxGame.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            _grassTest.Update(gameTime);
+            _grassTest.Update();
 
             mouseTouchesSprite = _grassTest.Bounds.Intersects(new RectangleUnit(_mouseHelper.WorldPos.X, _mouseHelper.WorldPos.Y, 1, 1));
 
@@ -76,7 +76,7 @@ namespace SandboxGame.Scenes
         {
             _spriteBatch.GraphicsDevice.SetRenderTarget(null);
             _spriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
-            _grassTest.Draw(_spriteBatch, posX, 200,
+            _grassTest.Draw(posX, 200,
                 camera: _camera, bloom: mouseTouchesSprite);
             _spriteBatch.DrawString(_font, "Drawn on Game layer", new Vector2((int)_camera.ScreenCenter.X, (int)_camera.ScreenCenter.Y), Color.Yellow);
 

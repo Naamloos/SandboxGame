@@ -24,5 +24,7 @@ namespace SandboxGame.Engine.Storage
         public void WriteWorldMetadata(string world, WorldInfo worldInfo);
 
         public void DeleteWorld(string world);
+
+        public IEnumerable<Stream> GetModStreams();
     }
 }

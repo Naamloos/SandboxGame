@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Camera;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
@@ -10,7 +11,7 @@ using System.Linq;
 
 namespace SandboxGame.Entities
 {
-    public class Player : BaseEntity
+    public class Player : BaseEntity, ICameraTarget
     {
         public override RectangleUnit Bounds
         {
@@ -20,7 +21,7 @@ namespace SandboxGame.Entities
             }
         }
 
-        public override Vector2 Position { get; set; } = Vector2.Zero;
+        public override PointUnit Position { get; set; } = PointUnit.Zero;
 
         public override bool IsWorldEntity => true;
 
@@ -37,15 +38,18 @@ namespace SandboxGame.Entities
         private LoadedSprite player;
         private LoadedSprite debugBox;
 
+        private GameTimeHelper gameTimeHelper;
+
         SpriteBatch spriteBatch;
         Camera camera;
         InputHelper inputHelper;
 
-        public Player(AssetManager assetManager, SpriteBatch spriteBatch, Camera camera, InputHelper inputHelper) : base()
+        public Player(AssetManager assetManager, SpriteBatch spriteBatch, Camera camera, InputHelper inputHelper, GameTimeHelper gameTimeHelper) : base()
         {
             this.spriteBatch = spriteBatch;
             this.camera = camera;
             this.inputHelper = inputHelper;
+            this.gameTimeHelper = gameTimeHelper;
             //headSprite = GameContext.AssetManager.GetSprite("player_head");
             //bodySprite = GameContext.AssetManager.GetSprite("player_body");
             //handSprite = GameContext.AssetManager.GetSprite("player_hand");
@@ -57,7 +61,7 @@ namespace SandboxGame.Entities
             debugBox = assetManager.GetSprite("debug");
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw()
         {
             PointUnit center = Bounds.Center;
 
@@ -76,15 +80,15 @@ namespace SandboxGame.Entities
             //rightFootSprite.Draw(spriteBatch, leftFoot.X, leftFoot.Y);
             //leftFootSprite.Draw(spriteBatch, rightFoot.X, rightFoot.Y);
 
-            player.Draw(spriteBatch, (int)Position.X, (int)Position.Y, flip: movesRight, rotation: walking? hop : 0f);
-            debugBox.Draw(spriteBatch, (int)center.X, (int)center.Y);
+            player.Draw((int)Position.X, (int)Position.Y, flip: movesRight, rotation: walking? hop : 0f);
+            debugBox.Draw((int)center.X, (int)center.Y);
         }
 
         float hop = 0f;
         bool hopDir = false;
         bool walking = false;
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             //headSprite.Update(gameTime);
             //bodySprite.Update(gameTime);
@@ -92,14 +96,14 @@ namespace SandboxGame.Entities
             //leftFootSprite.Update(gameTime);
             //rightFootSprite.Update(gameTime);
 
-            player.Update(gameTime);
+            player.Update();
 
-            var frameTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            var frameTime = (float)gameTimeHelper.ElapsedGameTime.TotalMilliseconds;
             var distanceTraveled = (speed / 1000) * frameTime;
 
             DebugHelper.SetDebugValues("SPEED", distanceTraveled.ToString());
 
-            var chatOpened = EntityManager.FindEntityOfType<ChatBox>().Any(x => x.IsActive);
+            var chatOpened = this.EntityManager.FindEntityOfType<ChatBox>().Any(x => x.IsActive);
 
             if (camera.Target == this && !chatOpened)
             {
@@ -146,7 +150,7 @@ namespace SandboxGame.Entities
                 }
 
                 // TODO normalize traveled distance to not have diagonal movement feel wrong.
-                Position = new Vector2(x, y);
+                Position = new PointUnit(x, y);
             }
         }
     }

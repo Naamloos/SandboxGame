@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
@@ -12,13 +13,13 @@ namespace SandboxGame.WorldGen
     public class WorldInteractionBox : BaseEntity
     {
         private LoadedSprite tile;
-        private Vector2 position = Vector2.Zero;
+        private PointUnit position = PointUnit.Zero;
         private MouseHelper mouseHelper;
         private SpriteBatch spriteBatch;
 
         public override RectangleUnit Bounds => new RectangleUnit(0,0,0,0);
 
-        public override Vector2 Position { get => position; set => position = value; }
+        public override PointUnit Position { get => position; set => position = value; }
 
         public override bool IsWorldEntity => true;
 
@@ -29,7 +30,7 @@ namespace SandboxGame.WorldGen
             tile = assetManager.GetSprite("interact");
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             var pos = mouseHelper.WorldPos;
 
@@ -45,12 +46,12 @@ namespace SandboxGame.WorldGen
             y = y - (y % 32);
             y = yNegative ? (-y - 32) : y;
 
-            position = new Vector2(x, y);
+            position = new PointUnit(x, y);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw()
         {
-            tile.Draw(spriteBatch, (int)position.X, (int)position.Y, lightColor: new Color(255, 255, 255, 150));
+            tile.Draw((int)position.X, (int)position.Y, lightColor: ColorHelper.RGBA(255, 255, 255, 150));
         }
     }
 }

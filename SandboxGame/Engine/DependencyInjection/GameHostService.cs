@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Input;
+using SandboxGame.Engine.Modding;
 using SandboxGame.Engine.Scenes;
 using SandboxGame.Scenes;
 using System;
@@ -25,11 +27,15 @@ namespace SandboxGame.Engine.DependencyInjection
         private SpriteFont _debugTextFont;
         private MouseHelper _mouseHelper;
         private InputHelper _inputHelper;
+        private GameTimeHelper _gameTimeHelper;
+        private ModManager _modManager;
 
         private bool debugInfo = false;
 
         public GameHostService(Camera camera, SceneManager sceneManager, 
-            SpriteBatch spriteBatch, AssetManager assetManager, MouseHelper mouseHelper, InputHelper inputHelper)
+            SpriteBatch spriteBatch, AssetManager assetManager, MouseHelper mouseHelper, 
+            InputHelper inputHelper, GameTimeHelper gameTimeHelper,
+            ILogger<GameHostService> logger)
         {
             _camera = camera;
             _sceneManager = sceneManager;
@@ -38,6 +44,7 @@ namespace SandboxGame.Engine.DependencyInjection
             _debugTextFont = assetManager.GetFont();
             _mouseHelper = mouseHelper;
             _inputHelper = inputHelper;
+            _gameTimeHelper = gameTimeHelper;
 
             _game = Program.Game;
             _game.Exiting += gameExiting;
@@ -73,6 +80,7 @@ namespace SandboxGame.Engine.DependencyInjection
 
         private void onUpdate(GameTime gameTime)
         {
+            _gameTimeHelper.Update(gameTime);
             _sceneManager.Update(gameTime);
             _camera.Update(gameTime);
             _mouseHelper.Update();

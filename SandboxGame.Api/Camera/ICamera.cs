@@ -15,5 +15,7 @@ namespace SandboxGame.Api.Camera
         bool IsFollowing { get; }
         ICameraTarget Target { get; }
         float Zoom { get; }
+
+        public void DrawOnCamera(Action draw);
     }
 }

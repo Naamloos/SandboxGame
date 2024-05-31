@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api;
 using SandboxGame.Api.Camera;
+using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Cameras;
@@ -10,40 +12,30 @@ using System.Collections.Generic;
 
 namespace SandboxGame.Engine.Entity
 {
-    public abstract class BaseEntity : ICameraTarget
+    public abstract class BaseEntity : IEntity
     {
         public abstract RectangleUnit Bounds { get; }
 
-        public abstract Vector2 Position { get; set; }
+        public abstract PointUnit Position { get; set; }
 
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update();
 
-        public abstract void Draw(SpriteBatch spriteBatch);
+        public abstract void Draw();
 
-        public EntityManager EntityManager { get
-            {
-                return _entityManager;
-            }
-            set
-            {
-                if(EntityManager != null)
-                {
-                    throw new InvalidOperationException("EntityManager was already set!");
-                }
-
-                _entityManager = value;
-            }
+        public IEntityManager EntityManager 
+        {
+            get;
+            set;
         }
-        private EntityManager _entityManager = null;
 
         public abstract bool IsWorldEntity { get; }
 
-        public void SetPosition(Vector2 position)
+        public void SetPosition(PointUnit position)
         {
             Position = position;
         }
 
-        public IEnumerable<BaseEntity> FindEntitiesNearby(float distance, Func<BaseEntity, bool> searchParams)
+        public IEnumerable<IEntity> FindEntitiesNearby(float distance, Func<IEntity, bool> searchParams)
         {
             return EntityManager.FindEntitiesNearby(this, distance, searchParams);
         }
