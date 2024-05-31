@@ -78,9 +78,6 @@ namespace SandboxGame
                     services.AddSingleton<IStorageSupplier>(new FileStorageSupplier());
                     services.AddSingleton<SceneManager>();
 
-                    /* Services not yet, but soon available to mods */
-                    services.AddSingleton<MouseHelper>();
-
                     /* Services also available to Mods */
                     services.AddSingleton<IAssetManager, AssetManager>();
                     services.AddSingleton(x => x.GetService<IAssetManager>() as AssetManager);
@@ -101,6 +98,9 @@ namespace SandboxGame
 
                     services.AddSingleton<IInputHelper, InputHelper>();
                     services.AddSingleton(x => x.GetService<IInputHelper>() as InputHelper);
+
+                    services.AddSingleton<IMouseHelper, MouseHelper>();
+                    services.AddSingleton(x => x.GetService<IMouseHelper>() as MouseHelper);
 
                     services.AddLogging();
                 });

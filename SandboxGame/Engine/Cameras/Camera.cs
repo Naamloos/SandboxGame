@@ -147,7 +147,8 @@ namespace SandboxGame.Engine.Cameras
                 _position = _moveTowards;
             }
 
-            _mouseHelper.WorldPos = ScreenToWorld(_mouseHelper.ScreenPos);
+            var screenToWorld = ScreenToWorld(new Vector2((int)_mouseHelper.ScreenPos.X, (int)_mouseHelper.ScreenPos.Y));
+            _mouseHelper.WorldPos = new PointUnit(screenToWorld.X, screenToWorld.Y); // TODO implement translation matrixes for my own units
 
             DebugHelper.SetDebugValues("CAMERA", $"x: {_position.X.ToString().PadRight(15)} y: {_position.Y.ToString().PadRight(15)}");
         }

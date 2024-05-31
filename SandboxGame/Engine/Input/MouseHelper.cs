@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api.Input;
+using SandboxGame.Api.Units;
 using SandboxGame.Engine.Cameras;
 
 namespace SandboxGame.Engine.Input
 {
-    public class MouseHelper
+    public class MouseHelper : IMouseHelper
     {
         public bool RightButton { get; private set; }
         public bool LeftButton { get; private set; }
@@ -15,8 +17,8 @@ namespace SandboxGame.Engine.Input
         public bool ScrollUp { get; private set; }
         public bool ScrollDown { get; private set; }
 
-        public Vector2 ScreenPos { get; private set; }
-        public Vector2 WorldPos { get; set; }
+        public PointUnit ScreenPos { get; private set; }
+        public PointUnit WorldPos { get; set; } // TODO internalize
 
         private GameWindow _window;
         public MouseHelper(GameWindow gameWindow)
@@ -35,7 +37,7 @@ namespace SandboxGame.Engine.Input
         {
             var state = Mouse.GetState(_window);
 
-            ScreenPos = state.Position.ToVector2();
+            ScreenPos = new PointUnit(state.Position.X, state.Position.Y);
 
             RightButton = state.RightButton == ButtonState.Pressed;
             LeftButton = state.LeftButton == ButtonState.Pressed;
