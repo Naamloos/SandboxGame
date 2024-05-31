@@ -17,8 +17,8 @@ namespace SandboxGame.Engine.Input
         public bool ScrollUp { get; private set; }
         public bool ScrollDown { get; private set; }
 
-        public PointUnit ScreenPos { get; private set; }
-        public PointUnit WorldPos { get; set; } // TODO internalize
+        public PointUnit ScreenPos { get; private set; } = PointUnit.Zero;
+        public PointUnit WorldPos { get; set; } = PointUnit.Zero; // TODO internalize
 
         private GameWindow _window;
         public MouseHelper(GameWindow gameWindow)
