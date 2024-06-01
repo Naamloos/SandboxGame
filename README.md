@@ -38,3 +38,7 @@ As of right now, the codebase is quite extendable and I intend to keep it so. He
 
 ## Attributions
 Uses font m6x11 by Daniel Linssen [ [Link](https://managore.itch.io/m6x11) ]
+
+Uses sprite sheet by Stealthix [ [Link](https://stealthix.itch.io/rpg-nature-tileset) ]
+
+Uses ambient music by prismlightdesigns [ [Link](https://prismlightdesigns.itch.io/syntheticambiencevol1) ]
