@@ -89,7 +89,6 @@ namespace SandboxGame.Engine.Entity
             flushSpawns();
         }
 
-        private object lockObj = new object();
         public void DrawEntities()
         {
             var entities = _loadedEntities.ToImmutableArray();

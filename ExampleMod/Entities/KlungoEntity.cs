@@ -27,15 +27,17 @@ namespace ExampleMod.Entities
         public RenderLayer RenderLayer => RenderLayer.Foreground;
 
         private ILoadedSprite klungoSprite;
+        private ICamera _camera;
 
-        public KlungoEntity(IAssetManager assetManager) 
+        public KlungoEntity(IAssetManager assetManager, ICamera camera) 
         {
             this.klungoSprite = assetManager.GetSprite<KlungoSprite>();
+            this._camera = camera;
         }
 
         public void Draw()
         {
-            klungoSprite.Draw((int)Position.X, (int)Position.Y, interactable: this.Interactable); // TODO accept float values
+            klungoSprite.Draw((int)_spritePosition.X, (int)_spritePosition.Y, camera: _camera, interactable: this.Interactable); // TODO accept float values
         }
 
         public void SetPosition(PointUnit position)
@@ -43,11 +45,13 @@ namespace ExampleMod.Entities
             this.Position = position;
         }
 
+        PointUnit _spritePosition = new PointUnit(0, 0);
         public void Update()
         {
             // Update logic here
             // Randomize position from -100, -100 to 100, 100
-            Position = new PointUnit(new Random().Next(-100, 100), new Random().Next(-100, 100));
+            _spritePosition = new PointUnit(Position.X - new Random().Next(0, 3), Position.Y - new Random().Next(0, 3));
+            klungoSprite.Update();
         }
 
         private bool dialog = false;
@@ -56,7 +60,7 @@ namespace ExampleMod.Entities
             if(!dialog)
             {
                 dialog = true;
-                EntityManager.SpawnDialog("Klungo", "Hello\nI am Klungo\nNice to meet you!\nNow get lost.", this, () =>
+                EntityManager.SpawnDialog("Klungo", "Hello\nI am Klungo\nNice to meet you!\nI was added via a mod...\nBtw, why am I shaking like this?", this, () =>
                 {
                     dialog = false;
                 });

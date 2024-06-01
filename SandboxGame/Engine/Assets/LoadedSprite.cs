@@ -65,7 +65,7 @@ namespace SandboxGame.Engine.Assets
             {
                 _colorOverlay.Parameters["overlayColor"].SetValue(Color.White.ToVector4());
                 gameCamera.EnableEffect(_colorOverlay);
-                var glowBounds = new Rectangle(x - 2, y - 2, width + 4, height + 4);
+                var glowBounds = new Rectangle((int)Bounds.X - 2, (int)Bounds.Y - 2, width + 4, height + 4);
                 _spriteBatch.Draw(_frames[_currentFrame], glowBounds, null, Color.White, 0f, Vector2.Zero, flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 gameCamera.DisableEffect();
             }

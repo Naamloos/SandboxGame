@@ -73,6 +73,7 @@ namespace SandboxGame.Entities
                 _oldZoom = _camera.Zoom;
                 _camera.FocusZoom(1.8f);
                 _camera.Follow(_entity);
+                firstTick = false;
                 return;
             }
             if (_currentIndex >= _dialog.Length)

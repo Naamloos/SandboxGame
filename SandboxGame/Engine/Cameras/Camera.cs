@@ -216,10 +216,9 @@ namespace SandboxGame.Engine.Cameras
 
         public void FlushUIDraw()
         {
-            var draws = _uiDraws.ToImmutableArray();
-            foreach(var action in draws)
+            for(int i = 0; i < _uiDraws.Count; i++)
             {
-                action();
+                _uiDraws[i]();
             }
 
             _uiDraws.Clear();
