@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SandboxGame.Api.Camera;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace SandboxGame.Api.Entity
     public interface IEntityManager
     {
         public T SpawnEntity<T>() where T : IEntity;
+
+        public IEntity SpawnDialog(string name, string content, ICameraTarget entity, Action whenDone = null);
 
         public IEnumerable<IEntity> FindEntities(Func<IEntity, bool> predicate);
 

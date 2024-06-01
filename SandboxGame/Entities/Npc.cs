@@ -25,10 +25,9 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => true;
 
-        public override bool Interactable => dialog == null;
+        public override bool Interactable => !inDialog && FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
 
         private LoadedSprite sprite;
-        private bool hovering;
         private SpriteFont dialogFont;
         private LoadedSprite dialogTicker;
 
@@ -53,29 +52,23 @@ namespace SandboxGame.Entities
             this.dialogTicker = assetManager.GetSprite("dialog");
         }
 
-        private Dialog dialog = null;
-
         public override void Draw()
         {
             sprite.Draw((int)Position.X, (int)Position.Y, camera: camera, interactable: this.Interactable);
-
-            if (dialog != null)
-            {
-                dialog.Draw();
-            }
         }
 
+        private float oldZoom = 0;
+        private bool inDialog = false;
         public override void OnClick()
         {
-            if(dialog == null)
+            if(!inDialog)
             {
+                inDialog = true;
                 camera.Follow(this);
 
-                dialog = entityManager.SpawnEntity<Dialog>();
-                dialog.SetData(NPC_NAME, NPC_DIALOG, this, () =>
+                entityManager.SpawnDialog(NPC_NAME, NPC_DIALOG, this, () =>
                 {
-                    dialog = null;
-                    camera.StopFollowing();
+                    inDialog = false;
                 });
             }
         }
@@ -83,14 +76,6 @@ namespace SandboxGame.Entities
         public override void Update()
         {
             sprite.Update();
-            // NPCs can be interacted with from a longer range, make it 250 :)
-            var interactable = FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
-            hovering = Bounds.Intersects(new RectangleUnit(mouseHelper.WorldPos.X, mouseHelper.WorldPos.Y, 1, 1)) && interactable;
-
-            if (dialog)
-            {
-                dialog.Update();
-            }
         }
     }
 }

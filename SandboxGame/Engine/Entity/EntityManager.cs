@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using SandboxGame.Api;
+using SandboxGame.Api.Camera;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Input;
+using SandboxGame.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -46,6 +48,13 @@ namespace SandboxGame.Engine.Entity
             return entity;
         }
 
+        public IEntity SpawnDialog(string name, string content, ICameraTarget entity, Action whenDone = null)
+        {
+            var dialog = SpawnEntity<Dialog>();
+            dialog.SetData(name, content, entity, whenDone);
+            return dialog;
+        }
+
         // To ensure we don't modify the collection while iterating.
         private void flushSpawns()
         {
@@ -54,7 +63,7 @@ namespace SandboxGame.Engine.Entity
             _queuedSpawns.Clear();
             _queuedDespawns.Clear();
             // re-order render layers
-            _loadedEntities = _loadedEntities.OrderBy(x => x.RenderLayer).ToList();
+            _loadedEntities = _loadedEntities.OrderBy(x => (int)x.RenderLayer).ToList();
         }
 
         public void UpdateEntities()
@@ -80,6 +89,7 @@ namespace SandboxGame.Engine.Entity
             flushSpawns();
         }
 
+        private object lockObj = new object();
         public void DrawEntities()
         {
             var entities = _loadedEntities.ToImmutableArray();

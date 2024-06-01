@@ -17,6 +17,8 @@ namespace SandboxGame.Engine.Cameras
 
         private PointUnit _position = PointUnit.Zero;
         private float _zoom = 2.4f;
+        private float _targetZoom = 2.4f; // initial value same as camera initial value
+        private bool _focusZoom = false;
         private float _rotation = 0f;
 
         private PointUnit _moveTowards = PointUnit.Zero;
@@ -93,7 +95,14 @@ namespace SandboxGame.Engine.Cameras
 
         public void SetZoom(float zoom)
         {
+            _focusZoom = false;
             _zoom = zoom;
+        }
+
+        public void FocusZoom(float zoom)
+        {
+            _focusZoom = true;
+            _targetZoom = zoom;
         }
 
         public bool IsMoving()
@@ -103,7 +112,7 @@ namespace SandboxGame.Engine.Cameras
 
         public void Update(GameTime gameTime)
         {
-            if (_mouseHelper != null)
+            if (_mouseHelper != null && !_focusZoom)
             {
                 if (_mouseHelper.ScrollUp && _zoom < MAX_ZOOM)
                 {
@@ -115,7 +124,21 @@ namespace SandboxGame.Engine.Cameras
                 }
             }
 
-            SetZoom(_zoom);
+            // smooth zoom and _zoom within 0.2 of _targetZoom
+            if (_focusZoom && Math.Abs(_zoom - _targetZoom) > 0.2f)
+            {
+                if(_zoom < _targetZoom + 0.1f)
+                {
+                    _zoom += 0.1f;
+                }
+                else if(_zoom > _targetZoom)
+                {
+                    _zoom -= 0.1f;
+                }
+            }
+
+            // clamp zoom within MAX_ZOOM and MIN_ZOOM values
+            _zoom = MathHelper.Clamp(_zoom, MIN_ZOOM, MAX_ZOOM);
 
             // If we're following a sprite, we update the _moveTowards target.
             if (following is not null)

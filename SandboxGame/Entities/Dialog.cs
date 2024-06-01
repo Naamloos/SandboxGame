@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Api;
+using SandboxGame.Api.Camera;
+using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
@@ -16,7 +18,7 @@ namespace SandboxGame.Entities
         private string _name;
         private string[] _dialog;
         private int _currentIndex = 0;
-        private BaseEntity _entity;
+        private ICameraTarget _entity;
 
         private SpriteFont _font;
         private LoadedSprite _dialogTicker;
@@ -43,7 +45,7 @@ namespace SandboxGame.Entities
             _spriteBatch = spriteBatch;
         }
 
-        public void SetData(string name, string content, BaseEntity entity, Action OnDialogDone)
+        public void SetData(string name, string content, ICameraTarget entity, Action OnDialogDone = null)
         {
             _name = name;
             _dialog = content.Split('\n');
@@ -63,8 +65,16 @@ namespace SandboxGame.Entities
 
         public override bool Interactable => true;
 
+        private float _oldZoom = 0;
         public override void Update()
         {
+            if(firstTick)
+            {
+                _oldZoom = _camera.Zoom;
+                _camera.FocusZoom(1.8f);
+                _camera.Follow(_entity);
+                return;
+            }
             if (_currentIndex >= _dialog.Length)
             {
                 return;
@@ -86,11 +96,14 @@ namespace SandboxGame.Entities
             _currentIndex++;
             if (_currentIndex >= _dialog.Length)
             {
+                _camera.SetZoom(_oldZoom);
+                _camera.StopFollowing();
                 if (_onDialogDone is not null)
                 {
                     _onDialogDone();
                     _onDialogDone = null;
                 }
+                EntityManager.UnloadEntity(this);
             }
         }
 
@@ -117,8 +130,5 @@ namespace SandboxGame.Entities
                 _dialogTicker.Draw((int)_tickerPos.X, (int)_tickerPos.Y);
             });
         }
-
-        // Operator overload converting to boolean
-        public static implicit operator bool(Dialog d) => d is not null;
     }
 }

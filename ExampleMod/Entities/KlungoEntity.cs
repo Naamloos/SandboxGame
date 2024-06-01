@@ -1,6 +1,7 @@
 ﻿using ExampleMod.Sprites;
 using SandboxGame.Api;
 using SandboxGame.Api.Assets;
+using SandboxGame.Api.Camera;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ExampleMod.Entities
 {
-    public class KlungoEntity : IEntity
+    public class KlungoEntity : IEntity, ICameraTarget
     {
         public RectangleUnit Bounds => new RectangleUnit(Position.X, Position.Y, klungoSprite.Width, klungoSprite.Height);
 
@@ -49,9 +50,17 @@ namespace ExampleMod.Entities
             Position = new PointUnit(new Random().Next(-100, 100), new Random().Next(-100, 100));
         }
 
+        private bool dialog = false;
         public void OnClick()
         {
-
+            if(!dialog)
+            {
+                dialog = true;
+                EntityManager.SpawnDialog("Klungo", "Hello\nI am Klungo\nNice to meet you!\nNow get lost.", this, () =>
+                {
+                    dialog = false;
+                });
+            }
         }
     }
 }
