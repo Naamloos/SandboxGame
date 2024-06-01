@@ -44,7 +44,7 @@ namespace SandboxGame.Engine.Assets
             _fallbackFont = _contentManager.Load<SpriteFont>("Fonts/Debug");
             _colorOverlay = _contentManager.Load<Effect>("Shaders/ColorOverlay");
 
-            _fonts.Add("main", _contentManager.Load<SpriteFont>("Fonts/HopeGold"));
+            _fonts.Add("main", _contentManager.Load<SpriteFont>("Fonts/m6x11plus"));
 
             _sprites.Add("water", loadSprite("water", 16, 16, TimeSpan.FromSeconds(.5f)));
             _sprites.Add("player", loadSprite("player", 32, 32, TimeSpan.FromMilliseconds(Random.Shared.Next(2800, 3800))));

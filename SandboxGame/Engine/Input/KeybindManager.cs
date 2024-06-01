@@ -31,6 +31,8 @@ namespace SandboxGame.Engine.Input
             keybinds.Add("right", new KeybindInfo("right", "Move Right", Keys.D));
             keybinds.Add("debug", new KeybindInfo("debug", "Show Debug Info", Keys.F1));
             keybinds.Add("interact", new KeybindInfo("interact", "Interact", Keys.E));
+            keybinds.Add("chat", new KeybindInfo("chat", "Open Chat", Keys.T));
+            keybinds.Add("command", new KeybindInfo("command", "Open Command", Keys.OemQuestion));
 
             // load binds from file, override the defaults
             var loadedKeybinds = _storageSupplier.ReadConfigFile<Dictionary<string, KeybindInfo>>("keybinds");

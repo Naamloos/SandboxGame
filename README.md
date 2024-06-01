@@ -35,3 +35,6 @@ As of right now, the codebase is quite extendable and I intend to keep it so. He
 - I intend to add interactable objects in the world as "entities", which are managed by the world they are spawned in.
 - Key binds are configurable via a config file, and at some point the ability to add modded keybinds is to be added.
 - Assets are loaded from assembly, meaning mods can easily embed their own resources if needed.
+
+## Attributions
+Uses font m6x11 by Daniel Linssen [ [Link](https://managore.itch.io/m6x11) ]

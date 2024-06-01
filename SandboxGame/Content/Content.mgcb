@@ -20,12 +20,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Debug.spritefont
 
-#begin Fonts/HopeGold.spritefont
+#begin Fonts/m6x11plus.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/HopeGold.spritefont
+/build:Fonts/m6x11plus.spritefont
 
 #begin Shaders/ColorOverlay.fx
 /importer:EffectImporter

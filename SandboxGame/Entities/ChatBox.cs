@@ -30,6 +30,8 @@ namespace SandboxGame.Entities
 
         public override bool Interactable => false;
 
+        public override RenderLayer RenderLayer => RenderLayer.UserInterface;
+
         private List<(string, Color)> chatHistory = new List<(string, Color)>();
 
         private bool active = false;
@@ -65,49 +67,46 @@ namespace SandboxGame.Entities
 
         public override void Draw()
         {
-            camera.DrawToUI(() =>
+            if (active)
             {
-                if (active)
-                {
-                    chatBack.Draw(0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
-                        lightColor: ColorHelper.RGBA(0, 0, 0, 180));
-                    spriteBatch.DrawString(chatFont, "> ", new Vector2(5, camera.ScreenView.Bottom - (markerSize.Y + 5)), Color.BlueViolet);
-                    spriteBatch.DrawString(chatFont, inputText, new Vector2(5 + markerSize.X, camera.ScreenView.Bottom - (textSize.Y + 5)), Color.White);
-                }
+                chatBack.Draw(0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
+                    lightColor: ColorHelper.RGBA(0, 0, 0, 180));
+                spriteBatch.DrawString(chatFont, "> ", new Vector2(5, camera.ScreenView.Bottom - (markerSize.Y + 5)), Color.BlueViolet);
+                spriteBatch.DrawString(chatFont, inputText, new Vector2(5 + markerSize.X, camera.ScreenView.Bottom - (textSize.Y + 5)), Color.White);
+            }
 
-                for (int i = 0; i < chatHistory.Count; i++)
-                {
-                    var message = chatHistory[(chatHistory.Count - 1) - i];
-                    var yPos = camera.ScreenView.Bottom - ((markerSize.Y + 5) * (i + 2));
-                    spriteBatch.DrawString(chatFont, message.Item1, new Vector2(5, yPos), message.Item2);
-                }
-            });
+            for (int i = 0; i < chatHistory.Count; i++)
+            {
+                var message = chatHistory[(chatHistory.Count - 1) - i];
+                var yPos = camera.ScreenView.Bottom - ((markerSize.Y + 5) * (i + 2));
+                spriteBatch.DrawString(chatFont, message.Item1, new Vector2(5, yPos), message.Item2);
+            }
         }
 
         public override void Update()
         {
             textSize = chatFont.MeasureString(inputText);
 
-            if (!active && inputHelper.GetKeyPressed(Keys.T))
+            if (!active && inputHelper.GetKeyPressed("chat"))
             {
                 active = true;
                 gameWindow.TextInput += readWrittenText;
             }
-            if(!active && inputHelper.GetKeyPressed(Keys.OemQuestion))
+            if(!active && inputHelper.GetKeyPressed("command"))
             {
                 active = true;
                 inputText += "/";
                 gameWindow.TextInput += readWrittenText;
             }
 
-            if (active && inputHelper.GetKeyPressed(Keys.Escape))
+            if (active && inputHelper.GetKeyPressed(Keys.Escape)) // probably shouldn't be rebindable
             {
                 active = false;
                 inputText = string.Empty;
                 gameWindow.TextInput -= readWrittenText;
             }
 
-            if(inputHelper.GetKeyPressed(Keys.Enter))
+            if(inputHelper.GetKeyPressed(Keys.Enter)) // Not rebindable.
             {
                 // publish to chat
                 active = false;

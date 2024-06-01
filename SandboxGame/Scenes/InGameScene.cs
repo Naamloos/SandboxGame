@@ -46,13 +46,14 @@ namespace SandboxGame.Scenes
 
         public override void Initialize()
         {
-            _chatBox = _entityManager.SpawnEntity<ChatBox>();
             RegenerateWorld(_launchArgs.ForceNewWorldGen);
         }
 
         public void RegenerateWorld(bool deleteOld)
         {
             _entityManager.UnloadAllEntities();
+
+            _chatBox = _entityManager.SpawnEntity<ChatBox>();
 
             _player = _entityManager.SpawnEntity<Player>();
             _player.SetPosition(PointUnit.Zero);
@@ -75,7 +76,6 @@ namespace SandboxGame.Scenes
         public override void Draw(GameTime gameTime)
         {
             _world.Draw(gameTime);
-            _interactionBox.Draw();
 
             _entityManager.DrawEntities();
             _modManager.WorldDraw();
@@ -86,9 +86,6 @@ namespace SandboxGame.Scenes
             _world.Update(gameTime, _camera);
 
             _entityManager.UpdateEntities();
-
-            _interactionBox.Update();
-            _chatBox.Update();
             _modManager.WorldUpdate();
         }
 
