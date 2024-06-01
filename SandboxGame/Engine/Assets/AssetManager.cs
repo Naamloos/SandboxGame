@@ -10,7 +10,7 @@ using SandboxGame.Engine.Input;
 
 namespace SandboxGame.Engine.Assets
 {
-    public class AssetManager : IAssetManager
+    public partial class AssetManager : IAssetManager
     {
         private ContentManager _contentManager;
         private GraphicsDevice _graphics;
@@ -21,9 +21,10 @@ namespace SandboxGame.Engine.Assets
 
         private SpriteFont _fallbackFont;
 
-        private Dictionary<string, LoadedSprite> _sprites = new();
+        private Dictionary<string, ILoadedSprite> _sprites = new();
         private Dictionary<string, SpriteFont> _fonts = new();
         private Dictionary<string, ILoadedSoundEffect> _soundEffects = new();
+        private Dictionary<string, LoadedMusic> _music = new();
 
         public Effect _colorOverlay { get; private set; }
 
@@ -62,10 +63,15 @@ namespace SandboxGame.Engine.Assets
             _sprites.Add("player_foot_l", loadSprite("player_foot_l", 8, 8, TimeSpan.FromSeconds(1)));
             _sprites.Add("player_foot_r", loadSprite("player_foot_r", 8, 8, TimeSpan.FromSeconds(1)));
 
-            _sprites.Add("interact", loadSprite("interact", 32, 32, TimeSpan.FromSeconds(1)));
-
             _sprites.Add("debug", generateBox(Color.Red));
             _sprites.Add("chat_back", generateBox(Color.Black));
+
+            foreach(var tile in loadTileset(GetNatureTilemap()))
+            {
+                _sprites.Add(tile.Key, tile.Value);
+            }
+
+            _music.Add("ambience", new LoadedMusic(_contentManager.Load<SoundEffect>("Music/ambience")));
         }
 
         public SpriteFont GetFont(string name = "")
@@ -83,9 +89,14 @@ namespace SandboxGame.Engine.Assets
             }
         }
 
-        public LoadedSprite GetSprite(string name)
+        public LoadedMusic GetMusic(string name)
         {
-            return _sprites[name].Copy() as LoadedSprite;
+            return _music[name];
+        }
+
+        public ILoadedSprite GetSprite(string name)
+        {
+            return _sprites[name].Copy();
         }
 
         public ILoadedSprite GetSprite<T>() where T : ISpriteAsset
@@ -104,6 +115,13 @@ namespace SandboxGame.Engine.Assets
             debugBox.SetData(new[] { color });
 
             return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, debugBox);
+        }
+
+        private Dictionary<string, LoadedTile> loadTileset(TilesetMap map)
+        {
+            var tileSet = _contentManager.Load<Texture2D>($"Tilesets/{map.Name}");
+            var parser = new TilesetParser(tileSet, map);
+            return parser.Load(_colorOverlay, _spriteBatch, _gameTime, _mouseHelper);
         }
 
         private LoadedSprite loadSprite(string name, int baseWidth, int baseHeight, TimeSpan baseDuration)

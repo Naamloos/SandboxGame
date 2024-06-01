@@ -71,7 +71,7 @@ namespace SandboxGame.Engine.DependencyInjection
             });
 
             // UI layer
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp);
             if (debugInfo)
             {
                 var dbg = DebugHelper.GetDebugString();

@@ -22,7 +22,6 @@ namespace SandboxGame.Scenes
         private ChatBox _chatBox;
         
         private World _world;
-        private WorldInteractionBox _interactionBox;
 
         private EntityManager _entityManager;
         private LaunchArgs _launchArgs;
@@ -31,6 +30,8 @@ namespace SandboxGame.Scenes
         private AssetManager _assetManager;
         private IStorageSupplier _storage;
         private ModManager _modManager;
+
+        private LoadedMusic _ambience;
 
         public InGameScene(EntityManager entityManager, LaunchArgs launchArgs, SpriteBatch spriteBatch, 
             Camera camera, AssetManager assetManager, IStorageSupplier storage, ModManager modManager)
@@ -42,10 +43,13 @@ namespace SandboxGame.Scenes
             _assetManager = assetManager;
             _storage = storage;
             _modManager = modManager;
+            _ambience = _assetManager.GetMusic("ambience");
         }
 
         public override void Initialize()
         {
+            _ambience.Stop();
+            _ambience.Play();
             RegenerateWorld(_launchArgs.ForceNewWorldGen);
         }
 
@@ -69,7 +73,6 @@ namespace SandboxGame.Scenes
             _camera.Follow(_player);
             _camera.SetSpeed(500);
 
-            _interactionBox = _entityManager.SpawnEntity<WorldInteractionBox>();
             _modManager.WorldLoaded();
         }
 

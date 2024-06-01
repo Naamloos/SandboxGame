@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
 using SandboxGame.Api;
+using SandboxGame.Api.Assets;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -37,7 +38,7 @@ namespace SandboxGame.Entities
         private bool active = false;
         private SpriteFont chatFont;
         private Camera camera;
-        private LoadedSprite chatBack;
+        private ILoadedSprite chatBack;
         private InputHelper inputHelper;
         private GameWindow gameWindow;
 

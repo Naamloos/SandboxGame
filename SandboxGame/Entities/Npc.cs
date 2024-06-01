@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
@@ -27,12 +28,12 @@ namespace SandboxGame.Entities
 
         public override bool Interactable => !inDialog && FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
 
-        private LoadedSprite sprite;
+        private ILoadedSprite sprite;
         private SpriteFont dialogFont;
-        private LoadedSprite dialogTicker;
+        private ILoadedSprite dialogTicker;
 
-        private const string NPC_NAME = "Markiplier";
-        private const string NPC_DIALOG = "Hello everybody, my name is Markiplier\nAnd welcome to Five Nights At Freddy's\nHar Har HarHar Har";
+        private const string NPC_NAME = "Sign";
+        private const string NPC_DIALOG = "Welcome to SandboxGame!\nThere's not much yet, but there might be!\nMaybe one day!";
 
         private Camera camera;
         private MouseHelper mouseHelper;
@@ -47,7 +48,7 @@ namespace SandboxGame.Entities
             this.assetManager = assetManager;
             this.entityManager = entityManager;
 
-            this.sprite = assetManager.GetSprite("markiplier");
+            this.sprite = assetManager.GetSprite("nature_sign");
             this.dialogFont = assetManager.GetFont("main");
             this.dialogTicker = assetManager.GetSprite("dialog");
         }

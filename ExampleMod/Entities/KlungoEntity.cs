@@ -1,4 +1,5 @@
-﻿using ExampleMod.Sprites;
+﻿using ExampleMod.SoundEffects;
+using ExampleMod.Sprites;
 using SandboxGame.Api;
 using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
@@ -28,10 +29,12 @@ namespace ExampleMod.Entities
 
         private ILoadedSprite klungoSprite;
         private ICamera _camera;
+        private ILoadedSoundEffect _bruh;
 
         public KlungoEntity(IAssetManager assetManager, ICamera camera) 
         {
             this.klungoSprite = assetManager.GetSprite<KlungoSprite>();
+            this._bruh = assetManager.GetSoundEffect<BruhSoundEffect>();
             this._camera = camera;
         }
 
@@ -60,8 +63,9 @@ namespace ExampleMod.Entities
             if(!dialog)
             {
                 dialog = true;
-                EntityManager.SpawnDialog("Klungo", "Hello\nI am Klungo\nNice to meet you!\nI was added via a mod...\nBtw, why am I shaking like this?", this, () =>
+                EntityManager.SpawnDialog("Klungo", "Henlo\nI am Klungo\nNice to meet you!\nI was added via a mod!\nshake:NOW GET LOST", this, () =>
                 {
+                    this._bruh.Play(1f);
                     dialog = false;
                 });
             }

@@ -16,8 +16,8 @@ namespace SandboxGame.Engine.Cameras
         private MouseHelper _mouseHelper;
 
         private PointUnit _position = PointUnit.Zero;
-        private float _zoom = 2.4f;
-        private float _targetZoom = 2.4f; // initial value same as camera initial value
+        private float _zoom = 1.5f;
+        private float _targetZoom = 1.5f; // initial value same as camera initial value
         private bool _focusZoom = false;
         private float _rotation = 0f;
 
@@ -68,7 +68,7 @@ namespace SandboxGame.Engine.Cameras
 
         private Matrix _translationMatrix
         {
-            get => Matrix.CreateTranslation(-(int)_position.X, -(int)_position.Y, 0)
+            get => Matrix.CreateTranslation(-_position.X, -_position.Y, 0)
                 * Matrix.CreateRotationZ(_rotation)
                 * Matrix.CreateScale(new Vector3(_zoom, _zoom, 1))
                 * Matrix.CreateTranslation(new Vector3(ScreenCenter.X, ScreenCenter.Y, 0));
@@ -112,17 +112,17 @@ namespace SandboxGame.Engine.Cameras
 
         public void Update(GameTime gameTime)
         {
-            if (_mouseHelper != null && !_focusZoom)
-            {
-                if (_mouseHelper.ScrollUp && _zoom < MAX_ZOOM)
-                {
-                    _zoom += 0.15f;
-                }
-                if (_mouseHelper.ScrollDown && _zoom > MIN_ZOOM)
-                {
-                    _zoom -= 0.15f;
-                }
-            }
+            //if (_mouseHelper != null && !_focusZoom)
+            //{
+            //    if (_mouseHelper.ScrollUp && _zoom < MAX_ZOOM)
+            //    {
+            //        _zoom += 0.2f;
+            //    }
+            //    if (_mouseHelper.ScrollDown && _zoom > MIN_ZOOM)
+            //    {
+            //        _zoom -= 0.2f;
+            //    }
+            //}
 
             // smooth zoom and _zoom within 0.2 of _targetZoom
             if (_focusZoom && Math.Abs(_zoom - _targetZoom) > 0.2f)
@@ -201,7 +201,7 @@ namespace SandboxGame.Engine.Cameras
 
         public void DrawOnCamera(Action draw)
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _translationMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
 
             draw();
 
@@ -228,14 +228,14 @@ namespace SandboxGame.Engine.Cameras
         {
             // Restarts the spritebatch with an effect applied
             _spriteBatch.End();
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, effect: effect, transformMatrix: _translationMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, effect: effect, transformMatrix: _translationMatrix);
         }
 
         public void DisableEffect()
         {
             // Restarts the spritebatch with no effect applied
             _spriteBatch.End();
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _translationMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _translationMatrix);
         }
 
         public void SetDefaultFollow(ICameraTarget target = null)

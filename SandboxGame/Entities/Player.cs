@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
@@ -31,14 +32,14 @@ namespace SandboxGame.Entities
 
         private bool movesRight = true;
 
-        private LoadedSprite headSprite;
-        private LoadedSprite bodySprite;
-        private LoadedSprite handSprite;
-        private LoadedSprite leftFootSprite;
-        private LoadedSprite rightFootSprite;
+        private ILoadedSprite headSprite;
+        private ILoadedSprite bodySprite;
+        private ILoadedSprite handSprite;
+        private ILoadedSprite leftFootSprite;
+        private ILoadedSprite rightFootSprite;
 
-        private LoadedSprite player;
-        private LoadedSprite debugBox;
+        private ILoadedSprite player;
+        private ILoadedSprite debugBox;
 
         private GameTimeHelper gameTimeHelper;
 

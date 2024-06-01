@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Storage;
 using SandboxGame.Api;
+using SandboxGame.Api.Assets;
 
 namespace SandboxGame.WorldGen
 {
@@ -28,10 +29,10 @@ namespace SandboxGame.WorldGen
         [ProtoMember(5)]
         public Tile[] Tiles { get; set; }
 
-        private LoadedSprite grass;
-        private LoadedSprite water;
-        private LoadedSprite sand;
-        private LoadedSprite tree;
+        private ILoadedSprite grass;
+        private ILoadedSprite water;
+        private ILoadedSprite sand;
+        private ILoadedSprite tree;
 
         private int tileSize;
 
@@ -56,10 +57,10 @@ namespace SandboxGame.WorldGen
         public void Initialize(int tileSize, AssetManager assetManager, SpriteBatch spriteBatch)
         {
             this.spriteBatch = spriteBatch;
-            this.grass = assetManager.GetSprite("grass");
-            this.water = assetManager.GetSprite("water");
-            this.sand = assetManager.GetSprite("sand");
-            this.tree = assetManager.GetSprite("tree");
+            this.grass = assetManager.GetSprite("nature_grass");
+            this.water = assetManager.GetSprite("nature_water");
+            this.sand = assetManager.GetSprite("nature_sand");
+            this.tree = assetManager.GetSprite("nature_bush");
             this.tileSize = tileSize;
         }
 

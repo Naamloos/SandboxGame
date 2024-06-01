@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SandboxGame.Api;
+using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Units;
@@ -21,7 +22,7 @@ namespace SandboxGame.Entities
         private ICameraTarget _entity;
 
         private SpriteFont _font;
-        private LoadedSprite _dialogTicker;
+        private ILoadedSprite _dialogTicker;
 
         private Vector2 _dialogPos = Vector2.Zero;
         private Vector2 _namePos = Vector2.Zero;
@@ -71,7 +72,7 @@ namespace SandboxGame.Entities
             if(firstTick)
             {
                 _oldZoom = _camera.Zoom;
-                _camera.FocusZoom(1.8f);
+                _camera.FocusZoom(2.5f);
                 _camera.Follow(_entity);
                 firstTick = false;
                 return;
@@ -82,7 +83,7 @@ namespace SandboxGame.Entities
             }
 
             var nameSize = _font.MeasureString(_name);
-            var dialogSize = _font.MeasureString(_dialog[_currentIndex]);
+            var dialogSize = _font.MeasureString(_dialog[_currentIndex].Replace("shake:", ""));
 
             var entityTopCenter = _camera.WorldToScreen(new PointUnit(_entity.Bounds.Center.X, _entity.Bounds.Top));
             _tickerPos = new Vector2(entityTopCenter.X - _dialogTicker.Width / 2, entityTopCenter.Y - 15 - _dialogTicker.Height);
@@ -115,11 +116,19 @@ namespace SandboxGame.Entities
                 return;
             }
 
-            _spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X - 2, _dialogPos.Y - 2), Color.Black);
-            _spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X + 2, _dialogPos.Y + 2), Color.Black);
-            _spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X + 2, _dialogPos.Y - 2), Color.Black);
-            _spriteBatch.DrawString(_font, _dialog[_currentIndex], new Vector2(_dialogPos.X - 2, _dialogPos.Y + 2), Color.Black);
-            _spriteBatch.DrawString(_font, _dialog[_currentIndex], _dialogPos, Color.White);
+            var actualDialogPos = _dialogPos;
+            if(_dialog[_currentIndex].StartsWith("shake:"))
+            {
+                // randomize position by a bit (10)
+                actualDialogPos = new Vector2(_dialogPos.X + Random.Shared.Next(-5, 5), _dialogPos.Y + Random.Shared.Next(-5, 5));
+            }
+            var text = _dialog[_currentIndex].Replace("shake:", "");
+
+            _spriteBatch.DrawString(_font, text, new Vector2(actualDialogPos.X - 2, actualDialogPos.Y - 2), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(actualDialogPos.X + 2, actualDialogPos.Y + 2), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(actualDialogPos.X + 2, actualDialogPos.Y - 2), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(actualDialogPos.X - 2, actualDialogPos.Y + 2), Color.Black);
+            _spriteBatch.DrawString(_font, text, actualDialogPos, Color.White);
 
             _spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X - 2, _namePos.Y - 2), Color.Black);
             _spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X + 2, _namePos.Y + 2), Color.Black);

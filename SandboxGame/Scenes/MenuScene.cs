@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SandboxGame.Api.Assets;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
@@ -12,7 +13,7 @@ namespace SandboxGame.Scenes
 {
     internal class MenuScene : BaseScene
     {
-        private LoadedSprite _grassTest;
+        private ILoadedSprite _grassTest;
         private SpriteFont _font;
 
         private AssetManager _assetManager;
@@ -52,7 +53,7 @@ namespace SandboxGame.Scenes
                 }
                 else
                 {
-                    _camera.Follow(_grassTest, smooth: false);
+                    //_camera.Follow(_grassTest, smooth: false);
                 }
             }
 
