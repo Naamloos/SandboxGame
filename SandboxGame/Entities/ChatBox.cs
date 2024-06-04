@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using SandboxGame.Api;
 using SandboxGame.Api.Assets;
 using SandboxGame.Api.Units;
+using SandboxGame.Connection;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Entity;
@@ -50,8 +51,10 @@ namespace SandboxGame.Entities
 
         private SceneManager sceneManager;
         private SpriteBatch spriteBatch;
+        private ConnectionManager connectionManager;
 
-        public ChatBox(AssetManager assetManager, Camera camera, GameWindow gameWindow, InputHelper inputHelper, SceneManager sceneManager, SpriteBatch spriteBatch)
+        public ChatBox(AssetManager assetManager, Camera camera, GameWindow gameWindow, InputHelper inputHelper, 
+            SceneManager sceneManager, SpriteBatch spriteBatch, ConnectionManager connectionManager)
         {
             chatFont = assetManager.GetFont();
             this.camera = camera;
@@ -59,11 +62,17 @@ namespace SandboxGame.Entities
             this.gameWindow = gameWindow;
             this.sceneManager = sceneManager;
             this.spriteBatch = spriteBatch;
+            this.connectionManager = connectionManager;
 
             chatBack = assetManager.GetSprite("chat_back");
             markerSize = chatFont.MeasureString("> ");
 
             maxChatMessages = (int)Math.Floor((double)(200 / (markerSize.Y + 5)));
+        }
+
+        public void PushChatMessage(string chat, uint color)
+        {
+            chatHistory.Add((chat, new Color(color)));
         }
 
         public override void Draw()
@@ -134,34 +143,7 @@ namespace SandboxGame.Entities
 
         private void handleTextInput(string input)
         {
-            if (input.StartsWith('/'))
-            {
-                // TODO create proper command handling
-                var fullCommand = input.Substring(1);
-                if (fullCommand.StartsWith("me "))
-                {
-                    var meText = fullCommand.Substring(3);
-                    chatHistory.Add(("User " + meText, Color.HotPink));
-                }
-                else if(fullCommand == "regenerate")
-                {
-                    if(sceneManager.Current is InGameScene)
-                    {
-                        (sceneManager.Current as InGameScene).RegenerateWorld(true);
-                        chatHistory.Add(("Regenerated and restarted world!", Color.Beige));
-                    }
-                    else
-                    {
-                        chatHistory.Add(("Couldn't regenerate world...", Color.Red));
-                    }
-                }
-                else
-                {
-                    chatHistory.Add(("Unknown Command!", Color.Red));
-                }
-                return;
-            }
-            chatHistory.Add(("User: " + inputText, Color.White));
+            connectionManager.SendChat(input);
         }
     }
 }

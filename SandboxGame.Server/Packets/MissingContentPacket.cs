@@ -1,26 +1,30 @@
-﻿using System;
+﻿using ProtoBuf;
+using SandboxGame.Server.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Common.Packets.Clientbound
+namespace SandboxGame.Server.Packets
 {
     /// <summary>
     /// Notifies the client of what mods it's missing. Excludes MD5 hash to prevent clients with missing mods from spoofing this info too easily.
     /// </summary>
-    public class MissingContentPacket : BasePacket
+    [ProtoContract]
+    [Packet(4, "missing_content")]
+    public class MissingContentPacket : IPacket
     {
-        public override long PacketId => 3;
-
         /// <summary>
         /// Name of the missing mod
         /// </summary>
+        [ProtoMember(1)]
         public string ModName { get; set; } = "Mod";
 
         /// <summary>
         /// Version of the missing mod
         /// </summary>
+        [ProtoMember(2)]
         public string ModVersionString { get; set; } = "1.0";
     }
 }

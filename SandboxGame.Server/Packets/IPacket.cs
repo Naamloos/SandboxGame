@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Api.World
+namespace SandboxGame.Server.Packets
 {
-    public interface IWorld
+    public interface IPacket
     {
     }
 }

@@ -9,6 +9,7 @@ using SandboxGame.Api.Assets;
 using SandboxGame.Api.Camera;
 using SandboxGame.Api.Entity;
 using SandboxGame.Api.Input;
+using SandboxGame.Connection;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -19,9 +20,6 @@ using SandboxGame.Engine.Modding;
 using SandboxGame.Engine.Scenes;
 using SandboxGame.Engine.Storage;
 using System;
-using System.IO;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SandboxGame
@@ -77,6 +75,8 @@ namespace SandboxGame
                     /* Game-specific services */
                     services.AddSingleton<IStorageSupplier>(new FileStorageSupplier());
                     services.AddSingleton<SceneManager>();
+                    services.AddSingleton<IConnectionHandler, RemoteConnectionHandler>();
+                    services.AddSingleton<ConnectionManager>();
 
                     /* Services also available to Mods */
                     services.AddSingleton<IAssetManager, AssetManager>();

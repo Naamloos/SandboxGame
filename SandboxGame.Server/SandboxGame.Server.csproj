@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SandboxGame.Common\SandboxGame.Common.csproj" />
+    <PackageReference Include="protobuf-net" Version="3.2.30" />
+    <PackageReference Include="SuperSimpleTcp" Version="3.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SandboxGame.Api\SandboxGame.Api.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProtoBuf;
-using SandboxGame.Api.World;
 using SandboxGame.Engine;
 using SandboxGame.Engine.Assets;
 using SandboxGame.Engine.Cameras;
@@ -13,7 +12,7 @@ using System.Threading;
 
 namespace SandboxGame.WorldGen
 {
-    public class World : IWorld
+    public class World
     {
         private WorldInfo _worldInfo;
         private string _name;

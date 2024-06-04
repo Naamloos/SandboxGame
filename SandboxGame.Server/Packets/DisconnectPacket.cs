@@ -1,21 +1,24 @@
-﻿using System;
+﻿using ProtoBuf;
+using SandboxGame.Server.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SandboxGame.Common.Packets.TwoWay
+namespace SandboxGame.Server.Packets
 {
     /// <summary>
     /// Notifies the other side that it's time to disconnect.
     /// </summary>
-    public class DisconnectPacket : BasePacket
+    [ProtoContract]
+    [Packet(3, "disconnect")]
+    public class DisconnectPacket : IPacket
     {
-        public override long PacketId => 4;
-
         /// <summary>
         /// Reason why client or user disconnected.
         /// </summary>
+        [ProtoMember(1)]
         public string DisconnectReason { get; set; } = "Disconnected.";
     }
 }
