@@ -13,6 +13,6 @@ namespace SandboxGame.Server.Packets
     public class EntityDespawnPacket : IPacket
     {
         [ProtoMember(1)]
-        public string EntityId { get; set; } = "";
+        public ulong EntityId { get; set; }
     }
 }

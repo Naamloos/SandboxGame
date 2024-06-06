@@ -13,20 +13,9 @@ namespace SandboxGame.Server.Packets
     public class EntitySpawnPacket : IPacket
     {
         [ProtoMember(1)]
-        public string EntityId { get; set; } = "";
+        public ulong EntityId { get; set; } = 0;
 
         [ProtoMember(2)]
         public string EntityType { get; set; } = "";
-
-        [ProtoMember(3)]
-        public bool ControlledByThisClient { get; set; } = false;
-
-        [ProtoMember(4)]
-        public float X { get; set; } = 0f;
-
-        [ProtoMember(5)]
-        public float Y { get; set; } = 0f;
-
-        // TODO at some point we'll send more entity data
     }
 }

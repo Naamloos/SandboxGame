@@ -1,4 +1,5 @@
-﻿using SandboxGame.Server.Attributes;
+﻿using Microsoft.Extensions.Hosting;
+using SandboxGame.Server.Attributes;
 using SandboxGame.Server.Packets;
 using SandboxGame.Server.Serialization;
 using SuperSimpleTcp;
@@ -52,9 +53,15 @@ namespace SandboxGame.Server.ServerHandler
             _serializer = new ProtoBufPacketSerializer();
         }
 
-        public void Start() => _server.Start();
+        public void Start()
+        {
+            _server.Start();
+        }
 
-        public void Stop() => _server.Stop();
+        public void Stop()
+        {
+            _server.Stop();
+        }
 
         private void clientConnected(object? sender, ConnectionEventArgs e)
         {

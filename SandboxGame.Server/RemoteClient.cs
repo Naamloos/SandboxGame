@@ -9,16 +9,29 @@ namespace SandboxGame.Server
 {
     public class RemoteClient
     {
-        public string Identifier { get; private set; }
+        public string GameClientIdentifier { get; private set; }
+        public string ConnectionIdentifier { get; private set; }
         public ClientInfoPacket ClientInfo { get; private set; }
+        public ulong PlayerEntityId { get; set; } = 0;
 
         private GameServer _server;
 
-        public RemoteClient(string identifier, ClientInfoPacket client, GameServer server)
+        public RemoteClient(string gameClientIdentifier, string connectionIdentifier, ClientInfoPacket client, GameServer server)
         {
-            Identifier = identifier;
+            GameClientIdentifier = gameClientIdentifier;
+            ConnectionIdentifier = connectionIdentifier;
             ClientInfo = client;
             _server = server;
+        }
+
+        public void AssignPlayerEntity(ulong entityId)
+        {
+            PlayerEntityId = entityId;
+        }
+
+        public void SendPacket(IPacket packet)
+        {
+            _server.SendPacketToClient(ConnectionIdentifier, packet);
         }
 
         public void HandleIncomingPacket(IPacket packet)
@@ -34,7 +47,7 @@ namespace SandboxGame.Server
         {
             if(chat.Message.StartsWith('/'))
             {
-                _server.SendPacketToClient(Identifier, new ChatDataPacket 
+                _server.SendPacketToClient(ConnectionIdentifier, new ChatDataPacket 
                 { 
                     Message = "Commands are not yet implemented.",
                     Color = 0xFF0000FF // Red

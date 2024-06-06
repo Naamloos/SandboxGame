@@ -75,6 +75,7 @@ namespace SandboxGame
                     /* Game-specific services */
                     services.AddSingleton<IStorageSupplier>(new FileStorageSupplier());
                     services.AddSingleton<SceneManager>();
+
                     services.AddSingleton<IConnectionHandler, RemoteConnectionHandler>();
                     services.AddSingleton<ConnectionManager>();
 
@@ -82,8 +83,8 @@ namespace SandboxGame
                     services.AddSingleton<IAssetManager, AssetManager>();
                     services.AddSingleton(x => x.GetService<IAssetManager>() as AssetManager);
 
-                    services.AddSingleton<IEntityManager, EntityManager>();
-                    services.AddSingleton(x => x.GetService<IEntityManager>() as EntityManager);
+                    services.AddSingleton<IClientEntityManager, EntityManager>();
+                    services.AddSingleton(x => x.GetService<IClientEntityManager>() as EntityManager);
 
                     services.AddSingleton<ModManager>();
 

@@ -32,6 +32,11 @@ namespace SandboxGame.Api.Units
             get => new PointUnit(X + Width * 0.5f, Y + Height * 0.5f);
         }
 
+        public PointUnit Position
+        {
+            get => new PointUnit(X, Y);
+        }
+
         public bool Intersects(RectangleUnit value)
         {
             if (value.Left < Right && Left < value.Right && value.Top < Bottom)

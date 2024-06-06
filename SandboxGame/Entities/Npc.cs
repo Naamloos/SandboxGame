@@ -26,7 +26,7 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => true;
 
-        public override bool Interactable => !inDialog && FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
+        public override bool IsInteractable => !inDialog && FindEntitiesNearby(250, x => x.GetType() == typeof(Player)).Any();
 
         private ILoadedSprite sprite;
         private SpriteFont dialogFont;
@@ -53,14 +53,14 @@ namespace SandboxGame.Entities
             this.dialogTicker = assetManager.GetSprite("dialog");
         }
 
-        public override void Draw()
+        public override void OnClientDraw()
         {
-            sprite.Draw((int)Position.X, (int)Position.Y, camera: camera, interactable: this.Interactable);
+            sprite.Draw((int)Position.X, (int)Position.Y, camera: camera, interactable: this.IsInteractable);
         }
 
         private float oldZoom = 0;
         private bool inDialog = false;
-        public override void OnClick()
+        public override void OnClientClick()
         {
             if(!inDialog)
             {
@@ -74,7 +74,7 @@ namespace SandboxGame.Entities
             }
         }
 
-        public override void Update()
+        public override void OnClientTick()
         {
             sprite.Update();
         }

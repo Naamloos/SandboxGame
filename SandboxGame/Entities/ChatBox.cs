@@ -30,9 +30,9 @@ namespace SandboxGame.Entities
 
         public bool IsActive => active;
 
-        public override bool Interactable => false;
+        public override bool IsInteractable => false;
 
-        public override RenderLayer RenderLayer => RenderLayer.UserInterface;
+        public override RenderLayer ClientRenderLayer => RenderLayer.UserInterface;
 
         private List<(string, Color)> chatHistory = new List<(string, Color)>();
 
@@ -75,7 +75,7 @@ namespace SandboxGame.Entities
             chatHistory.Add((chat, new Color(color)));
         }
 
-        public override void Draw()
+        public override void OnClientDraw()
         {
             if (active)
             {
@@ -93,7 +93,7 @@ namespace SandboxGame.Entities
             }
         }
 
-        public override void Update()
+        public override void OnClientTick()
         {
             textSize = chatFont.MeasureString(inputText);
 

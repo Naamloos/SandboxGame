@@ -15,9 +15,9 @@ namespace SandboxGame.Entities
     /// <summary>
     /// New expanded dialog entity, Supposed to replace the old dialog entity
     /// </summary>
-    public class ExpandedDialog : IEntity
+    public class ExpandedDialog : BaseClientEntity
     {
-        public RenderLayer RenderLayer => RenderLayer.UserInterface;
+        public RenderLayer ClientRenderLayer => RenderLayer.UserInterface;
 
         public RectangleUnit Bounds => _camera.ScreenView;
 
@@ -25,9 +25,9 @@ namespace SandboxGame.Entities
 
         public bool IsWorldEntity => false;
 
-        public bool Interactable => true;
+        public bool IsInteractable => true;
 
-        public IEntityManager EntityManager { get; set; }
+        public IClientEntityManager EntityManager { get; set; }
 
         private ICamera _camera;
 
@@ -36,12 +36,12 @@ namespace SandboxGame.Entities
             this._camera = _camera;
         }
 
-        public void Draw()
+        public void OnClientDraw()
         {
 
         }
 
-        public void OnClick()
+        public void OnClientClick()
         {
             
         }
@@ -51,7 +51,7 @@ namespace SandboxGame.Entities
             
         }
 
-        public void Update()
+        public void OnClientTick()
         {
             
         }

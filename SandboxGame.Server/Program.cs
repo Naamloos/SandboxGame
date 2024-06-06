@@ -1,4 +1,6 @@
-﻿using SandboxGame.Server.ServerHandler;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SandboxGame.Server.ServerHandler;
 
 namespace SandboxGame.Server
 {
@@ -6,16 +8,22 @@ namespace SandboxGame.Server
     {
         static void Main(string[] args)
         {
-            var remoteServerHandler = new RemoteServerHandler();
+            Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<IServerHandler, RemoteServerHandler>();
+                    RegisterServerDependencies(services);
+                })
+                .Build();
+        }
 
-            var server = new GameServer(remoteServerHandler);
-
-            server.Start();
-            Console.WriteLine("Server Started");
-            while(true)
-            {
-                Thread.Sleep(100);
-            }
+        /// <summary>
+        /// Can be reused by the client to register server dependencies if in single player mode.
+        /// </summary>
+        /// <param name="services"></param>
+        public static void RegisterServerDependencies(IServiceCollection services)
+        {
+            services.AddHostedService<GameServer>();
         }
     }
 }

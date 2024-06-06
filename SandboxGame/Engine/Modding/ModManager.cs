@@ -18,7 +18,7 @@ namespace SandboxGame.Engine.Modding
         private readonly ILogger<ModManager> _logger;
 
         private List<Type> _modTypes = new List<Type>();
-        private List<IMod> _loadedMods = new List<IMod>();
+        private List<IModLoader> _loadedMods = new List<IModLoader>();
 
         public ModManager(IServiceProvider serviceProvider, IStorageSupplier storage, ILogger<ModManager> logger)
         {
@@ -41,7 +41,7 @@ namespace SandboxGame.Engine.Modding
                 var asm = ms.GetBuffer();
                 var modAssembly = Assembly.Load(asm); // Load the assembly from stream
 
-                var availableMods = modAssembly.GetTypes().Where(t => typeof(IMod).IsAssignableFrom(t)).ToList();
+                var availableMods = modAssembly.GetTypes().Where(t => typeof(IModLoader).IsAssignableFrom(t)).ToList();
                 _modTypes.AddRange(availableMods);
             }
             _logger.LogInformation("Pre-loaded mods.");
@@ -53,7 +53,7 @@ namespace SandboxGame.Engine.Modding
             foreach(var modType in _modTypes)
             {
                 var parameters = modType.GetConstructors().First().GetParameters().Select(x => _serviceProvider.GetService(x.ParameterType)).ToArray();
-                var mod = (IMod)Activator.CreateInstance(modType, parameters);
+                var mod = (IModLoader)Activator.CreateInstance(modType, parameters);
                 mod.OnLoad();
                 var metadata = mod.GetMetadata();
                 _logger.LogInformation($"Loaded mod {metadata.Name} {metadata.Version} by {metadata.Author} - {metadata.Description}");

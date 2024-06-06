@@ -12,17 +12,17 @@ using System.Collections.Generic;
 
 namespace SandboxGame.Engine.Entity
 {
-    public abstract class BaseEntity : IEntity
+    public abstract class BaseEntity : BaseClientEntity
     {
         public abstract RectangleUnit Bounds { get; }
 
         public abstract PointUnit Position { get; set; }
 
-        public abstract void Update();
+        public abstract void OnClientTick();
 
-        public abstract void Draw();
+        public abstract void OnClientDraw();
 
-        public IEntityManager EntityManager 
+        public IClientEntityManager EntityManager 
         {
             get;
             set;
@@ -30,21 +30,21 @@ namespace SandboxGame.Engine.Entity
 
         public abstract bool IsWorldEntity { get; }
 
-        public abstract bool Interactable { get; }
+        public abstract bool IsInteractable { get; }
 
-        public virtual RenderLayer RenderLayer => RenderLayer.Foreground;
+        public virtual RenderLayer ClientRenderLayer => RenderLayer.Foreground;
 
         public void SetPosition(PointUnit position)
         {
             Position = position;
         }
 
-        public IEnumerable<IEntity> FindEntitiesNearby(float distance, Func<IEntity, bool> searchParams)
+        public IEnumerable<BaseClientEntity> FindEntitiesNearby(float distance, Func<BaseClientEntity, bool> searchParams)
         {
             return EntityManager.FindEntitiesNearby(this, distance, searchParams);
         }
 
-        public virtual void OnClick()
+        public virtual void OnClientClick()
         {
             
         }

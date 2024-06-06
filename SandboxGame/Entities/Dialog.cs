@@ -14,7 +14,7 @@ using System;
 
 namespace SandboxGame.Entities
 {
-    public class Dialog : BaseEntity
+    public class Dialog : Engine.Entity.BaseEntity
     {
         private string _name;
         private string[] _dialog;
@@ -56,7 +56,7 @@ namespace SandboxGame.Entities
 
         bool firstTick = true;
 
-        public override RenderLayer RenderLayer => RenderLayer.UserInterface;
+        public override RenderLayer ClientRenderLayer => RenderLayer.UserInterface;
 
         public override RectangleUnit Bounds => _camera.ScreenView;
 
@@ -64,10 +64,10 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => false;
 
-        public override bool Interactable => true;
+        public override bool IsInteractable => true;
 
         private float _oldZoom = 0;
-        public override void Update()
+        public override void OnClientTick()
         {
             if(firstTick)
             {
@@ -93,7 +93,7 @@ namespace SandboxGame.Entities
             _dialogTicker.Update();
         }
 
-        public override void OnClick()
+        public override void OnClientClick()
         {
             _currentIndex++;
             if (_currentIndex >= _dialog.Length)
@@ -109,7 +109,7 @@ namespace SandboxGame.Entities
             }
         }
 
-        public override void Draw()
+        public override void OnClientDraw()
         {
             if (_currentIndex >= _dialog.Length)
             {

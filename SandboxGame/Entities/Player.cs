@@ -26,7 +26,7 @@ namespace SandboxGame.Entities
 
         public override bool IsWorldEntity => true;
 
-        public override bool Interactable => false;
+        public override bool IsInteractable => false;
 
         private float speed = 345;
 
@@ -64,7 +64,7 @@ namespace SandboxGame.Entities
             debugBox = assetManager.GetSprite("debug");
         }
 
-        public override void Draw()
+        public override void OnClientDraw()
         {
             PointUnit center = Bounds.Center;
 
@@ -91,7 +91,7 @@ namespace SandboxGame.Entities
         bool hopDir = false;
         bool walking = false;
 
-        public override void Update()
+        public override void OnClientTick()
         {
             //headSprite.Update(gameTime);
             //bodySprite.Update(gameTime);

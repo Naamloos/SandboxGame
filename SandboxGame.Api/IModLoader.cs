@@ -6,18 +6,8 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Api
 {
-    public interface IMod
+    public interface IModLoader
     {
         public ModMetadata GetMetadata();
-
-        public void OnLoad();
-
-        public void OnUnload();
-
-        public void OnWorldLoaded();
-
-        public void OnWorldDraw();
-
-        public void OnWorldUpdate();
     }
 }

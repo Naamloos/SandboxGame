@@ -24,11 +24,12 @@ namespace SandboxGame.Engine.Assets
         private SpriteBatch _spriteBatch;
         private GameTimeHelper _gameTime;
         private MouseHelper _mouseHelper;
+        private ICamera _camera;
 
         public RectangleUnit Bounds { get; private set; }
 
         public LoadedSprite(int width, int height, TimeSpan duration, Effect colorOverlay, 
-            SpriteBatch spriteBatch, GameTimeHelper gameTimeHelper, MouseHelper mouseHelper, params Texture2D[] frames)
+            SpriteBatch spriteBatch, GameTimeHelper gameTimeHelper, MouseHelper mouseHelper, ICamera camera, params Texture2D[] frames)
         {
             Width = width;
             Height = height;
@@ -39,6 +40,7 @@ namespace SandboxGame.Engine.Assets
             _spriteBatch = spriteBatch;
             _gameTime = gameTimeHelper;
             _mouseHelper = mouseHelper;
+            _camera = camera;
         }
 
         private bool hovering = false;
@@ -52,20 +54,17 @@ namespace SandboxGame.Engine.Assets
             hovering = Bounds.Intersects(_mouseHelper.WorldPos.AsRectangle());
         }
 
-        public void Draw(int x, int y, bool interactable = false, bool flip = false,
-            ICamera camera = null, uint? lightColor = null, int widthOverride = -1, int heightOverride = -1, float rotation = 0)
+        public void Draw(RectangleUnit destination, bool interactable = false, bool flip = false, uint? lightColor = null, float rotation = 0)
         {
-            int width = widthOverride > 0 ? widthOverride : Width;
-            int height = heightOverride > 0 ? heightOverride : Height;
-            var gameCamera = camera as Camera;
+            var gameCamera = _camera as Camera;
 
-            Bounds = new RectangleUnit(x, y, width, height);
+            Bounds = destination;
 
-            if(interactable && hovering && camera is not null)
+            if(interactable && hovering && _camera is not null)
             {
                 _colorOverlay.Parameters["overlayColor"].SetValue(Color.White.ToVector4());
                 gameCamera.EnableEffect(_colorOverlay);
-                var glowBounds = new Rectangle((int)Bounds.X - 2, (int)Bounds.Y - 2, width + 4, height + 4);
+                var glowBounds = new Rectangle((int)Bounds.X - 2, (int)Bounds.Y - 2, (int)Bounds.Width + 4, (int)Bounds.Height + 4);
                 _spriteBatch.Draw(_frames[_currentFrame], glowBounds, null, Color.White, 0f, Vector2.Zero, flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 gameCamera.DisableEffect();
             }
@@ -89,7 +88,7 @@ namespace SandboxGame.Engine.Assets
 
         public ILoadedSprite Copy()
         {
-            return new LoadedSprite(Width, Height, _duration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, _frames.ToArray());
+            return new LoadedSprite(Width, Height, _duration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, _camera, _frames.ToArray());
         }
     }
 }

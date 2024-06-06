@@ -17,11 +17,11 @@ using System.Threading.Tasks;
 
 namespace SandboxGame.Engine.Entity
 {
-    public class EntityManager : IEntityManager
+    public class EntityManager : IClientEntityManager
     {
         private IServiceProvider _serviceProvider;
 
-        private List<IEntity> _loadedEntities = new List<IEntity>();
+        private List<BaseClientEntity> _loadedEntities = new List<BaseClientEntity>();
 
         private MouseHelper _mouseHelper;
         private Camera _camera;
@@ -33,22 +33,21 @@ namespace SandboxGame.Engine.Entity
             this._camera = _camera;
         }
 
-        private List<IEntity> _queuedSpawns = new List<IEntity>();
-        private List<IEntity> _queuedDespawns = new List<IEntity>();
+        private List<BaseClientEntity> _queuedSpawns = new List<BaseClientEntity>();
+        private List<BaseClientEntity> _queuedDespawns = new List<BaseClientEntity>();
 
-        public T SpawnEntity<T>() where T : IEntity
+        public T SpawnEntity<T>() where T : BaseClientEntity
         {
             var args = typeof(T).GetConstructors().First().GetParameters().Select(x => _serviceProvider.GetService(x.ParameterType)).ToArray();
 
             var entity = (T)Activator.CreateInstance(typeof(T), args);
 
-            entity.EntityManager = this;
             _queuedSpawns.Add(entity);
 
             return entity;
         }
 
-        public IEntity SpawnDialog(string name, string content, ICameraTarget entity, Action whenDone = null)
+        public BaseClientEntity SpawnDialog(string name, string content, ICameraTarget entity, Action whenDone = null)
         {
             var dialog = SpawnEntity<Dialog>();
             dialog.SetData(name, content, entity, whenDone);
@@ -63,7 +62,7 @@ namespace SandboxGame.Engine.Entity
             _queuedSpawns.Clear();
             _queuedDespawns.Clear();
             // re-order render layers
-            _loadedEntities = _loadedEntities.OrderBy(x => (int)x.RenderLayer).ToList();
+            _loadedEntities = _loadedEntities.OrderBy(x => (int)x.ClientRenderLayer).ToList();
         }
 
         public void UpdateEntities()
@@ -71,17 +70,17 @@ namespace SandboxGame.Engine.Entity
             var count = _loadedEntities.Count;
             for (var i = 0; i < count; i++)
             {
-                _loadedEntities[i].Update();
+                _loadedEntities[i].OnClientTick();
 
-                if (_loadedEntities[i].Interactable)
+                if (_loadedEntities[i].IsInteractable)
                 {
-                    var isUI = _loadedEntities[i].RenderLayer == RenderLayer.UserInterface;
+                    var isUI = _loadedEntities[i].ClientRenderLayer == RenderLayer.UserInterface;
                     var intersects = isUI ? _mouseHelper.ScreenPos.AsRectangle().Intersects(_loadedEntities[i].Bounds)
                         : _mouseHelper.WorldPos.AsRectangle().Intersects(_loadedEntities[i].Bounds);
 
                     if (intersects && _mouseHelper.LeftClick)
                     {
-                        _loadedEntities[i].OnClick();
+                        _loadedEntities[i].OnClientClick();
                     }
                 }
             }
@@ -95,22 +94,22 @@ namespace SandboxGame.Engine.Entity
             for (var i = 0; i < entities.Length; i++)
             {
                 var entity = entities[i];
-                if (entity.RenderLayer == RenderLayer.UserInterface)
+                if (entity.ClientRenderLayer == RenderLayer.UserInterface)
                 {
-                    _camera.DrawToUI(() => entity.Draw());
+                    _camera.DrawToUI(() => entity.OnClientDraw());
                 }
                 else
                 {
-                    entity.Draw();
+                    entity.OnClientDraw();
                 }
             }
         }
 
-        public IEnumerable<IEntity> FindEntities(Func<IEntity, bool> predicate) => _loadedEntities.Where(predicate);
+        public IEnumerable<BaseClientEntity> FindEntities(Func<BaseClientEntity, bool> predicate) => _loadedEntities.Where(predicate);
 
-        public IEnumerable<T> FindEntityOfType<T>() where T : IEntity => _loadedEntities.Where(x => x.GetType() == typeof(T)).Cast<T>();
+        public IEnumerable<T> FindEntityOfType<T>() where T : BaseClientEntity => _loadedEntities.Where(x => x.GetType() == typeof(T)).Cast<T>();
 
-        public void UnloadEntity(IEntity entity)
+        public void UnloadEntity(BaseClientEntity entity)
         {
             _queuedDespawns.Add(entity);
         }
@@ -123,7 +122,7 @@ namespace SandboxGame.Engine.Entity
             _queuedDespawns.AddRange(_loadedEntities);
         }
 
-        public IEnumerable<IEntity> FindEntitiesNearby(IEntity entity, float distance, Func<IEntity, bool> searchParams)
-            => _loadedEntities.Where(x => x.IsWorldEntity && x != entity && searchParams(x) && PointUnit.Distance(entity.Position, x.Position) < distance);
+        public IEnumerable<BaseClientEntity> FindEntitiesNearby(BaseClientEntity entity, float distance, Func<BaseClientEntity, bool> searchParams)
+            => _loadedEntities.Where(x => x != entity && searchParams(x) && PointUnit.Distance(entity.Bounds.Center, x.Bounds.Center) < distance);
     }
 }

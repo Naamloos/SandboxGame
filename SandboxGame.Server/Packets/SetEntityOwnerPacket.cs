@@ -9,16 +9,13 @@ using System.Threading.Tasks;
 namespace SandboxGame.Server.Packets
 {
     [ProtoContract]
-    [Packet(6, "entity_move")]
-    public class EntityMovePacket : IPacket
+    [Packet(9, "set_entity_owner")]
+    public class SetEntityOwnerPacket : IPacket
     {
         [ProtoMember(1)]
-        public string EntityId { get; set; }
+        public ulong EntityId { get; set; } = 0;
 
         [ProtoMember(2)]
-        public float X { get; set; }
-
-        [ProtoMember(3)]
-        public float Y { get; set; }
+        public string Owner { get; set; } = "";
     }
 }

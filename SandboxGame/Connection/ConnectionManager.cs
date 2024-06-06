@@ -37,7 +37,7 @@ namespace SandboxGame.Connection
         {
             if(packet is ChatDataPacket chat)
             {
-                var chatbox = _services.GetService<IEntityManager>().FindEntityOfType<ChatBox>().FirstOrDefault();
+                var chatbox = _services.GetService<IClientEntityManager>().FindEntityOfType<ChatBox>().FirstOrDefault();
                 if (chatbox == null)
                 {
                     return;
