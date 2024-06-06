@@ -8,6 +8,7 @@ using SandboxGame.Engine.Cameras;
 using SandboxGame.Engine.Storage;
 using SandboxGame.Api;
 using SandboxGame.Api.Assets;
+using SandboxGame.Api.Units;
 
 namespace SandboxGame.WorldGen
 {
@@ -84,23 +85,24 @@ namespace SandboxGame.WorldGen
                 Tile current = this.Tiles[i];
                 bool mirrored = x % 3 + y % 6 == 0;
 
+                var dest = new RectangleUnit(startX + (x * tileSize), startY + (y * tileSize), tileSize, tileSize);
                 switch(current.TileType)
                 {
                     default:
                     case TileType.Grass:
-                        grass.Draw(startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, ColorHelper.RGBA(255,255,255), tileSize, tileSize, 0);
+                        grass.Draw(dest, false, mirrored, ColorHelper.RGBA(255,255,255), 0);
                         break;
                     case TileType.Water:
-                        water.Draw(startX + (x * tileSize), startY + (y * tileSize), false, false, camera, ColorHelper.RGBA(255, 255, 255), tileSize, tileSize, 0);
+                        water.Draw(dest, false, false, ColorHelper.RGBA(255, 255, 255), 0);
                         break;
                     case TileType.Sand:
-                        sand.Draw(startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, ColorHelper.RGBA(255, 255, 255), tileSize, tileSize, 0);
+                        sand.Draw(dest, false, mirrored, ColorHelper.RGBA(255, 255, 255), 0);
                         break;
                 }
 
                 if(current.ContainsTree)
                 {
-                    tree.Draw(startX + (x * tileSize), startY + (y * tileSize), false, mirrored, camera, ColorHelper.RGBA(255, 255, 255), tileSize, tileSize, 0);
+                    tree.Draw(dest, false, mirrored, ColorHelper.RGBA(255, 255, 255), 0);
                 }
             }
         }

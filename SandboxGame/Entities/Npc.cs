@@ -55,7 +55,7 @@ namespace SandboxGame.Entities
 
         public override void OnClientDraw()
         {
-            sprite.Draw((int)Position.X, (int)Position.Y, camera: camera, interactable: this.IsInteractable);
+            sprite.Draw(Bounds, interactable: this.IsInteractable);
         }
 
         private float oldZoom = 0;

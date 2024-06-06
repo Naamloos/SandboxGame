@@ -114,13 +114,13 @@ namespace SandboxGame.Engine.Assets
             var debugBox = new Texture2D(_graphics, 1, 1);
             debugBox.SetData(new[] { color });
 
-            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, debugBox);
+            return new LoadedSprite(1,1,TimeSpan.Zero, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, _camera, debugBox);
         }
 
         private Dictionary<string, LoadedTile> loadTileset(TilesetMap map)
         {
             var tileSet = _contentManager.Load<Texture2D>($"Tilesets/{map.Name}");
-            var parser = new TilesetParser(tileSet, map);
+            var parser = new TilesetParser(tileSet, map, _camera);
             return parser.Load(_colorOverlay, _spriteBatch, _gameTime, _mouseHelper);
         }
 
@@ -142,7 +142,7 @@ namespace SandboxGame.Engine.Assets
                 }
             }
 
-            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, textures.ToArray());
+            return new LoadedSprite(baseWidth, baseHeight, baseDuration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, _camera, textures.ToArray());
         }
 
         public void RegisterSprite<T>() where T : ISpriteAsset
@@ -159,7 +159,7 @@ namespace SandboxGame.Engine.Assets
             var metaData = sprite.GetMetadata();
 
             _sprites.Add(typeof(T).Name, new LoadedSprite(metaData.Width, metaData.Height,
-                metaData.AnimationDuration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, textures.ToArray()));
+                metaData.AnimationDuration, _colorOverlay, _spriteBatch, _gameTime, _mouseHelper, _camera, textures.ToArray()));
         }
 
         public void RegisterSoundEffect<T>() where T : ISoundEffectAsset

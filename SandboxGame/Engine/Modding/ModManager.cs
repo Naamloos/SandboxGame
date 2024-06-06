@@ -18,7 +18,7 @@ namespace SandboxGame.Engine.Modding
         private readonly ILogger<ModManager> _logger;
 
         private List<Type> _modTypes = new List<Type>();
-        private List<IModLoader> _loadedMods = new List<IModLoader>();
+        private List<IClientModLoader> _loadedMods = new List<IClientModLoader>();
 
         public ModManager(IServiceProvider serviceProvider, IStorageSupplier storage, ILogger<ModManager> logger)
         {
@@ -53,8 +53,8 @@ namespace SandboxGame.Engine.Modding
             foreach(var modType in _modTypes)
             {
                 var parameters = modType.GetConstructors().First().GetParameters().Select(x => _serviceProvider.GetService(x.ParameterType)).ToArray();
-                var mod = (IModLoader)Activator.CreateInstance(modType, parameters);
-                mod.OnLoad();
+                var mod = (IClientModLoader)Activator.CreateInstance(modType, parameters);
+                mod.OnClientLoad();
                 var metadata = mod.GetMetadata();
                 _logger.LogInformation($"Loaded mod {metadata.Name} {metadata.Version} by {metadata.Author} - {metadata.Description}");
                 _loadedMods.Add(mod);
@@ -66,7 +66,7 @@ namespace SandboxGame.Engine.Modding
         {
             foreach(var mod in _loadedMods)
             {
-                mod.OnUnload();
+                mod.OnClientUnload();
                 var metadata = mod.GetMetadata();
                 _logger.LogInformation($"Unloaded mod {metadata.Name}");
                 _loadedMods.Remove(mod);
@@ -77,7 +77,7 @@ namespace SandboxGame.Engine.Modding
         {
             foreach(var mod in _loadedMods)
             {
-                mod.OnWorldLoaded();
+                mod.OnClientWorldLoad();
             }
         }
 
@@ -85,7 +85,7 @@ namespace SandboxGame.Engine.Modding
         {
             foreach(var mod in _loadedMods)
             {
-                mod.OnWorldDraw();
+                mod.OnClientWorldDraw();
             }
         }
 
@@ -93,7 +93,7 @@ namespace SandboxGame.Engine.Modding
         {
             foreach(var mod in _loadedMods)
             {
-                mod.OnWorldUpdate();
+                mod.OnClientWorldTick();
             }
         }
     }

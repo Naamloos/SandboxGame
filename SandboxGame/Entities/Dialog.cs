@@ -135,7 +135,9 @@ namespace SandboxGame.Entities
             _spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X + 2, _namePos.Y - 2), Color.Black);
             _spriteBatch.DrawString(_font, _name, new Vector2(_namePos.X - 2, _namePos.Y + 2), Color.Black);
             _spriteBatch.DrawString(_font, _name, _namePos, Color.Yellow);
-            _dialogTicker.Draw((int)_tickerPos.X, (int)_tickerPos.Y);
+
+            var tickerDest = new RectangleUnit((int)_tickerPos.X, (int)_tickerPos.Y, _dialogTicker.Width, _dialogTicker.Height);
+            _dialogTicker.Draw(tickerDest);
         }
     }
 }

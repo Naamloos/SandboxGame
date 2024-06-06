@@ -73,7 +73,6 @@ namespace SandboxGame.Scenes
         {
             _spriteBatch.GraphicsDevice.SetRenderTarget(null);
             _spriteBatch.GraphicsDevice.Clear(Color.SlateBlue);
-            _grassTest.Draw(posX, 200, camera: _camera, interactable: true);
             _spriteBatch.DrawString(_font, "Drawn on Game layer", new Vector2((int)_camera.ScreenCenter.X, (int)_camera.ScreenCenter.Y), Color.Yellow);
 
             _camera.DrawToUI(() =>

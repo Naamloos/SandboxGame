@@ -83,8 +83,7 @@ namespace SandboxGame.Entities
             //rightFootSprite.Draw(spriteBatch, leftFoot.X, leftFoot.Y);
             //leftFootSprite.Draw(spriteBatch, rightFoot.X, rightFoot.Y);
 
-            player.Draw((int)Position.X, (int)Position.Y, flip: movesRight, rotation: walking? hop : 0f);
-            debugBox.Draw((int)center.X, (int)center.Y);
+            player.Draw(Bounds, flip: movesRight, rotation: walking? hop : 0f);
         }
 
         float hop = 0f;

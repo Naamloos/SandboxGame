@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using SandboxGame.Api.Camera;
 using SandboxGame.Api.Units;
 using SandboxGame.Engine.Input;
 using System;
@@ -13,11 +14,13 @@ namespace SandboxGame.Engine.Assets
     {
         private Texture2D _tileSet;
         private TilesetMap _map;
+        private ICamera _camera;
 
-        public TilesetParser(Texture2D tileSet, TilesetMap map)
+        public TilesetParser(Texture2D tileSet, TilesetMap map, ICamera camera)
         {
             this._tileSet = tileSet;
             this._map = map;
+            this._camera = camera;
         }
 
         public Dictionary<string, LoadedTile> Load(Effect colorOverlay, SpriteBatch spriteBatch, GameTimeHelper gameTimeHelper, MouseHelper mouseHelper)
@@ -43,7 +46,7 @@ namespace SandboxGame.Engine.Assets
                 var tilePosition = new PointUnit(x * _map.TileWidth, y * _map.TileHeight); // Load tile
                 // Load tile
                 tiles.Add(_map.Name + "_" + tile.Name, 
-                    new LoadedTile(_map.TileWidth, _map.TileHeight, colorOverlay, spriteBatch, gameTimeHelper, mouseHelper, _tileSet, tilePosition));
+                    new LoadedTile(_map.TileWidth, _map.TileHeight, colorOverlay, spriteBatch, gameTimeHelper, mouseHelper, _camera, _tileSet, tilePosition));
             }
 
             return tiles;

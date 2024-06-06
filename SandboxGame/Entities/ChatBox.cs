@@ -79,7 +79,8 @@ namespace SandboxGame.Entities
         {
             if (active)
             {
-                chatBack.Draw(0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), widthOverride: 450, heightOverride: ((int)markerSize.Y + 10),
+                var dest = new RectangleUnit(0, (int)camera.ScreenView.Bottom - ((int)markerSize.Y + 10), 450, (int)markerSize.Y + 10);
+                chatBack.Draw(dest,
                     lightColor: ColorHelper.RGBA(0, 0, 0, 180));
                 spriteBatch.DrawString(chatFont, "> ", new Vector2(5, camera.ScreenView.Bottom - (markerSize.Y + 5)), Color.BlueViolet);
                 spriteBatch.DrawString(chatFont, inputText, new Vector2(5 + markerSize.X, camera.ScreenView.Bottom - (textSize.Y + 5)), Color.White);

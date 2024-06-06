@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SandboxGame.Connection
@@ -12,19 +13,20 @@ namespace SandboxGame.Connection
     {
         private GameServer _server;
         private LocalServerHandler _serverHandler;
+        private IServiceProvider services;
 
         public event IConnectionHandler.HandlePacketEvent HandlePacket;
         public event IConnectionHandler.ConnectionEstablishedEvent ConnectionEstablished;
 
         public LocalConnectionHandler() 
         {
-            _serverHandler = new LocalServerHandler(this);
-            _server = new GameServer(_serverHandler);
         }
 
         public void Connect(string address, int port)
         {
-            _server.Start();
+            _serverHandler = new LocalServerHandler(this);
+            _server = services.GetService(typeof(GameServer)) as GameServer;
+            _server.StartAsync(new CancellationTokenSource().Token);
             ConnectionEstablished?.Invoke();
         }
 
