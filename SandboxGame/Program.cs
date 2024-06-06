@@ -19,6 +19,8 @@ using SandboxGame.Engine.Input;
 using SandboxGame.Engine.Modding;
 using SandboxGame.Engine.Scenes;
 using SandboxGame.Engine.Storage;
+using SandboxGame.Server;
+using SandboxGame.Server.ServerHandler;
 using System;
 using System.Threading.Tasks;
 
@@ -76,8 +78,10 @@ namespace SandboxGame
                     services.AddSingleton<IStorageSupplier>(new FileStorageSupplier());
                     services.AddSingleton<SceneManager>();
 
-                    services.AddSingleton<IConnectionHandler, RemoteConnectionHandler>();
+                    services.AddSingleton<IServerHandler, LocalServerHandler>();
+                    services.AddSingleton<IConnectionHandler, LocalConnectionHandler>();
                     services.AddSingleton<ConnectionManager>();
+                    ServerServices.Register(services);
 
                     /* Services also available to Mods */
                     services.AddSingleton<IAssetManager, AssetManager>();

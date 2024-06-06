@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SandboxGame.Api.Entity;
+using SandboxGame.Server.EntityManager;
 using SandboxGame.Server.ServerHandler;
 
 namespace SandboxGame.Server
@@ -12,18 +14,23 @@ namespace SandboxGame.Server
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<IServerHandler, RemoteServerHandler>();
-                    RegisterServerDependencies(services);
+                    ServerServices.Register(services);
                 })
                 .Build();
         }
+    }
 
+    public static class ServerServices
+    {
         /// <summary>
         /// Can be reused by the client to register server dependencies if in single player mode.
         /// </summary>
         /// <param name="services"></param>
-        public static void RegisterServerDependencies(IServiceCollection services)
+        public static void Register(IServiceCollection services)
         {
             services.AddHostedService<GameServer>();
+            services.AddSingleton<IServerEntityManager, ServerEntityManager>();
+            services.AddSingleton<ServerEntityManager>(x => x.GetService<IServerEntityManager>() as ServerEntityManager);
         }
     }
 }

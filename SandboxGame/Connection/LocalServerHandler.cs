@@ -19,9 +19,9 @@ namespace SandboxGame.Connection
 
         private LocalConnectionHandler _localConnection;
 
-        public LocalServerHandler(LocalConnectionHandler localConnection) 
+        public LocalServerHandler(IConnectionHandler localConnection) 
         {
-            _localConnection = localConnection;
+            _localConnection = localConnection as LocalConnectionHandler;
         }
 
         public void FakeReceive(IPacket packet)
